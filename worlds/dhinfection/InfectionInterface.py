@@ -1,7 +1,7 @@
 from .pcsx2_interface.pine import Pine
 from enum import IntEnum
 from logging import Logger
-from .data.Strings import APConsole, Meta, Err
+from .data.Strings import APConsole, Meta
 
 
 class ConnectionStatus(IntEnum):

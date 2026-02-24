@@ -10,12 +10,13 @@ from .InfectionOptions import create_option_groups
 from .data import Locations, Items
 from .data.Items import InfectionItem, InfectionItemMeta, ITEMS_MASTER
 from .data.Locations import EventLocations
+from .InfectionOptions import InfectionOptions
 import settings
 
 
 # Identifier ffor Archipelago to recognize and run the client
 def run_client():
-    from InfectionClient import launch
+    from .InfectionClient import launch
     launch_subprocess(launch, name="InfectionClient")
 
 
@@ -99,7 +100,7 @@ class InfectionWorld(World):
     video animation (OVA) series which details fictional events that occur concurrently with the games.
     """
     # Define basic game parameters
-    game = Meta.game
+    game = Meta.game.value
     settings: InfectionSettings
     web: ClassVar[WebWorld] = InfectionWeb()
     topology_present = True

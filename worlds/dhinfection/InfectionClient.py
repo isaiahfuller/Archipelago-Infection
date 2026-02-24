@@ -1,13 +1,15 @@
 import asyncio
+import typing
+import multiprocessing
 from typing import Optional, Sequence
 
 from CommonClient import ClientStatus, logger
 from settings import get_settings
 import Utils
 
-from .data.APConsole import APConsole, APHelper, InfectionGameStateNames, InfectionCharacterNames, InfectionAreaWordNames, Meta
-from .data.ConnectionStatus import ConnectionStatus
-from .InfectionInterface import InfectionInterface
+from .data.Strings import APConsole, APHelper, InfectionGameStateNames, InfectionCharacterNames, InfectionAreaWordNames, Meta
+from .InfectionInterface import InfectionInterface, ConnectionStatus
+from .data import Locations, Items
 
 gui_loaded_from_utils: bool = False
 try:
@@ -19,25 +21,17 @@ except ImportError:
 tracker_loaded: bool = False
 try:
     from worlds.tracker.TrackerClient import (
-        ClientCommandParser, TrackerGameContext as SuperContext, get_base_parser, server_loop)
+        ClientCommandProcessor, TrackerGameContext as SuperContext, get_base_parser, server_loop)
     tracker_loaded = True
     if not gui_loaded_from_utils:
         from worlds.tracker.TrackerClient import gui_enabled
 except ImportError:
     from CommonClient import (
-        ClientCommandParser, TrackerGameContext as SuperContext, get_base_parser, server_loop)
+        ClientCommandProcessor, CommonContext as SuperContext, get_base_parser, server_loop)
     if not gui_loaded_from_utils:
         from CommonClient import gui_enabled
 
-if not tracker_loaded:
-    raise ImportError(
-        "TrackerClient not found. Please install the tracker client.")
-
-if not gui_loaded_from_utils:
-    raise ImportError("gui_enabled not found. Please install the gui client.")
-
-
-class InfectionCommandProcessor(ClientCommandParser):
+class InfectionCommandProcessor(ClientCommandProcessor):
     def __init__(self, ctx: SuperContext):
         super().__init__(ctx)
 
@@ -71,6 +65,7 @@ class InfectionContext(SuperContext):
     # Game Details
     game: str = Meta.game.value
     platform: str = Meta.platform.value
+    items_handling : int = 0b111
 
     # Client Properties
     command_processor: InfectionCommandProcessor
@@ -83,12 +78,15 @@ class InfectionContext(SuperContext):
     interface_sync_task: asyncio.tasks = None
     last_message: Optional[str] = None
 
-    # APWorld
+    # APWorld Properties
+    locations_name_to_id : dict[str, int] = Locations.generate_name_to_id()
+    items_name_to_id : dict[str, int] = Items.generate_name_to_id()
 
     def __init__(self, address: str, password: str | None = None,):
         super().__init__(address, password)
-        self.ipc = InfectionInterface(self.logger)
-        self.command_processor = InfectionCommandProcessor(self)
+        self.ipc = InfectionInterface(logger)
+        Utils.init_logging(APConsole.Info.client_name_clean.value + self.client_version)
+        self.settings = get_settings().get("dot_hack_infection_options", False) 
 
     # Archipelago Server Authentication
     async def server_auth(self, password_requested: bool = False) -> None:
@@ -99,6 +97,7 @@ class InfectionContext(SuperContext):
         await self.send_connect()
 
     def on_package(self, cmd: str, args: dict) -> None:
+        super().on_package(cmd, args)
         if cmd == APHelper.cmd_conn.value:
             data = args[APHelper.version.value]
 
@@ -196,7 +195,6 @@ async def main_sync_task(ctx: InfectionContext):
 
         except ConnectionError:
             ctx.ipc.disconnect_game()
-            update_connection_status(ctx, False)
         except Exception as e:
             if isinstance(e, RuntimeError):
                 logger.error(str(e))
@@ -209,6 +207,7 @@ async def main_sync_task(ctx: InfectionContext):
 
 async def check_game(ctx: InfectionContext):
     """Check game progress, send deathlink updates, and update connection status"""
+    return
 
 
 async def reconnect_game(ctx: InfectionContext):
@@ -285,11 +284,12 @@ def launch():
     async def main():
         multiprocessing.freeze_support()
 
-        # Parse command line
-        # TODO: Add game-specific arguments
+        # # Parse command line
+        parser : ArgumentParser = get_base_parser()
+        args : Namespace = parser.parse_args()
 
         # Create game context
-        ctx.InfectionContext(args.connect, args.password)
+        ctx = InfectionContext(args.connect, args.password)
 
         # Archipelago Server Connections
         logger.info(APConsole.Info.p_init_s.value)

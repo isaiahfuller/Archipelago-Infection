@@ -4,7 +4,7 @@ from abc import ABC
 import random
 
 from BaseClasses import Item, ItemClassification
-from .Strings import APConsole, Meta, InfectionAreaWordNames as AreaWordNames
+from .Strings import APConsole, APHelper,Meta, InfectionAreaWordNames as AreaWordNames
 from .items.AreaWords import InfectionAreaWords as AreaWords, ADDRESS as AreaWordAddress
 from .items.PartyMembers import InfectionPartyMembers as PartyMembers, ADDRESS as PartyMemberAddress
 from .items.Servers import InfectionServers as Servers, ADDRESS as ServerAddress

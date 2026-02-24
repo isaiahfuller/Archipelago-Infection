@@ -11,7 +11,7 @@ from .Strings import Meta, InfectionAreaWordNames as AreaWordNames, InfectionEve
 
 
 class InfectionLocation(Location):
-    game: str = Meta.game
+    game: str = Meta.game.value
 
 
 class InfectionLocationMeta(ABC):
@@ -55,7 +55,7 @@ def wordlist_gen(enum) -> list[InfectionWordListLocation]:
         #     words.append(AreaWordNames[word.name].value)
         # name = " ".join(words)
         res.append(InfectionWordListLocation(
-            name=wordlist.name
+            wordlist
         ))
     return res
 
@@ -95,12 +95,9 @@ EventLocations: InfectionEventLocation = [
     *OptionalPartyMembers
 ]
 
-
 def generate_name_to_id() -> dict[str, int]:
-    name_to_id: dict[str, int] = {name: InfectionWordListLocation(
-        name).location_id for name in WordListLocations}
-    name_to_id.update({name: EventLocations(
-        name).location_id for name in EventLocations})
+    name_to_id: dict[str, int] = {wl.name: wl.location_id for wl in WordListLocations}
+    name_to_id.update({el.name: el.location_id for el in EventLocations})
     return name_to_id
 
 
@@ -108,10 +105,10 @@ def generate_location_groups() -> dict[str, int]:
     groups: dict[str: set[str]] = {}
 
     groups.update({
-        "Story Events": {name: EventLocations(name).location_id for name in StoryEvents},
-        "Golden Goblins": {name: EventLocations(name).location_id for name in GoldenGoblins},
-        "Side Quests": {name: EventLocations(name).location_id for name in SideQuests},
-        "Optional Party Members": {name: EventLocations(name).location_id for name in OptionalPartyMembers},
-        "Word List Locations": {name: WordListLocations(name).location_id for name in WordListLocations}
+        "Story Events": {el.name: el.location_id for el in StoryEvents},
+        "Golden Goblins": {el.name: el.location_id for el in GoldenGoblins},
+        "Side Quests": {el.name: el.location_id for el in SideQuests},
+        "Optional Party Members": {el.name: el.location_id for el in OptionalPartyMembers},
+        "Word List Locations": {wl.name: wl.location_id for wl in WordListLocations}
     })
     return groups
