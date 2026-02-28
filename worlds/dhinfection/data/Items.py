@@ -4,10 +4,11 @@ from abc import ABC
 import random
 
 from BaseClasses import Item, ItemClassification
-from .Strings import APConsole, APHelper,Meta, InfectionAreaWordNames as AreaWordNames
+from .Strings import APConsole, APHelper,Meta, InfectionAreaWordNames as AreaWordNames, InfectionCharacterNames as CharacterNames
 from .items.AreaWords import InfectionAreaWords as AreaWords, ADDRESS as AreaWordAddress
 from .items.PartyMembers import InfectionPartyMembers as PartyMembers, ADDRESS as PartyMemberAddress
 from .items.Servers import InfectionServers as Servers, ADDRESS as ServerAddress
+from .locations.WordList import InfectionWordListBase, InfectionDeltaWordList, InfectionThetaWordList, get_wordlist_name
 
 
 class InfectionItem(Item):
@@ -24,7 +25,7 @@ class InfectionItemMeta(ABC):
             name=self.name,
             code=self.item_id,
             player=player,
-            type=ItemClassification.filler
+            classification=ItemClassification.filler
         )
 
 
@@ -32,14 +33,29 @@ class AreaWordItem(InfectionItemMeta):
     def __init__(self, name, id, address, type):
         self.name = name
         self.item_id = id + address
-        self.type = type
+        self.classification = type
 
     def to_item(self, player: int) -> InfectionItem:
         return InfectionItem(
             name=self.name,
             code=self.item_id,
             player=player,
-            type=self.type
+            classification=self.classification
+        )
+
+class InfectionWordListItem(InfectionItemMeta):
+    def __init__(self, name, wordlist: InfectionWordListBase):
+        self.name = name
+        self.classification = wordlist.value["importance"]
+        self.wordlist = wordlist
+        self.item_id = None
+
+    def to_item(self, player: int) -> InfectionItem:
+        return InfectionItem(
+            name=self.name,
+            code=None,
+            player=player,
+            classification=self.classification
         )
 
 
@@ -47,14 +63,14 @@ class PartyMemberItem(InfectionItemMeta):
     def __init__(self, name, id, address, type):
         self.name = name
         self.item_id = id + address
-        self.type = type
+        self.classification = type
 
     def to_item(self, player: int) -> InfectionItem:
         return InfectionItem(
             name=self.name,
             code=self.item_id,
             player=player,
-            type=self.type
+            classification=self.classification
         )
 
 
@@ -62,14 +78,14 @@ class ServerItem(InfectionItemMeta):
     def __init__(self, name, id, address, type):
         self.name = name
         self.item_id = id + address
-        self.type = type
+        self.classification = type
 
     def to_item(self, player: int) -> InfectionItem:
         return InfectionItem(
             name=self.name,
             code=self.item_id,
             player=player,
-            type=self.type
+            classification=self.classification
         )
 
 
@@ -93,20 +109,34 @@ class ServerItem(InfectionItemMeta):
 # Nothing = CollectableItem("Nothing", "Nothing", 0, 1)
 
 AreaWordItems: list[AreaWordItem] = []
+WordListItems: list[InfectionWordListItem] = []
 PartyMemberItems: list[PartyMemberItem] = []
 ServerItems: list[ServerItem] = []
 
 for word in AreaWords:
     AreaWordItems.append(AreaWordItem(
-        name=word.name,
+        name=AreaWordNames[word.name].value,
         id=word.value["id"],
         address=AreaWordAddress + word.value["id"],
         type=word.value["importance"]
     ))
 
+
+for wordlist in InfectionDeltaWordList:
+    WordListItems.append(InfectionWordListItem(
+        name=get_wordlist_name(wordlist),
+        wordlist=wordlist
+    ))
+
+for wordlist in InfectionThetaWordList:
+    WordListItems.append(InfectionWordListItem(
+        name=get_wordlist_name(wordlist),
+        wordlist=wordlist
+    ))
+
 for member in PartyMembers:
     PartyMemberItems.append(PartyMemberItem(
-        name=member.name,
+        name=CharacterNames[member.name].value,
         id=member.value["id"],
         address=PartyMemberAddress + member.value["id"],
         type=member.value["importance"]
@@ -145,9 +175,9 @@ def generate_item_groups() -> dict[str: list[int]]:
     groups: dict[str: set[str]] = {}
     i: InfectionItemMeta
     for i in AreaWordItems:
-        groups.setdefault(APHelper.area_words.value, set()).add(i.name)
+        groups.setdefault(APHelper.area_words.value, set()).add("Area Words")
     for i in PartyMemberItems:
-        groups.setdefault(APHelper.party_members.value, set()).add(i.name)
+        groups.setdefault(APHelper.party_members.value, set()).add("Party Members")
     for i in ServerItems:
-        groups.setdefault(APHelper.servers.value, set()).add(i.name)
+        groups.setdefault(APHelper.servers.value, set()).add("Servers")
     return groups

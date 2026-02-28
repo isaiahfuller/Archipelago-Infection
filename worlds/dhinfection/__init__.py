@@ -1,15 +1,20 @@
+from BaseClasses import ItemClassification
+from worlds.dhinfection.data.Locations import InfectionLocation
 from copy import deepcopy
 from typing import ClassVar, List, Optional, TextIO
 import logging
 
 from worlds.AutoWorld import World, WebWorld
 from worlds.LauncherComponents import Component, components, launch_subprocess, Type
-from BaseClasses import MultiWorld, Tutorial, Location
-from .data.Strings import APConsole, Meta
+from worlds.generic.Rules import add_rule, set_rule
+from BaseClasses import MultiWorld, Tutorial, Location, Region
+from .data.Strings import APConsole, Meta, InfectionEventNames as Ev, InfectionAreaWordNames as AreaWordNames, InfectionCharacterNames as CharacterNames
 from .InfectionOptions import create_option_groups
 from .data import Locations, Items
 from .data.Items import InfectionItem, InfectionItemMeta, ITEMS_MASTER
-from .data.Locations import EventLocations
+from .data.Locations import EventLocations, WordListLocations
+from .data.items.PartyMembers import InfectionPartyMembers as PartyMembers
+from .data.locations.WordList import InfectionDeltaWordList as DeltaWordList, InfectionThetaWordList as ThetaWordList, get_wordlist_name
 from .InfectionOptions import InfectionOptions
 import settings
 
@@ -128,7 +133,19 @@ class InfectionWorld(World):
             return
 
     def create_regions(self):
-        create_regions(self)
+        main_region = Region("Menu", self.player, self.multiworld)
+        # self.multiworld.regions.append(menu_region)
+
+        # main_region = Region("Main", self.player, self.multiworld)
+        self.multiworld.regions.append(main_region)
+        main_region.add_locations(self.location_name_to_id, InfectionLocation)
+        for wl in WordListLocations:
+            main_region.add_event(wl.name)
+            for w in wl.wordlist.value["words"]:
+                word = AreaWordNames[w.name].value
+                add_rule(self.multiworld.get_location(wl.name, self.player), lambda state: state.has(word, self.player))
+                
+
 
     def create_item(self, item: str) -> InfectionItem:
         for itm in ITEMS_MASTER:
@@ -143,3 +160,92 @@ class InfectionWorld(World):
         for item in ITEMS_MASTER:
             items.append(item.to_item(self.player))
         self.item_pool.extend(items)
+        self.multiworld.itempool += self.item_pool
+
+    def set_rules(self):
+        # Define rules for locations
+        # self.multiworld.completion_condition[self.player] = lambda state: state.has(Ev.InfectionBeat.value, self.player)
+
+        set_rule(self.multiworld.get_location(Ev.Coma.value, self.player),
+                lambda state: state.has(get_wordlist_name(DeltaWordList.BurstingPassedOverAquaField), self.player))
+
+        self.multiworld.get_location(Ev.BookOfTwilight.value, self.player).access_rule = \
+            lambda state: state.has(get_wordlist_name(DeltaWordList.HiddenForbiddenHolyGround), self.player) and \
+            state.has(CharacterNames.BlackRose.value, self.player)
+
+        self.multiworld.get_location(Ev.FirstDataBug.value, self.player).access_rule = \
+            lambda state: state.has(get_wordlist_name(DeltaWordList.ExpansiveHauntedSeaOfSand), self.player)
+
+        self.multiworld.get_location(Ev.LearnGateHacking.value, self.player).access_rule = \
+            lambda state: state.has(get_wordlist_name(DeltaWordList.BoundlessCorruptedFortWalls), self.player)
+
+        self.multiworld.get_location(Ev.SavedPiros.value, self.player).access_rule = \
+            lambda state: state.has(get_wordlist_name(DeltaWordList.IndiscreetGluttonousPilgrimage), self.player)
+            
+        self.multiworld.get_location(Ev.BoardProtected.value, self.player).access_rule = \
+            lambda state: state.has(get_wordlist_name(DeltaWordList.ClosedObliviousTwinHills), self.player) and \
+            state.has(CharacterNames.Mia.value, self.player) and \
+            state.has(CharacterNames.Elk.value, self.player)
+
+        self.multiworld.get_location(Ev.BlackRoseDungeon.value, self.player).access_rule = \
+            lambda state: state.has(get_wordlist_name(ThetaWordList.CollapsedMomentarySpiral), self.player) and \
+            state.has(CharacterNames.BlackRose.value, self.player)
+
+        self.multiworld.get_location(Ev.ElkMiaFavorite.value, self.player).access_rule = \
+            lambda state: state.has(get_wordlist_name(DeltaWordList.PlenteousSmilingHypha), self.player) and \
+            state.has(CharacterNames.Elk.value, self.player) and \
+            state.has(CharacterNames.Mia.value, self.player)
+
+        self.multiworld.get_location(Ev.PirosDiary.value, self.player).access_rule = \
+            lambda state: state.has(get_wordlist_name(DeltaWordList.PutridHotbloodedScaffold), self.player) and \
+            state.has(CharacterNames.Piros.value, self.player)
+
+        self.multiworld.get_location(Ev.MistralMeetUp.value, self.player).access_rule = \
+            lambda state: state.has(get_wordlist_name(ThetaWordList.CollapsedMomentarySpiral), self.player) and \
+            state.has(CharacterNames.Mistral.value, self.player)
+
+        self.multiworld.get_location(Ev.Epitaph00.value, self.player).access_rule = \
+            lambda state: state.has(get_wordlist_name(ThetaWordList.CursedDespairedParadise), self.player) and \
+            state.has(CharacterNames.BlackRose.value, self.player)
+
+        self.multiworld.get_location(Ev.DescendentsOfFianna.value, self.player).access_rule = \
+            lambda state: state.has(get_wordlist_name(DeltaWordList.BuriedPaganFierySands), self.player) and \
+            state.has(CharacterNames.BlackRose.value, self.player)
+
+        self.multiworld.get_location(Ev.EpitaphQ.value, self.player).access_rule = \
+            lambda state: state.has(get_wordlist_name(DeltaWordList.LonelySilentGreatSeal), self.player) and \
+            state.has(CharacterNames.BlackRose.value, self.player)
+
+        self.multiworld.get_location(Ev.MeetAlf.value, self.player).access_rule = \
+            lambda state: state.has(get_wordlist_name(ThetaWordList.GreatDistantFertileLand), self.player) and \
+            state.has(CharacterNames.BlackRose.value, self.player)
+
+        self.multiworld.get_location(Ev.InfectionBeat.value, self.player).access_rule = \
+            lambda state: state.has(get_wordlist_name(ThetaWordList.ChosenHopelessNothingness), self.player)
+
+    # def pre_fill(self):
+    #     from BaseClasses import CollectionState
+    #     state = CollectionState(self.multiworld)
+    #     state.add_item(AreaWordNames.Bursting.value, self.player)
+    #     state.add_item(AreaWordNames.AquaField.value, self.player)
+    #     state.add_item(AreaWordNames.PassedOver.value, self.player)
+    #     state.add_item(AreaWordNames.Hidden.value, self.player)
+    #     state.add_item(AreaWordNames.Forbidden.value, self.player)
+    #     state.add_item(AreaWordNames.HolyGround.value, self.player)
+    #     state.add_item(CharacterNames.BlackRose.value, self.player)
+    #     state.add_item(CharacterNames.Orca.value, self.player)
+    #     state.add_item(get_wordlist_name(DeltaWordList.HiddenForbiddenHolyGround), self.player)
+    #     state.add_item(get_wordlist_name(DeltaWordList.BurstingPassedOverAquaField), self.player)
+        
+        
+        
+
+    def prepare_ut(self):
+        # re_gen_passthrough = getattr(self.multiworld, "re_gen_passthrough", {})
+        # is_in_ut: bool = re_gen_passthrough and self.game in re_gen_passthrough
+        # if is_in_ut:
+        #     slot_data = re_gen_passthrough[self.game] 
+        #     # Re-instate important YAML options
+        #     self.options.always_online_party_members.value = slot_data["always_online_party_members"]
+        #     return True
+        return False

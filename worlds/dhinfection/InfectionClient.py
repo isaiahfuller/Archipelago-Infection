@@ -73,7 +73,7 @@ class InfectionContext(SuperContext):
 
     # Interface Properties
     ipc: InfectionInterface = InfectionInterface
-    is_game_connected: bool = ConnectionStatus.DISCONNECTED
+    is_game_connected: bool = ConnectionStatus.DISCONNECTED.value
     has_just_connected: bool = False
     interface_sync_task: asyncio.tasks = None
     last_message: Optional[str] = None
@@ -162,14 +162,16 @@ class InfectionContext(SuperContext):
 def update_connection_status(ctx: InfectionContext, status: bool):
     if bool(ctx.is_game_connected) == status:
         return
+
     ctx.is_game_connected = status
+
     if status:
         logger.info(APConsole.Info.init_game.value)
     else:
         logger.info(APConsole.Err.sock_fail.value +
                     APConsole.Err.sock_re.value)
 
-    ctx.has_just_connected = True
+    ctx.has_just_connected = status
 
 
 async def main_sync_task(ctx: InfectionContext):
@@ -207,6 +209,7 @@ async def main_sync_task(ctx: InfectionContext):
 
 async def check_game(ctx: InfectionContext):
     """Check game progress, send deathlink updates, and update connection status"""
+    await asyncio.sleep(3)
     return
 
 

@@ -49,6 +49,7 @@ class APHelper(Enum):
 
     # Item Groups
     area_words = "Area Words"
+    word_lists = "Word Lists"
     party_members = "Party Members"
     servers = "Servers"
 
@@ -90,6 +91,20 @@ class InfectionCharacterNames(Enum):
     Helba = "Helba"
 
 
+class InfectionPlayStatNames(Enum):
+    _value_: str
+    AreasVisited = "Areas Visited: "
+    PortalsOpened = "Portals Opened: "
+    AllFieldPortalsOpened = "All Field Portals Opened: "
+    AllDungeonPortalsOpened = "All Dungeon Portals Opened: "
+    ChestsOpened = "Chests Opened: "
+    BreakablesBroken = "Breakables Broken: "
+    TotalDataDrains = "Total Data Drains: "
+    KiteLevel = "Kite Level: "
+    SymbolsActivated = "Symbols Activated: "
+    GottOpened = "Gott's Treasures Obtained: "
+
+
 class InfectionEventNames(Enum):
     _value_: str
     CharacterCreation = "Character Creation Complete"
@@ -102,22 +117,26 @@ class InfectionEventNames(Enum):
     MetBlackRose = "Met BlackRose"
     Cathedral = "Went to Hidden Forbidden Holy Ground"
     BookOfTwilight = "Used Book of Twilight"
-    ExpansiveHauntedSeaOfSand = "Expansive Haunted Sea of Sand completed"
-    IndiscreetGluttonousPilgrimage = "Indiscreet Gluttonous Pilgrimage completed"
+    FirstDataBug = "First data bug defeated"
+    LearnGateHacking = "Learned Gate Hacking from Mia"
+    SavedPiros = "Saved Piros"
     YoureWinner = "CC Corp You're Our Winner! Email Opened"
+    BoardProtected = "Cleared the Protected Area from the BBS"
     BlackRoseDungeon = "Bottom of Dungeon with BlackRose"
     ElkMiaFavorite = "Cleared Elk & Mia's favorite map"
-    PirosDiary = "Piros' Diary"
+    PirosDiary = "Got Piros' Diary"
+    MistralMeetUp = "Showed Mistral Data Drain"
+    MeetAlf = "Met Alf"
     Epitaph00 = "I shall call her Aura // Epitaph 00"
-    DescendentsOfFianna = "Descendents of Fianna"
+    DescendentsOfFianna = "Learned about the Descendents of Fianna"
     EpitaphQ = "Epitaph ??"
-    InfectionBeat = "Infection Beat"
+    InfectionBeat = "Skeith Defeated"
     Sanjuro = "Received Sanjuro's Member Address"
     Gardenia = "Received Gardenia's Member Address"
     Natsume = "Received Natsume's Member Address"
     GracefulBook = "Finished Gardenia's quest"
     ParasiteDragon = "Beat Parasite Dragon"
-    Stehony = "Beat Golden Goblin 1: Stehony"
+    Stehony = "Beat Golden Goblin 1: Stehoney"
     Jonue = "Beat Golden Goblin 2: Jonue"
     Zyan = "Beat Golden Goblin 3: Zyan"
     Albert = "Beat Golden Goblin 4: Albert"
@@ -425,3 +444,10 @@ class InfectionAreaWordNames(Enum):
     Chosen = "Chosen"
     Messenger = "Messenger"
     Scent = "Scent"
+    SoaringSky = "Soaring Sky"
+    Dolorous = "Dolorous"
+    Her = "Her"
+    Laws = "Laws"
+    Talisman = "Talisman"
+    Orange = "Orange"
+    
