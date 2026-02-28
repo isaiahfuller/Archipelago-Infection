@@ -149,12 +149,6 @@ from pcsx2_interface.pine import Pine
 
 seen_events: set[int] = set()
 
-# 0xa46e7c - Editable Max HP (Kite)
-# 0xa46e7e - Editable Max SP (Kite)
-# These have max/min next to them but aren't writable
-# 0x15a15e0 - Editable Current HP (Kite)
-# 0x15a15e2 - Editable Current SP (Kite)
-
 class Events(Enum):
     # EmailsReadEvent001 = {"addr": 0xa44ed7, "mask": 0b11000000}
     # FirstLoginEvent002 = {"addr": 0xa44ed8, "mask": 0b00100000}
@@ -164,7 +158,6 @@ class Events(Enum):
     # Expansive Haunted Sea of Sand - Dungeon Entrance
     AdminBlockingPathEvent015 = {"addr": 0xa44f38, "mask": 0b01000000}
     # Triggers at the start of the fight? - Only use defeat bit
-    # Alternatively, use Mistral's member address instead
     EHSoSEvent015 = {"addr": 0xa44f39, "mask": 0b00000100}
     # Given list before: Indiscreet Gluttonous Pilgrimage
     PirosEvent016 = {"addr": 0xa44f41, "mask": 0b00000001}
