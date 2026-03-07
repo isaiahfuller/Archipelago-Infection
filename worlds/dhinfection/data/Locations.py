@@ -5,6 +5,7 @@ import copy
 
 from BaseClasses import Location
 
+from .items.AreaWords import InfectionAreaWords as AreaWords, ADDRESS as AreaWordAddress
 from .locations.Events import InfectionStoryEvents, InfectionGoldenGoblins, InfectionOptionalPartyMembers, InfectionOtherSideQuests
 from .locations.WordList import InfectionDeltaWordList as DeltaWordList, InfectionThetaWordList as ThetaWordList, ADDRESS as WordListAddress, InfectionWordListBase, get_wordlist_name
 from .locations.PlayStats import PlayStats, RyuBookI, RyuBookII, RyuBookVI, RyuBookVII, Affection, OtherStats, CharacterLevels as CharacterLevelStats
@@ -20,13 +21,23 @@ class InfectionLocationMeta(ABC):
     location_id: int
     address: int
 
+class InfectionAreaWordLocation(InfectionLocationMeta):
+    word: AreaWords
+
+    def __init__(self, word: AreaWords) -> InfectionLocation:
+        self.name = AreaWordNames[word.name].value
+        self.location_id = word.value["id"]*10 + AreaWordAddress
+        self.word = word
+
+    def to_location(self, player: int) -> Location:
+        return Location(player, self.name, self.location_id, parent)
 
 class InfectionWordListLocation(InfectionLocationMeta):
     wordlist: InfectionWordListBase
 
     def __init__(self, wordlist: InfectionWordListBase) -> InfectionLocation:
         self.name = get_wordlist_name(wordlist)
-        self.location_id = None
+        self.location_id = WordListAddress * 10 + wordlist.value["address"]
         self.wordlist = wordlist
 
     def to_location(self, player: int) -> Location:
@@ -57,6 +68,13 @@ class InfectionPlayStatLocation(InfectionLocationMeta):
     def to_location(self, player: int) -> Location:
         return Location(player, self.name, self.location_id, parent)
 
+def area_word_gen(enum) -> list[InfectionAreaWordLocation]:
+    res = []
+    for word in enum:
+        res.append(InfectionAreaWordLocation(
+            word
+        ))
+    return res
 
 def wordlist_gen(enum) -> list[InfectionWordListLocation]:
     res = []
@@ -100,14 +118,14 @@ def playstat_gen(enum, progress: list[int] | None = None, r: tuple[int, int] | N
 
 DeltaListLocations = wordlist_gen(DeltaWordList)
 ThetaListLocations = wordlist_gen(ThetaWordList)
-
+AreaWordLocations = area_word_gen(AreaWords)
 
 StoryEvents: InfectionEventLocation = event_gen(InfectionStoryEvents)
 GoldenGoblins: InfectionEventLocation = event_gen(InfectionGoldenGoblins)
 SideQuests: InfectionEventLocation = event_gen(InfectionOtherSideQuests)
 OptionalPartyMembers: InfectionEventLocation = event_gen(
     InfectionOptionalPartyMembers)
-RyuBookI: InfectionPlayStatLocation = playstat_gen(RyuBookI, r=(1,50))
+RyuBookI: InfectionPlayStatLocation = playstat_gen(RyuBookI, r=(1,30))
 RyuBookII: InfectionPlayStatLocation = playstat_gen(RyuBookII, [5, 10, 25, 50, 75, 100])
 RyuBookVI: InfectionPlayStatLocation = playstat_gen(RyuBookVI, [5, 10, 25, 50, 75, 100, 150, 200, 300, 500])
 RyuBookVII: InfectionPlayStatLocation = playstat_gen(RyuBookVII, [5, 10, 25, 50, 75, 100])
@@ -130,6 +148,7 @@ PlayStatLocations: InfectionPlayStatLocation = [
     *RyuBookI,
     *RyuBookII,
     *RyuBookVI,
+    *RyuBookVII,
     *OtherStats,
     *CharacterLevels
 ]
@@ -148,6 +167,8 @@ def generate_location_groups() -> dict[str, int]:
         "Golden Goblins": {el.name: el.location_id for el in GoldenGoblins},
         "Side Quests": {el.name: el.location_id for el in SideQuests},
         "Optional Party Members": {el.name: el.location_id for el in OptionalPartyMembers},
-        "Play Stats": {el.name: el.location_id for el in PlayStatLocations}
+        "Play Stats": {el.name: el.location_id for el in PlayStatLocations},
+        "Area Words": {el.name: el.location_id for el in AreaWordLocations},
+        # "Word Lists": {el.name: el.location_id for el in WordListLocations}
     })
     return groups

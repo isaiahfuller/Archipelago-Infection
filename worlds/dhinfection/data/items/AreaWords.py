@@ -13,6 +13,9 @@ class InfectionAreaWordListBase(Enum):
                 return member
         return None
 
+    def from_importance(self, importance: ItemClassification):
+        return [member for member in self if member.value["importance"] == importance]
+
 
 class InfectionAreaWords(InfectionAreaWordListBase):
     Bursting = {"id": 0, "importance": ItemClassification.progression}
@@ -176,6 +179,10 @@ class InfectionAreaWords(InfectionAreaWordListBase):
     FarThunder = {"id": 158, "importance": ItemClassification.progression}
     TriPansy = {"id": 159, "importance": ItemClassification.progression}
     TreasureGem = {"id": 160, "importance": ItemClassification.filler}
+    Passionate = {"id": 296, "importance": ItemClassification.filler}
+
+    
+class ExtraAreaWords(InfectionAreaWordListBase):
     Stalking = {"id": 161, "importance": ItemClassification.filler}
     Bitter = {"id": 162, "importance": ItemClassification.filler}
     Barking = {"id": 163, "importance": ItemClassification.filler}
@@ -252,8 +259,7 @@ class InfectionAreaWords(InfectionAreaWordListBase):
     Bloody = {"id": 234, "importance": ItemClassification.filler}
     Windmills = {"id": 235, "importance": ItemClassification.filler}
     Neigh = {"id": 236, "importance": ItemClassification.filler}
-    FiveHundredLohan = {"id": 237,
-                        "importance": ItemClassification.filler}
+    FiveHundredLohan = {"id": 237, "importance": ItemClassification.filler}
     Trajectory = {"id": 238, "importance": ItemClassification.filler}
     Projection = {"id": 239, "importance": ItemClassification.filler}
     Alchemy = {"id": 240, "importance": ItemClassification.filler}
@@ -312,7 +318,6 @@ class InfectionAreaWords(InfectionAreaWordListBase):
     Crack = {"id": 293, "importance": ItemClassification.filler}
     Frontline = {"id": 294, "importance": ItemClassification.filler}
     Den = {"id": 295, "importance": ItemClassification.filler}
-    Passionate = {"id": 296, "importance": ItemClassification.filler}
     Abyss = {"id": 297, "importance": ItemClassification.filler}
     Truths = {"id": 298, "importance": ItemClassification.filler}
     Wavemaster = {"id": 299, "importance": ItemClassification.filler}

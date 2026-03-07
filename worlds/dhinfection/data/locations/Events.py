@@ -17,10 +17,10 @@ class InfectionStoryEvents(InfectionEventBase):
     # DungeonTutorial = {"address": 0xa44ee8, "bits": 0b11110100}
     # FirstAura = {"address": 0xa44ee9, "bits": 0b00000011}
     # FirstAuraScene2 = {"address": 0xa44eef, "bits": 0b10000000}
-    Coma = {"address": 0xa44ee7, "bits": 0b01000000}
+    # Coma = {"address": 0xa44ee7, "bits": 0b01000000}
     # MetBlackRose = {"address": 0xa44f20, "bits": 0b11010101}
     # Cathedral = {"address": 0xa44f22, "bits": 0b01010100}
-    BookOfTwilight = {"address": 0xa44f23, "bits": 0b00000001}
+    # BookOfTwilight = {"address": 0xa44f23, "bits": 0b00000001}
     FirstDataBug = {"address": 0xa44f39, "bits": 0b00000100}
     LearnGateHacking = {"address": 0xa44f52, "bits": 0b00000010}
     SavedPiros = {"address": 0xa44f41, "bits": 0b00000001}
@@ -34,7 +34,7 @@ class InfectionStoryEvents(InfectionEventBase):
     DescendentsOfFianna = {"address": 0xa44fa8, "bits": 0b00000001}
     EpitaphQ = {"address": 0xa44fb0, "bits": 0b00000001}
     MeetAlf = {"address": 0xa44fb8, "bits": 0b00000001}
-    InfectionBeat = {"address": 0xa44fc0, "bits": 0b00000001}
+    # InfectionBeat = {"address": 0xa44fc0, "bits": 0b00000001}
 
 
 class InfectionGoldenGoblins(InfectionEventBase):
