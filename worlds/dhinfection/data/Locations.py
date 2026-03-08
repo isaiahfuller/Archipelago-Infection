@@ -125,12 +125,12 @@ GoldenGoblins: InfectionEventLocation = event_gen(InfectionGoldenGoblins)
 SideQuests: InfectionEventLocation = event_gen(InfectionOtherSideQuests)
 OptionalPartyMembers: InfectionEventLocation = event_gen(
     InfectionOptionalPartyMembers)
-RyuBookI: InfectionPlayStatLocation = playstat_gen(RyuBookI, r=(1,30))
+RyuBookI: InfectionPlayStatLocation = playstat_gen(RyuBookI, r=(1,31))
 RyuBookII: InfectionPlayStatLocation = playstat_gen(RyuBookII, [5, 10, 25, 50, 75, 100])
-RyuBookVI: InfectionPlayStatLocation = playstat_gen(RyuBookVI, [5, 10, 25, 50, 75, 100, 150, 200, 300, 500])
+RyuBookVI: InfectionPlayStatLocation = playstat_gen(RyuBookVI, [5, 10, 25, 50, 75, 100, 150, 200, 300, 400])
 RyuBookVII: InfectionPlayStatLocation = playstat_gen(RyuBookVII, [5, 10, 25, 50, 75, 100])
 OtherStats: InfectionPlayStatLocation = playstat_gen(OtherStats, [5, 10, 25, 50, 75, 100])
-CharacterLevels: InfectionPlayStatLocation = playstat_gen(CharacterLevelStats, r=(1, 30))
+CharacterLevels: InfectionPlayStatLocation = playstat_gen(CharacterLevelStats, r=(1, 31))
 
 WordListLocations: InfectionWordListLocation = [
     *DeltaListLocations,

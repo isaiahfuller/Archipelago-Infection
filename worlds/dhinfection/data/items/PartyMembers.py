@@ -27,7 +27,7 @@ class InfectionPartyMembers(InfectionPartyMemberBase):
     Elk = {"id": 10, "importance": ItemClassification.progression}
     Natsume = {"id": 11, "importance": ItemClassification.useful}
     Rachel = {"id": 12, "importance": ItemClassification.filler}
-    Gardenia = {"id": 13, "importance": ItemClassification.useful}
+    Gardenia = {"id": 13, "importance": ItemClassification.progression}
     TerajimaRyoko = {"id": 14, "importance": ItemClassification.filler}
     BlackRose = {"id": 15, "importance": ItemClassification.progression}
     Mistral = {"id": 16, "importance": ItemClassification.progression}

@@ -46,12 +46,15 @@ class APHelper(Enum):
 
     # AP Options
     always_online_party_members = "always_online_party_members"
+    include_side_quests = "include_side_quests"
+    automatically_read_emails = "automatically_read_emails"
 
     # Item Groups
     area_words = "Area Words"
     word_lists = "Word Lists"
     party_members = "Party Members"
     servers = "Servers"
+    inventory_items = "Inventory Items"
 
 
 class Meta(Enum):
@@ -90,19 +93,26 @@ class InfectionCharacterNames(Enum):
     Mistral = "Mistral"
     Helba = "Helba"
 
+class InfectionServerNames(Enum):
+    _value_: str
+    Delta = "Δ Server: Aqua City - Mac Anu"
+    Theta = "Θ Server: Highland City - Dun Loireag"
+    Lambda = "Λ Server: Cultural City - Carmina Gadelica"
+    Sigma = "Σ Server: Aerial City - Fort Ouph"
+    Omega = "Ω Server: Relic City - Lia Fail"
 
 class InfectionPlayStatNames(Enum):
     _value_: str
-    AreasVisited = "Areas Visited: "
-    PortalsOpened = "Portals Opened: "
-    AllFieldPortalsOpened = "All Field Portals Opened: "
-    AllDungeonPortalsOpened = "All Dungeon Portals Opened: "
-    ChestsOpened = "Chests Opened: "
-    BreakablesBroken = "Breakables Broken: "
-    TotalDataDrains = "Total Data Drains: "
-    KiteLevel = "Kite Level: "
-    SymbolsActivated = "Symbols Activated: "
-    GottOpened = "Gott's Treasures Obtained: "
+    AreasVisited = "Areas Visited - "
+    PortalsOpened = "Portals Opened - "
+    AllFieldPortalsOpened = "All Field Portals Opened - "
+    AllDungeonPortalsOpened = "All Dungeon Portals Opened - "
+    ChestsOpened = "Chests Opened - "
+    BreakablesBroken = "Breakables Broken - "
+    TotalDataDrains = "Total Data Drains - "
+    KiteLevel = "Kite Level - "
+    SymbolsActivated = "Symbols Activated - "
+    GottOpened = "Gott's Treasures Obtained - "
 
 
 class InfectionEventNames(Enum):

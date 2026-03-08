@@ -148,7 +148,7 @@ class InfectionAreaWords(InfectionAreaWordListBase):
     Sinking = {"id": 127, "importance": ItemClassification.filler}
     Greedy = {"id": 128, "importance": ItemClassification.progression}
     Voluptuous = {"id": 129, "importance": ItemClassification.useful}
-    Detestable = {"id": 130, "importance": ItemClassification.useful}
+    Detestable = {"id": 130, "importance": ItemClassification.progression}
     Chronicling = {"id": 131, "importance": ItemClassification.useful}
     Primitive = {"id": 132, "importance": ItemClassification.progression}
     Gluttonous = {"id": 133, "importance": ItemClassification.progression}
@@ -163,22 +163,22 @@ class InfectionAreaWords(InfectionAreaWordListBase):
     OrganMarket = {"id": 142, "importance": ItemClassification.useful}
     Agonizing = {"id": 143, "importance": ItemClassification.filler}
     Geothermal = {"id": 144, "importance": ItemClassification.filler}
-    Golden = {"id": 145, "importance": ItemClassification.useful}
+    Golden = {"id": 145, "importance": ItemClassification.progression}
     Melody = {"id": 146, "importance": ItemClassification.progression}
     Remnant = {"id": 147, "importance": ItemClassification.useful}
     March = {"id": 148, "importance": ItemClassification.filler}
     Giant = {"id": 149, "importance": ItemClassification.useful}
     Touchstone = {"id": 150, "importance": ItemClassification.progression}
-    SunnyDemon = {"id": 151, "importance": ItemClassification.useful}
-    Messenger = {"id": 152, "importance": ItemClassification.useful}
-    Scent = {"id": 153, "importance": ItemClassification.useful}
-    NewTruth = {"id": 154, "importance": ItemClassification.useful}
-    Gate = {"id": 155, "importance": ItemClassification.useful}
+    SunnyDemon = {"id": 151, "importance": ItemClassification.progression}
+    Messenger = {"id": 152, "importance": ItemClassification.progression}
+    Scent = {"id": 153, "importance": ItemClassification.progression}
+    NewTruth = {"id": 154, "importance": ItemClassification.progression}
+    Gate = {"id": 155, "importance": ItemClassification.progression}
     Pilgrimage = {"id": 156, "importance": ItemClassification.progression}
     Scaffold = {"id": 157, "importance": ItemClassification.progression}
     FarThunder = {"id": 158, "importance": ItemClassification.progression}
     TriPansy = {"id": 159, "importance": ItemClassification.progression}
-    TreasureGem = {"id": 160, "importance": ItemClassification.filler}
+    TreasureGem = {"id": 160, "importance": ItemClassification.progression}
     Passionate = {"id": 296, "importance": ItemClassification.filler}
 
     

@@ -4,7 +4,7 @@ from abc import ABC
 import random
 
 from BaseClasses import Item, ItemClassification
-from .Strings import APConsole, APHelper,Meta, InfectionAreaWordNames as AreaWordNames, InfectionCharacterNames as CharacterNames
+from .Strings import APConsole, APHelper,Meta, InfectionAreaWordNames as AreaWordNames, InfectionCharacterNames as CharacterNames, InfectionServerNames as ServerNames
 from .items.AreaWords import InfectionAreaWords as AreaWords, ExtraAreaWords as ExtraAreaWords, ADDRESS as AreaWordAddress
 from .items.PartyMembers import InfectionPartyMembers as PartyMembers, ADDRESS as PartyMemberAddress
 from .items.Servers import InfectionServers as Servers, ADDRESS as ServerAddress
@@ -124,7 +124,7 @@ for member in PartyMembers:
 
 for server in Servers:
     ServerItems.append(ServerItem(
-        name=server.name,
+        name=ServerNames[server.name].value,
         id=server.value["id"],
         address=ServerAddress + server.value["id"],
         type=server.value["importance"]

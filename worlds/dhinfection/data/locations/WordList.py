@@ -56,7 +56,7 @@ class InfectionDeltaWordList(InfectionWordListBase):
     DetestableGoldenSunnyDemon = {"address": 0x1c, "words": [
         AreaWords.Detestable, AreaWords.Golden, AreaWords.SunnyDemon
     ],
-    "importance": ItemClassification.useful
+    "importance": ItemClassification.progression
     }
     DiscoveredPrimitiveTouchstone = {"address": 0x1d, "words": [
         AreaWords.Discovered, AreaWords.Primitive, AreaWords.Touchstone
@@ -71,7 +71,7 @@ class InfectionDeltaWordList(InfectionWordListBase):
     DetestableGoldenMessenger = {"address": 0x27, "words": [
         AreaWords.Detestable, AreaWords.Golden, AreaWords.Messenger
     ],
-    "importance": ItemClassification.useful
+    "importance": ItemClassification.progression
     }
     RagingPassionateMelody = {"address": 0x23, "words": [
         AreaWords.Raging, AreaWords.Passionate, AreaWords.Melody
@@ -86,7 +86,7 @@ class InfectionDeltaWordList(InfectionWordListBase):
     DetestableGoldenScent = {"address": 0x28, "words": [
         AreaWords.Detestable, AreaWords.Golden, AreaWords.Scent
     ],
-    "importance": ItemClassification.useful
+    "importance": ItemClassification.progression
     }
     HideousDestroyersFarThunder = {"address": 0x20, "words": [
         AreaWords.Hideous, AreaWords.Destroyers, AreaWords.FarThunder
@@ -101,7 +101,7 @@ class InfectionDeltaWordList(InfectionWordListBase):
     DetestableGoldenNewTruth = {"address": 0x29, "words": [
         AreaWords.Detestable, AreaWords.Golden, AreaWords.NewTruth
     ],
-    "importance": ItemClassification.useful
+    "importance": ItemClassification.progression
     }
     BuriedPaganFierySands = {"address": 0x18, "words": [
         AreaWords.Buried, AreaWords.Pagan, AreaWords.FierySands
@@ -116,7 +116,7 @@ class InfectionDeltaWordList(InfectionWordListBase):
     DetestableGoldenGate = {"address": 0x2a, "words": [
         AreaWords.Detestable, AreaWords.Golden, AreaWords.Gate
     ],
-    "importance": ItemClassification.useful
+    "importance": ItemClassification.progression
     }
 
 
