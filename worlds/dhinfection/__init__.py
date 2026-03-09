@@ -8,7 +8,7 @@ from worlds.AutoWorld import World, WebWorld
 from worlds.LauncherComponents import Component, components, launch_subprocess, Type
 from worlds.generic.Rules import add_rule, set_rule
 from BaseClasses import MultiWorld, Tutorial, Location, Region
-from .data.Strings import APConsole, Meta, InfectionEventNames as Ev, InfectionAreaWordNames as AreaWordNames, InfectionCharacterNames as CharacterNames, InfectionPlayStatNames as PlayStatNames, InfectionServerNames as ServerNames
+from .data.Strings import APConsole, APHelper, Meta, InfectionEventNames as Ev, InfectionAreaWordNames as AreaWordNames, InfectionCharacterNames as CharacterNames, InfectionPlayStatNames as PlayStatNames, InfectionServerNames as ServerNames, InfectionItemNames as ItemNames
 from .InfectionOptions import create_option_groups
 from .data import Locations, Items
 from .data.Items import InfectionItem, InfectionItemMeta, ITEMS_MASTER
@@ -17,7 +17,7 @@ from .data.items.PartyMembers import InfectionPartyMembers as PartyMembers
 from .data.items.AreaWords import InfectionAreaWords as AreaWords
 from .data.items.Servers import InfectionServers as Servers
 from .data.locations.WordList import InfectionDeltaWordList as DeltaWordList, InfectionThetaWordList as ThetaWordList, get_wordlist_name
-from .InfectionOptions import InfectionOptions
+from .InfectionOptions import InfectionOptions, slot_data_options
 import settings
 
 
@@ -127,6 +127,7 @@ class InfectionWorld(World):
 
     def __init__(self, multiworld: MultiWorld, player: int):
         self.item_pool: List[InfectionItem] = []
+        self.filler_items: List[InfectionItem] = []
         super(InfectionWorld, self).__init__(multiworld, player)
 
     def generate_early(self):
@@ -156,11 +157,14 @@ class InfectionWorld(World):
                     return itm.to_item(self.player)
         return None
 
+    def get_filler_item_name(self) -> str:
+        return self.random.choice(self.filler_items).name
+
     def create_items(self):
         # Define items
         items = []
         starting_items = [
-            Servers.Delta.name,
+            ServerNames.Delta.value,
             AreaWordNames.Bursting.value,
             AreaWordNames.AquaField.value,
             AreaWordNames.PassedOver.value,
@@ -175,10 +179,16 @@ class InfectionWorld(World):
         for item in ITEMS_MASTER:
             if item.name in starting_items:
                 continue
+            elif item.classification == ItemClassification.filler:
+                self.filler_items.append(item.to_item(self.player))
             else:
                 items.append(item.to_item(self.player))
         self.item_pool.extend(items)
+
+        needed_filler = len(self.multiworld.get_unfilled_locations(self.player)) - len(self.item_pool)
+        self.item_pool.extend(self.create_filler() for _ in range(needed_filler))
         self.multiworld.itempool += self.item_pool
+        
 
     def set_list_rules(self, location, wordlist):
         # words = [AreaWordNames[w.name].value for w in wordlist.value["words"]]
@@ -210,6 +220,7 @@ class InfectionWorld(World):
         
         self.set_list_rules(Ev.LearnGateHacking.value, DeltaWordList.BoundlessCorruptedFortWalls)
         add_rule(self.multiworld.get_location(Ev.LearnGateHacking.value, self.player), lambda state: state.can_reach_location(Ev.FirstDataBug.value, self.player))
+        add_rule(self.multiworld.get_location(Ev.LearnGateHacking.value, self.player), lambda state: state.can_reach_location(PlayStatNames.KiteLevel.value + "7", self.player))
 
         self.set_list_rules(Ev.SavedPiros.value, DeltaWordList.IndiscreetGluttonousPilgrimage)
         add_rule(self.multiworld.get_location(Ev.SavedPiros.value, self.player), lambda state: state.can_reach_location(Ev.LearnGateHacking.value, self.player))
@@ -277,20 +288,37 @@ class InfectionWorld(World):
         add_rule(self.multiworld.get_location(Ev.Martina.value, self.player), lambda state: state.can_reach_location(Ev.Albert.value, self.player))
         add_rule(self.multiworld.get_location(Ev.Martina.value, self.player), lambda state: state.can_reach_location(Ev.InfectionBeat.value, self.player))
 
-    def pre_fill(self):
-        from BaseClasses import CollectionState
-        state = CollectionState(self.multiworld)
-        # state.add_item(Servers.Delta.name, self.player)
-        # state.add_item(AreaWordNames.Bursting.value, self.player)
-        # state.add_item(AreaWordNames.AquaField.value, self.player)
-        # state.add_item(AreaWordNames.PassedOver.value, self.player)
-        # state.add_item(AreaWordNames.Hidden.value, self.player)
-        # state.add_item(AreaWordNames.Forbidden.value, self.player)
-        # state.add_item(AreaWordNames.HolyGround.value, self.player)
-        # state.add_item(CharacterNames.BlackRose.value, self.player)
-        # state.add_item(CharacterNames.Orca.value, self.player)
-        # state.add_item(get_wordlist_name(DeltaWordList.HiddenForbiddenHolyGround), self.player)
-        # state.add_item(get_wordlist_name(DeltaWordList.BurstingPassedOverAquaField), self.player)
+    # def pre_fill(self):
+    #     from BaseClasses import CollectionState
+    #     state = CollectionState(self.multiworld)
+    #     # state.add_item(Servers.Delta.name, self.player)
+    #     # state.add_item(AreaWordNames.Bursting.value, self.player)
+    #     # state.add_item(AreaWordNames.AquaField.value, self.player)
+    #     # state.add_item(AreaWordNames.PassedOver.value, self.player)
+    #     # state.add_item(AreaWordNames.Hidden.value, self.player)
+    #     # state.add_item(AreaWordNames.Forbidden.value, self.player)
+    #     # state.add_item(AreaWordNames.HolyGround.value, self.player)
+    #     # state.add_item(CharacterNames.BlackRose.value, self.player)
+    #     # state.add_item(CharacterNames.Orca.value, self.player)
+    #     # state.add_item(get_wordlist_name(DeltaWordList.HiddenForbiddenHolyGround), self.player)
+    #     # state.add_item(get_wordlist_name(DeltaWordList.BurstingPassedOverAquaField), self.player)
         
     def prepare_ut(self):
-        return False
+        re_gen_passthrough = getattr(self.multiworld, "re_gen_passthrough", {})
+        is_in_ut: bool = re_gen_passthrough and self.game in re_gen_passthrough
+        if is_in_ut:
+            slot_data = re_gen_passthrough[self.game]
+            self.options.always_online_party_members.value = slot_data.get(APHelper.always_online_party_members.value, [])
+            self.options.automatically_read_emails.value = slot_data.get(APHelper.automatically_read_emails.value, [])
+            self.options.include_side_quests.value = slot_data.get(APHelper.include_side_quests.value, [])
+        return is_in_ut
+
+    def fill_slot_data(self):
+        slot_data: dict = self.options.as_dict(*slot_data_options())
+        slot_data[APHelper.version.value] = APConsole.Info.world_ver.value
+        return slot_data
+
+    def generate_output(self, directory: str):
+        datas = {
+            "slot_data": self.fill_slot_data()
+        }

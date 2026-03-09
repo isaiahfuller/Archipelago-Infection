@@ -1,6 +1,7 @@
 from .pcsx2_interface.pine import Pine
 from enum import IntEnum
 from logging import Logger
+from typing import Optional
 from .data.Strings import APConsole, Meta, InfectionGameStateNames
 from .data.GameState import InfectionGameState
 from .data.locations.WordList import InfectionDeltaWordList as DeltaWordList, InfectionThetaWordList as ThetaWordList
@@ -20,6 +21,7 @@ class InfectionInterface:
     pine: Pine = Pine()
     status: ConnectionStatus = ConnectionStatus.DISCONNECTED.value
     logger: Logger
+    loaded_game: Optional[str] = None
 
     def __init__(self, logger: Logger):
         self.logger = logger
@@ -30,7 +32,6 @@ class InfectionInterface:
             if not self.pine.is_connected():
                 self.status = ConnectionStatus.DISCONNECTED.value
                 return
-            self.status = ConnectionStatus.CONNECTED.value
             self.logger.info(APConsole.Info.init.value)
         try:
             if self.status is ConnectionStatus.CONNECTED.value:
@@ -59,7 +60,7 @@ class InfectionInterface:
     def get_connection_state(self) -> bool:
         try:
             connected: bool = self.pine.is_connected()
-            return connected
+            return not (not connected or self.loaded_game is None)
         except RuntimeError:
             return False
 

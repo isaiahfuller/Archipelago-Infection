@@ -1,12 +1,14 @@
 import asyncio
 import typing
 import multiprocessing
+import traceback
 from typing import Optional, Sequence
 
 from CommonClient import ClientStatus, logger
 from settings import get_settings
 import Utils
 
+from . import InfectionSettings
 from .data.Strings import APConsole, APHelper, InfectionGameStateNames, InfectionCharacterNames, InfectionAreaWordNames, Meta
 from .InfectionInterface import InfectionInterface, ConnectionStatus
 from .data import Locations, Items
@@ -36,13 +38,13 @@ class InfectionCommandProcessor(ClientCommandProcessor):
         super().__init__(ctx)
 
     def _cmd_resync(self) -> None:
-        if not isinstance(self.ctx, InfectionGameContext):
+        if not isinstance(self.ctx, InfectionContext):
             return
         if self.ctx.is_game_connected and self.ctx.server:
             self.ctx.pending_resync = True
 
     def _cmd_status(self) -> None:
-        if isinstance(self.ctx, InfectionGameContext):
+        if isinstance(self.ctx, InfectionContext):
             logger.info(f"Client Status")
             if tracker_loaded:
                 logger.info(f"Universal Tracker Integrated")
@@ -82,6 +84,13 @@ class InfectionContext(SuperContext):
     locations_name_to_id : dict[str, int] = Locations.generate_name_to_id()
     items_name_to_id : dict[str, int] = Items.generate_name_to_id()
 
+    # Local Session Save Properties
+    last_item_processed_index = -1
+
+    # Player Set Settings
+    settings: InfectionSettings
+
+
     def __init__(self, address: str, password: str | None = None,):
         super().__init__(address, password)
         self.ipc = InfectionInterface(logger)
@@ -99,7 +108,9 @@ class InfectionContext(SuperContext):
     def on_package(self, cmd: str, args: dict) -> None:
         super().on_package(cmd, args)
         if cmd == APHelper.cmd_conn.value:
-            data = args[APHelper.version.value]
+            data = args[APHelper.arg_sl_dt.value]
+            logger.info("Received connection package: " + cmd)
+            logger.info(args)
 
             if APHelper.version.value in data:
                 world_ver: str = data[APHelper.version.value]
@@ -112,23 +123,11 @@ class InfectionContext(SuperContext):
         elif cmd == APHelper.cmd_rcv.value:
             index = args["index"]
 
-            if index:
-                self.next_item_slot = index
-
             if not self.checked_locations:
                 self.are_item_status_synced = True
 
             if self.are_item_status_synced or not self.items_received:
                 return
-
-            elif cmd == APHelper.cmd_rtrv.value:
-                last_save_string: str = f"{APHelper.last_save_string.value}_{self.team}_{self.slot}"
-                if last_save_string in self.stored_data:
-                    if self.stored_data[last_save_string] is None:
-                        self.is_last_save_normal = True
-                    else:
-                        self.is_last_save_normal = bool(
-                            self.stored_data[last_save_string])
 
             elif cmd == APHelper.cmd_rminfo.value:
                 seed: str = args[APHelper.seed.value]
@@ -163,9 +162,8 @@ def update_connection_status(ctx: InfectionContext, status: bool):
     if bool(ctx.is_game_connected) == status:
         return
 
-    ctx.is_game_connected = status
-
     if status:
+        ctx.has_just_connected = True
         logger.info(APConsole.Info.init_game.value)
     else:
         logger.info(APConsole.Err.sock_fail.value +
@@ -190,10 +188,6 @@ async def main_sync_task(ctx: InfectionContext):
             # Attempt reconnection to PCSX2 otherwise
             else:
                 await reconnect_game(ctx)
-
-            if ctx.server and ctx.should_deathlink_tag_update:
-                await ctx.update_death_link(ctx.death_link)
-                ctx.should_deathlink_tag_update = False
 
         except ConnectionError:
             ctx.ipc.disconnect_game()
@@ -283,41 +277,41 @@ def assert_version_compatibility(subject: str, base: str):
                              f"\nWorld version: {subject}\nClient version: {base}")
 
 
-def launch():
-    async def main():
-        multiprocessing.freeze_support()
+async def main():
+    multiprocessing.freeze_support()
 
-        # # Parse command line
-        parser : ArgumentParser = get_base_parser()
-        args : Namespace = parser.parse_args()
+    # # Parse command line
+    parser : ArgumentParser = get_base_parser()
+    args : Namespace = parser.parse_args()
 
-        # Create game context
-        ctx = InfectionContext(args.connect, args.password)
+    # Create game context
+    ctx = InfectionContext(args.connect, args.password)
 
-        # Archipelago Server Connections
-        logger.info(APConsole.Info.p_init_s.value)
-        ctx.server_task = asyncio.create_task(
-            server_loop(ctx), name="Server Loop")
+    # Archipelago Server Connections
+    logger.info(APConsole.Info.p_init_s.value)
+    ctx.server_task = asyncio.create_task(
+        server_loop(ctx), name="Server Loop")
 
-        if tracker_loaded:
-            ctx.run_generator()
-        if gui_enabled:
-            ctx.run_gui()
+    if tracker_loaded:
+        ctx.run_generator()
+    if gui_enabled:
         ctx.run_gui()
+    ctx.run_cli()
 
-        # Create Main Loop
-        ctx.interface_sync_task = asyncio.create_task(
-            main_sync_task(ctx), name="PCSX2 Sync")
+    # Create Main Loop
+    ctx.interface_sync_task = asyncio.create_task(
+        main_sync_task(ctx), name="PCSX2 Sync")
 
-        await ctx.exit_event.wait()
-        ctx.server_address = None
-        await ctx.shutdown()
+    await ctx.exit_event.wait()
+    ctx.server_address = None
+    await ctx.shutdown()
 
-        # Call Main Client Loop
-        if ctx.interface_sync_task:
-            await asyncio.sleep(3)
-            await ctx.interface_sync_task
+    # Call Main Client Loop
+    if ctx.interface_sync_task:
+        await asyncio.sleep(3)
+        await ctx.interface_sync_task 
 
+def launch():
     # Run Client
     import colorama
 

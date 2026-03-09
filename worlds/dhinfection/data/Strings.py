@@ -24,6 +24,8 @@ class APConsole:
         _value_: str
         game_wrong = "PCSX2 is running, but the loaded game is different or is an unsupported version."
         game_no = "PCSX2 is running, but no game is loaded."
+        sock_fail = "Failed to connect to PCSX2"
+        sock_re = "Retrying connection to PCSX2..."
 
 
 class APHelper(Enum):
@@ -55,6 +57,7 @@ class APHelper(Enum):
     party_members = "Party Members"
     servers = "Servers"
     inventory_items = "Inventory Items"
+    filler = "Filler Items"
 
 
 class Meta(Enum):
@@ -152,6 +155,11 @@ class InfectionEventNames(Enum):
     Albert = "Beat Golden Goblin 4: Albert"
     Martina = "Beat Golden Goblin 5: Martina"
 
+
+class InfectionItemNames(Enum):
+    HealthDrink = "Health Drink"
+    HealthPotion = "Health Potion"
+    HealingElixer = "Healing Elixer"
 
 class InfectionAreaWordNames(Enum):
     _value_: str

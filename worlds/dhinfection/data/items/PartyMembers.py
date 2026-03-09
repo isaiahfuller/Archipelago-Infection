@@ -17,18 +17,18 @@ class InfectionPartyMemberBase(Enum):
 class InfectionPartyMembers(InfectionPartyMemberBase):
     Mia = {"id": 1, "importance": ItemClassification.progression}
     Orca = {"id": 2, "importance": ItemClassification.progression}
-    Marlo = {"id": 3, "importance": ItemClassification.filler}
+    Marlo = {"id": 3, "importance": ItemClassification.useful}
     Sanjuro = {"id": 4, "importance": ItemClassification.useful}
-    NukeUsagimaru = {"id": 5, "importance": ItemClassification.filler}
-    Balmung = {"id": 6, "importance": ItemClassification.filler}
-    Moonstone = {"id": 7, "importance": ItemClassification.filler}
+    NukeUsagimaru = {"id": 5, "importance": ItemClassification.useful}
+    Balmung = {"id": 6, "importance": ItemClassification.useful}
+    Moonstone = {"id": 7, "importance": ItemClassification.useful}
     Piros = {"id": 8, "importance": ItemClassification.progression}
-    Wiseman = {"id": 9, "importance": ItemClassification.filler}
+    Wiseman = {"id": 9, "importance": ItemClassification.useful}
     Elk = {"id": 10, "importance": ItemClassification.progression}
     Natsume = {"id": 11, "importance": ItemClassification.useful}
-    Rachel = {"id": 12, "importance": ItemClassification.filler}
+    Rachel = {"id": 12, "importance": ItemClassification.useful}
     Gardenia = {"id": 13, "importance": ItemClassification.progression}
-    TerajimaRyoko = {"id": 14, "importance": ItemClassification.filler}
+    TerajimaRyoko = {"id": 14, "importance": ItemClassification.useful}
     BlackRose = {"id": 15, "importance": ItemClassification.progression}
     Mistral = {"id": 16, "importance": ItemClassification.progression}
-    Helba = {"id": 17, "importance": ItemClassification.filler}
+    Helba = {"id": 17, "importance": ItemClassification.useful}

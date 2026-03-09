@@ -16,6 +16,6 @@ class InfectionServersBase(Enum):
 class InfectionServers(InfectionServersBase):
     Delta = {"id": 0, "importance": ItemClassification.progression}
     Theta = {"id": 1, "importance": ItemClassification.progression}
-    Lambda = {"id": 2, "importance": ItemClassification.filler}
-    Sigma = {"id": 3, "importance": ItemClassification.filler}
-    Omega = {"id": 4, "importance": ItemClassification.filler}
+    Lambda = {"id": 2, "importance": ItemClassification.useful}
+    Sigma = {"id": 3, "importance": ItemClassification.useful}
+    Omega = {"id": 4, "importance": ItemClassification.useful}

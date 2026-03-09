@@ -62,7 +62,7 @@ class InfectionPlayStatLocation(InfectionLocationMeta):
 
     def __init__(self, name: str, stat: PlayStats, progress: int) -> InfectionLocation:
         self.name = name
-        self.location_id = (stat.value * 500) + progress
+        self.location_id = (stat.value["addr"] * 500) + progress
         self.stat = stat
 
     def to_location(self, player: int) -> Location:
@@ -97,11 +97,18 @@ def event_gen(enum) -> list[InfectionEventLocation]:
         ))
     return res
 
-def playstat_gen(enum, progress: list[int] | None = None, r: tuple[int, int] | None = None) -> list[InfectionPlayStatLocation]:
+def playstat_gen(enum) -> list[InfectionPlayStatLocation]:
     res = []
     for stat in enum:
-        if progress:
-            for i in progress:
+        if stat.value["scale"] == "list":
+            for i in stat.value["values"]:
+                res.append(InfectionPlayStatLocation(
+                    name=PlayStatNames[stat.name].value + str(i),
+                    stat=stat,
+                    progress=i
+                ))
+        elif stat.value["scale"] == "range":
+            for i in range(stat.value["values"][0], stat.value["values"][1]):
                 res.append(InfectionPlayStatLocation(
                     name=PlayStatNames[stat.name].value + str(i),
                     stat=stat,
@@ -125,12 +132,12 @@ GoldenGoblins: InfectionEventLocation = event_gen(InfectionGoldenGoblins)
 SideQuests: InfectionEventLocation = event_gen(InfectionOtherSideQuests)
 OptionalPartyMembers: InfectionEventLocation = event_gen(
     InfectionOptionalPartyMembers)
-RyuBookI: InfectionPlayStatLocation = playstat_gen(RyuBookI, r=(1,31))
-RyuBookII: InfectionPlayStatLocation = playstat_gen(RyuBookII, [5, 10, 25, 50, 75, 100])
-RyuBookVI: InfectionPlayStatLocation = playstat_gen(RyuBookVI, [5, 10, 25, 50, 75, 100, 150, 200, 300, 400])
-RyuBookVII: InfectionPlayStatLocation = playstat_gen(RyuBookVII, [5, 10, 25, 50, 75, 100])
-OtherStats: InfectionPlayStatLocation = playstat_gen(OtherStats, [5, 10, 25, 50, 75, 100])
-CharacterLevels: InfectionPlayStatLocation = playstat_gen(CharacterLevelStats, r=(1, 31))
+RyuBookI: InfectionPlayStatLocation = playstat_gen(RyuBookI)
+RyuBookII: InfectionPlayStatLocation = playstat_gen(RyuBookII)
+RyuBookVI: InfectionPlayStatLocation = playstat_gen(RyuBookVI)
+RyuBookVII: InfectionPlayStatLocation = playstat_gen(RyuBookVII)
+OtherStats: InfectionPlayStatLocation = playstat_gen(OtherStats)
+CharacterLevels: InfectionPlayStatLocation = playstat_gen(CharacterLevelStats)
 
 WordListLocations: InfectionWordListLocation = [
     *DeltaListLocations,

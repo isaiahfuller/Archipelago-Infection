@@ -52,8 +52,8 @@ class AreaWordListBase(Enum):
                 return member
         return None
 
-    def from_importance(self, importance: ItemClassification):
-        return [member for member in self if member.value["importance"] == importance]
+    # def from_importance(self, importance: ItemClassification):
+    #     return [member for member in self if member.value["importance"] == importance]
 
 
 class AreaWords(AreaWordListBase):
@@ -416,6 +416,17 @@ def initial_state() -> None:
     modify_word(AreaWords.Hidden, False)
     modify_word(AreaWords.Forbidden, False)
     modify_word(AreaWords.HolyGround, False)
+
+    # Give Ryu Books
+    pine.write_int8(0xA407DD , 1)
+    pine.write_int8(0xA407DE , 1)
+    pine.write_int8(0xA407DF , 1)
+    pine.write_int8(0xA407E0 , 1)
+    pine.write_int8(0xA407E1 , 1)
+    pine.write_int8(0xA407E2 , 1)
+    pine.write_int8(0xA407E3 , 1)
+    pine.write_int8(0xA407E4 , 1)
+    
 
     # Skip meeting Orca
     pine.write_int8(0xa44ed7, pine.read_int8(

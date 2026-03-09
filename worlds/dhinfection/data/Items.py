@@ -4,12 +4,12 @@ from abc import ABC
 import random
 
 from BaseClasses import Item, ItemClassification
-from .Strings import APConsole, APHelper,Meta, InfectionAreaWordNames as AreaWordNames, InfectionCharacterNames as CharacterNames, InfectionServerNames as ServerNames
+from .Strings import APConsole, APHelper,Meta, InfectionAreaWordNames as AreaWordNames, InfectionCharacterNames as CharacterNames, InfectionServerNames as ServerNames, InfectionItemNames as ItemNames
 from .items.AreaWords import InfectionAreaWords as AreaWords, ExtraAreaWords as ExtraAreaWords, ADDRESS as AreaWordAddress
 from .items.PartyMembers import InfectionPartyMembers as PartyMembers, ADDRESS as PartyMemberAddress
 from .items.Servers import InfectionServers as Servers, ADDRESS as ServerAddress
 from .locations.WordList import InfectionWordListBase, InfectionDeltaWordList, InfectionThetaWordList, get_wordlist_name, ADDRESS as WordListAddress
-
+from .items.FillerItems import Consumables, STORAGE_ADDRESS
 
 class InfectionItem(Item):
     game: str = Meta.game
@@ -88,19 +88,47 @@ class ServerItem(InfectionItemMeta):
             classification=self.classification
         )
 
+class FillerItem(InfectionItemMeta):
+    def __init__(self, name, id, address):
+        self.name = name
+        self.item_id = id + address
+        self.classification = ItemClassification.filler
+
+    def to_item(self, player: int) -> InfectionItem:
+        return InfectionItem(
+            name=self.name,
+            code=self.item_id,
+            player=player,
+            classification=self.classification
+        )
+
 AreaWordItems: list[AreaWordItem] = []
 WordListItems: list[InfectionWordListItem] = []
 PartyMemberItems: list[PartyMemberItem] = []
 ServerItems: list[ServerItem] = []
+FillerItems: list[FillerItem] = []
 
-for word in ExtraAreaWords:
-    AreaWordItems.append(AreaWordItem(
-        name=AreaWordNames[word.name].value,
-        id=word.value["id"],
-        address=AreaWordAddress + word.value["id"],
-        type=word.value["importance"]
+# for word in ExtraAreaWords:
+#     AreaWordItems.append(AreaWordItem(
+#         name=AreaWordNames[word.name].value,
+#         id=word.value["id"],
+#         address=AreaWordAddress + word.value["id"],
+#         type=word.value["importance"]
+#     ))
+
+AreaWordItems.append(AreaWordItem(
+    name="Extra Word",
+    id=ExtraAreaWords.Stalking.value["id"],
+    address=AreaWordAddress + 43768578,
+    type=ItemClassification.filler
+))
+
+for consumable in Consumables:
+    FillerItems.append(FillerItem(
+        name=ItemNames[consumable.name].value,
+        id=consumable.value["id"],
+        address=STORAGE_ADDRESS + consumable.value["id"]
     ))
-
 
 for wordlist in InfectionDeltaWordList:
     WordListItems.append(InfectionWordListItem(
@@ -131,11 +159,11 @@ for server in Servers:
     ))
 
 ITEMS_MASTER: Sequence[Sequence] = [
-    *PartyMemberItems, *ServerItems, *WordListItems, *AreaWordItems
+    *PartyMemberItems, *ServerItems, *WordListItems, *AreaWordItems, *FillerItems
 ]
 
 ITEMS_INDEX: Sequence[Sequence] = [
-    ITEMS_MASTER, PartyMemberItems, ServerItems, WordListItems, AreaWordItems
+    ITEMS_MASTER, PartyMemberItems, ServerItems, WordListItems, AreaWordItems, FillerItems
 ]
 
 
@@ -162,4 +190,6 @@ def generate_item_groups() -> dict[str: list[int]]:
         groups.setdefault(APHelper.word_lists.value, set()).add("Word Lists")
     for i in AreaWordItems:
         groups.setdefault(APHelper.area_words.value, set()).add("Area Words")
+    for i in FillerItems:
+        groups.setdefault(APHelper.filler.value, set()).add("Filler Items")
     return groups
