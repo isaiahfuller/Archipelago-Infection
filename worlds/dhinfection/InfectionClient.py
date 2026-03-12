@@ -33,6 +33,7 @@ except ImportError:
     if not gui_loaded_from_utils:
         from CommonClient import gui_enabled
 
+
 class InfectionCommandProcessor(ClientCommandProcessor):
     def __init__(self, ctx: SuperContext):
         super().__init__(ctx)
@@ -67,7 +68,7 @@ class InfectionContext(SuperContext):
     # Game Details
     game: str = Meta.game.value
     platform: str = Meta.platform.value
-    items_handling : int = 0b111
+    items_handling: int = 0b111
 
     # Client Properties
     command_processor: InfectionCommandProcessor
@@ -81,8 +82,8 @@ class InfectionContext(SuperContext):
     last_message: Optional[str] = None
 
     # APWorld Properties
-    locations_name_to_id : dict[str, int] = Locations.generate_name_to_id()
-    items_name_to_id : dict[str, int] = Items.generate_name_to_id()
+    locations_name_to_id: dict[str, int] = Locations.generate_name_to_id()
+    items_name_to_id: dict[str, int] = Items.generate_name_to_id()
 
     # Local Session Save Properties
     last_item_processed_index = -1
@@ -90,12 +91,11 @@ class InfectionContext(SuperContext):
     # Player Set Settings
     settings: InfectionSettings
 
-
     def __init__(self, address: str, password: str | None = None,):
         super().__init__(address, password)
         self.ipc = InfectionInterface(logger)
         Utils.init_logging(APConsole.Info.client_name_clean.value + self.client_version)
-        self.settings = get_settings().get("dot_hack_infection_options", False) 
+        self.settings = get_settings().get("dot_hack_infection_options", False)
 
     # Archipelago Server Authentication
     async def server_auth(self, password_requested: bool = False) -> None:
@@ -281,8 +281,8 @@ async def main():
     multiprocessing.freeze_support()
 
     # # Parse command line
-    parser : ArgumentParser = get_base_parser()
-    args : Namespace = parser.parse_args()
+    parser: ArgumentParser = get_base_parser()
+    args: Namespace = parser.parse_args()
 
     # Create game context
     ctx = InfectionContext(args.connect, args.password)
@@ -309,7 +309,8 @@ async def main():
     # Call Main Client Loop
     if ctx.interface_sync_task:
         await asyncio.sleep(3)
-        await ctx.interface_sync_task 
+        await ctx.interface_sync_task
+
 
 def launch():
     # Run Client

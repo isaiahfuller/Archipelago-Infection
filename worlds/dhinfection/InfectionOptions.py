@@ -13,12 +13,14 @@ class AlwaysOnlinePartyMembers(Toggle):
     """
     display_name = "Always Online Party Members"
 
+
 class IncludeSideQuests(Toggle):
     """
     Include side quests in the randomizer.
     Default: Disabled
     """
     display_name = "Include Side Quests"
+
 
 class AutomaticallyReadEmails(Toggle):
     """
@@ -31,8 +33,8 @@ class AutomaticallyReadEmails(Toggle):
 infection_option_groups: dict[str, list] = {
     "Sync Options": [DeathLink],
     "Preferences": [AlwaysOnlinePartyMembers,
-                      IncludeSideQuests,
-                      AutomaticallyReadEmails]
+                    IncludeSideQuests,
+                    AutomaticallyReadEmails]
 }
 
 
@@ -48,6 +50,7 @@ def create_option_groups() -> list[OptionGroup]:
     for group, options in infection_option_groups.items():
         groups.append(OptionGroup(group, options))
     return groups
+
 
 def slot_data_options() -> list[str]:
     return [

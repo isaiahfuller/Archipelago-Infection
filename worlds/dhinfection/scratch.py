@@ -17,6 +17,7 @@ from data.GameState import InfectionGameState as GameState
 # from worlds.AutoWorld import World, WebWorld
 # from worlds.LauncherComponents import Component, components, launch_subprocess, Type
 
+
 class PartyMemberBase(Enum):
     @classmethod
     def from_id(self, id: int):
@@ -44,6 +45,7 @@ class PartyMembers(PartyMemberBase):
     BlackRose = {"id": 15}
     Mistral = {"id": 16}
     Helba = {"id": 17}
+
 
 class AreaWordListBase(Enum):
     def from_id(self, id: int):
@@ -220,7 +222,7 @@ class AreaWords(AreaWordListBase):
     TreasureGem = {"id": 160}
     Passionate = {"id": 296}
 
-    
+
 class ExtraAreaWords(AreaWordListBase):
     Stalking = {"id": 161}
     Bitter = {"id": 162}
@@ -368,6 +370,7 @@ class ExtraAreaWords(AreaWordListBase):
     # Note: Does not unlock properly, seems to be replaced with "Beginning" in Infection
     Darkside = {"id": 304}
 
+
 # current_word_list: set[DeltaWordList | ThetaWordList] = set()
 # unlocked_word_list: set[DeltaWordList | ThetaWordList] = set()
 pine = Pine()
@@ -376,12 +379,15 @@ pine = Pine()
 # https://retroachievements.org/codenotes.php?g=19021
 
 # 0x00 = not received, 0x02 = read, 0x04 = read
+
+
 def email_state(offset: int, value: int | None = None) -> int | None:
     BASE_ADDR: int = 0xa41c34
     # print(f"Email state: {hex(BASE_ADDR + offset)}: {bin(pine.read_int8(BASE_ADDR + offset))}")
     if value is None:
         return pine.read_int8(BASE_ADDR + offset)
     pine.write_int8(BASE_ADDR + offset, value)
+
 
 def watch_emails() -> None:
     """Reads all received emails"""
@@ -390,6 +396,7 @@ def watch_emails() -> None:
         curr = email_state(i)
         if curr == 2:
             email_state(i, 4)
+
 
 def initial_state() -> None:
     """"""
@@ -405,8 +412,8 @@ def initial_state() -> None:
     #     0xa44ed7) | 0b00000111)  # Not needed when setting emails read
 
     # Unlock Data Drain
-    pine.write_int8(0xA46141, 1) # Unlock Data Drain skill category
-    pine.write_int8(0xA41894, 2) # Unlock Data Drain, use red dye
+    pine.write_int8(0xA46141, 1)  # Unlock Data Drain skill category
+    pine.write_int8(0xA41894, 2)  # Unlock Data Drain, use red dye
 
     modify_party_member(PartyMembers.Orca, False)
     # modify_party_member(PartyMembers.BlackRose, False)
@@ -418,15 +425,14 @@ def initial_state() -> None:
     modify_word(AreaWords.HolyGround, False)
 
     # Give Ryu Books
-    pine.write_int8(0xA407DD , 1)
-    pine.write_int8(0xA407DE , 1)
-    pine.write_int8(0xA407DF , 1)
-    pine.write_int8(0xA407E0 , 1)
-    pine.write_int8(0xA407E1 , 1)
-    pine.write_int8(0xA407E2 , 1)
-    pine.write_int8(0xA407E3 , 1)
-    pine.write_int8(0xA407E4 , 1)
-    
+    pine.write_int8(0xA407DD, 1)
+    pine.write_int8(0xA407DE, 1)
+    pine.write_int8(0xA407DF, 1)
+    pine.write_int8(0xA407E0, 1)
+    pine.write_int8(0xA407E1, 1)
+    pine.write_int8(0xA407E2, 1)
+    pine.write_int8(0xA407E3, 1)
+    pine.write_int8(0xA407E4, 1)
 
     # Skip meeting Orca
     pine.write_int8(0xa44ed7, pine.read_int8(
@@ -445,10 +451,10 @@ def initial_state() -> None:
                     pine.read_int8(0xa44ee9) | 0b00000011)
     pine.write_int8(0xa44eef,
                     pine.read_int8(0xa44eef) | 0b10000000)
-    
+
     # Skip BlackRose cutscene and Hidden Forbidden Holy Ground
     pine.write_int8(0xa44f20,
-                    pine.read_int8(0xa44f20) | 0xff) # 0b11010101, b5 blocks gate w/o cutscene
+                    pine.read_int8(0xa44f20) | 0xff)  # 0b11010101, b5 blocks gate w/o cutscene
     pine.write_int8(0xa44f22,
                     pine.read_int8(0xa44f22) | 0xff)
     pine.write_int8(0xa44f23,
@@ -552,6 +558,7 @@ def modify_party_member(member: PartyMembers, lock: bool = False) -> None:
 
 seen_events: set[int] = set()
 
+
 class Events(Enum):
     # EmailsReadEvent001 = {"addr": 0xa44ed7, "mask": 0b11000000}
     # FirstLoginEvent002 = {"addr": 0xa44ed8, "mask": 0b00100000}
@@ -590,6 +597,7 @@ class Events(Enum):
     # Ones I didn't track
     # Natsume's event - Raging Passionate Melody
 
+
 async def pcsx2_sync_task(ctx):
     # pine = Pine()
     game_state = 0x01
@@ -606,7 +614,7 @@ async def pcsx2_sync_task(ctx):
             # print('Game state: ' + GameState(game_state).name)
         initial_state()
         # if GameState(pine.read_int8(0xa3f5f0)) == GameState.TitleScreen:
-            # current_word_list.clear()
+        # current_word_list.clear()
         # scan_word_list()
         email_curr = pine.read_int8(0xa41c38)
         if email_state != email_curr:
@@ -621,7 +629,7 @@ async def pcsx2_sync_task(ctx):
             if pine.read_int8(event.value["addr"]) & event.value["mask"] and event not in seen_events:
                 seen_events.add(event)
                 print(f"Event {event.name} triggered")
-        
+
     pine.disconnect()
 
 if __name__ == "__main__":

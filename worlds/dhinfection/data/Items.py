@@ -4,12 +4,13 @@ from abc import ABC
 import random
 
 from BaseClasses import Item, ItemClassification
-from .Strings import APConsole, APHelper,Meta, InfectionAreaWordNames as AreaWordNames, InfectionCharacterNames as CharacterNames, InfectionServerNames as ServerNames, InfectionItemNames as ItemNames
+from .Strings import APConsole, APHelper, Meta, InfectionAreaWordNames as AreaWordNames, InfectionCharacterNames as CharacterNames, InfectionServerNames as ServerNames, InfectionItemNames as ItemNames
 from .items.AreaWords import InfectionAreaWords as AreaWords, ExtraAreaWords as ExtraAreaWords, ADDRESS as AreaWordAddress
 from .items.PartyMembers import InfectionPartyMembers as PartyMembers, ADDRESS as PartyMemberAddress
 from .items.Servers import InfectionServers as Servers, ADDRESS as ServerAddress
 from .locations.WordList import InfectionWordListBase, InfectionDeltaWordList, InfectionThetaWordList, get_wordlist_name, ADDRESS as WordListAddress
 from .items.FillerItems import Consumables, STORAGE_ADDRESS
+
 
 class InfectionItem(Item):
     game: str = Meta.game
@@ -42,6 +43,7 @@ class AreaWordItem(InfectionItemMeta):
             player=player,
             classification=self.classification
         )
+
 
 class InfectionWordListItem(InfectionItemMeta):
     def __init__(self, name, wordlist: InfectionWordListBase):
@@ -88,6 +90,7 @@ class ServerItem(InfectionItemMeta):
             classification=self.classification
         )
 
+
 class FillerItem(InfectionItemMeta):
     def __init__(self, name, id, address):
         self.name = name
@@ -101,6 +104,7 @@ class FillerItem(InfectionItemMeta):
             player=player,
             classification=self.classification
         )
+
 
 AreaWordItems: list[AreaWordItem] = []
 WordListItems: list[InfectionWordListItem] = []

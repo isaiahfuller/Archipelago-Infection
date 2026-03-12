@@ -1,8 +1,9 @@
 from enum import Enum
 
+
 class PlayStats(Enum):
     _value_: any
-    
+
 
 # 16 bit
 class RyuBookI(PlayStats):
@@ -10,6 +11,8 @@ class RyuBookI(PlayStats):
     AreasVisited = {"addr": 0xa46232, "scale": "list", "values": [1, 5, 10, 15, 20, 25, 30]}
 
 # 16 bit
+
+
 class RyuBookII(PlayStats):
     _value_: int
     AllFieldPortalsOpened = {"addr": 0xa46236, "scale": "range", "values": (1, 31)}
@@ -25,12 +28,14 @@ class RyuBookVI(PlayStats):
     GottOpened = {"addr": 0xa46e3e, "scale": "range", "values": (1, 31)}
 
 # 16 bit
+
+
 class RyuBookVII(PlayStats):
     _value_: int
     SymbolsActivated = {"addr": 0xa46e14, "scale": "list", "values": [1, 5, 10, 15, 20, 25, 30]}
-    
 
-#16 bit
+
+# 16 bit
 class Affection(PlayStats):
     _value_: int
     Orca = 0xa470ea
@@ -41,9 +46,11 @@ class Affection(PlayStats):
     BlackRose = 0xa47c16
     Mistral = 0xa47cf2
 
+
 class OtherStats(PlayStats):
     _value_: int
     TotalDataDrains = {"addr": 0xa4622e, "scale": "list", "values": [5, 10, 25, 50, 75, 100]}
+
 
 class CharacterLevels(PlayStats):
     _value_: int

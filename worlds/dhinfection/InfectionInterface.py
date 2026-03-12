@@ -10,6 +10,7 @@ from .data.items.Servers import InfectionServers as Servers
 from .data.items.PartyMembers import InfectionPartyMembers as PartyMembers
 from .data.items.AreaWords import InfectionAreaWords as AreaWords
 
+
 class ConnectionStatus(IntEnum):
     WRONG_GAME = -1
     DISCONNECTED = 0
@@ -88,7 +89,7 @@ class InfectionInterface:
         for i in range(starting_addr, ending_addr, -1):
             current_addr: int = self.pine.read_int8(i)
             delta_member: DeltaWordList | None = DeltaWordList.from_address(
-            current_addr)
+                current_addr)
             combined_list: DeltaWordList | ThetaWordList | None = None
             if delta_member:
                 combined_list = delta_member
@@ -111,4 +112,4 @@ class InfectionInterface:
                 for word in combined_list.value["words"]:
                     self.modify_word(word, False)
                     words.append(AreaWordNames[word.name].value)
-                self.logger.info(f"New Delta Word: {words[0]} {words[1]} {words[2]}")   
+                self.logger.info(f"New Delta Word: {words[0]} {words[1]} {words[2]}")
