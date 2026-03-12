@@ -1,24 +1,23 @@
 from BaseClasses import ItemClassification
-from worlds.dhinfection.data.Locations import InfectionLocation
 from copy import deepcopy
 from typing import ClassVar, List, Optional, TextIO
 import logging
+import settings
 
+from BaseClasses import MultiWorld, Tutorial, Location, Region
 from worlds.AutoWorld import World, WebWorld
 from worlds.LauncherComponents import Component, components, launch_subprocess, Type
 from worlds.generic.Rules import add_rule, set_rule
-from BaseClasses import MultiWorld, Tutorial, Location, Region
+
 from .data.Strings import APConsole, APHelper, Meta, InfectionEventNames as Ev, InfectionAreaWordNames as AreaWordNames, InfectionCharacterNames as CharacterNames, InfectionPlayStatNames as PlayStatNames, InfectionServerNames as ServerNames, InfectionItemNames as ItemNames
-from .InfectionOptions import create_option_groups
 from .data import Locations, Items
 from .data.Items import InfectionItem, InfectionItemMeta, ITEMS_MASTER
-from .data.Locations import EventLocations, WordListLocations, RyuBookI, RyuBookII, RyuBookVI, RyuBookVII, OtherStats, CharacterLevels
+from .data.Locations import PlayStatLocations, InfectionLocation, EventLocations, WordListLocations, RyuBookI, RyuBookII, RyuBookVI, RyuBookVII, OtherStats, CharacterLevels
 from .data.items.PartyMembers import InfectionPartyMembers as PartyMembers
 from .data.items.AreaWords import InfectionAreaWords as AreaWords
 from .data.items.Servers import InfectionServers as Servers
 from .data.locations.WordList import InfectionDeltaWordList as DeltaWordList, InfectionThetaWordList as ThetaWordList, get_wordlist_name
-from .InfectionOptions import InfectionOptions, slot_data_options
-import settings
+from .InfectionOptions import InfectionOptions, slot_data_options, create_option_groups
 
 
 # Identifier ffor Archipelago to recognize and run the client
@@ -149,7 +148,6 @@ class InfectionWorld(World):
         story_region.add_event(Ev.InfectionBeat.value)
         main_region.add_locations(self.playstat_location_name_to_id, InfectionLocation)
 
-
     def create_item(self, item: str) -> InfectionItem:
         for itm in ITEMS_MASTER:
             if isinstance(itm, InfectionItemMeta):
@@ -188,20 +186,18 @@ class InfectionWorld(World):
         needed_filler = len(self.multiworld.get_unfilled_locations(self.player)) - len(self.item_pool)
         self.item_pool.extend(self.create_filler() for _ in range(needed_filler))
         self.multiworld.itempool += self.item_pool
-        
 
     def set_list_rules(self, location, wordlist):
-        # words = [AreaWordNames[w.name].value for w in wordlist.value["words"]]
-        # add_rule(self.multiworld.get_location(location, self.player), lambda state: all(state.has(word, self.player) for word in words))
-        add_rule(self.multiworld.get_location(location, self.player), lambda state: state.has(get_wordlist_name(wordlist), self.player))
+        add_rule(self.multiworld.get_location(location, self.player),
+                 lambda state: state.has(get_wordlist_name(wordlist), self.player))
         return
 
     def set_stats_rules(self, stats):
         for i in range(len(stats)-1):
-            if stats[1-i].name.split('-')[0] != stats[1-(i+1)].name.split('-')[0]:
+            if stats[i].name.split('-')[0] != stats[i+1].name.split('-')[0]:
                 continue
-            # print(stats[1-i].name, stats[1-(i+1)].name)
-            add_rule(self.multiworld.get_location(stats[1-i].name, self.player), lambda state: state.can_reach_location(stats[1-(i+1)].name, self.player))
+            add_rule(self.multiworld.get_location(stats[1-i].name, self.player),
+                     lambda state: state.can_reach_location(stats[1-(i+1)].name, self.player))
 
     def set_rules(self):
         self.set_stats_rules(CharacterLevels)
@@ -210,105 +206,121 @@ class InfectionWorld(World):
         self.set_stats_rules(RyuBookII)
         self.set_stats_rules(RyuBookVI)
         self.set_stats_rules(RyuBookVII)
-        
+
         # Set completion condition
         self.multiworld.completion_condition[self.player] = lambda state: state.has(Ev.InfectionBeat.value, self.player)
-        add_rule(self.multiworld.get_location(Ev.ParasiteDragon.value, self.player), lambda state: state.has(Ev.InfectionBeat.value, self.player))
+        add_rule(self.multiworld.get_location(Ev.ParasiteDragon.value, self.player),
+                 lambda state: state.has(Ev.InfectionBeat.value, self.player))
 
         # Story missions
         self.set_list_rules(Ev.FirstDataBug.value, DeltaWordList.ExpansiveHauntedSeaOfSand)
-        
+
         self.set_list_rules(Ev.LearnGateHacking.value, DeltaWordList.BoundlessCorruptedFortWalls)
-        add_rule(self.multiworld.get_location(Ev.LearnGateHacking.value, self.player), lambda state: state.can_reach_location(Ev.FirstDataBug.value, self.player))
-        add_rule(self.multiworld.get_location(Ev.LearnGateHacking.value, self.player), lambda state: state.can_reach_location(PlayStatNames.KiteLevel.value + "7", self.player))
+        add_rule(self.multiworld.get_location(Ev.LearnGateHacking.value, self.player),
+                 lambda state: state.can_reach_location(Ev.FirstDataBug.value, self.player))
+        add_rule(self.multiworld.get_location(Ev.LearnGateHacking.value, self.player),
+                 lambda state: state.can_reach_location(PlayStatNames.KiteLevel.value + "7", self.player))
 
         self.set_list_rules(Ev.SavedPiros.value, DeltaWordList.IndiscreetGluttonousPilgrimage)
-        add_rule(self.multiworld.get_location(Ev.SavedPiros.value, self.player), lambda state: state.can_reach_location(Ev.LearnGateHacking.value, self.player))
-            
-        self.set_list_rules(Ev.BoardProtected.value, DeltaWordList.ClosedObliviousTwinHills)
-        add_rule(self.multiworld.get_location(Ev.BoardProtected.value, self.player), lambda state: state.has(CharacterNames.Mia.value, self.player) and state.has(CharacterNames.Elk.value, self.player))
-        add_rule(self.multiworld.get_location(Ev.BoardProtected.value, self.player), lambda state: state.can_reach_location(Ev.SavedPiros.value, self.player))
-        add_rule(self.multiworld.get_location(Ev.BoardProtected.value, self.player), lambda state: state.can_reach_location(PlayStatNames.KiteLevel.value + "5", self.player))
+        add_rule(self.multiworld.get_location(Ev.SavedPiros.value, self.player),
+                 lambda state: state.can_reach_location(Ev.LearnGateHacking.value, self.player))
 
+        self.set_list_rules(Ev.BoardProtected.value, DeltaWordList.ClosedObliviousTwinHills)
+        add_rule(self.multiworld.get_location(Ev.BoardProtected.value, self.player), lambda state: state.has(
+            CharacterNames.Mia.value, self.player) and state.has(CharacterNames.Elk.value, self.player))
+        add_rule(self.multiworld.get_location(Ev.BoardProtected.value, self.player),
+                 lambda state: state.can_reach_location(Ev.SavedPiros.value, self.player))
+        add_rule(self.multiworld.get_location(Ev.BoardProtected.value, self.player),
+                 lambda state: state.can_reach_location(PlayStatNames.KiteLevel.value + "5", self.player))
 
         self.set_list_rules(Ev.BlackRoseDungeon.value, ThetaWordList.CollapsedMomentarySpiral)
         # add_rule(self.multiworld.get_location(Ev.BlackRoseDungeon.value, self.player), lambda state: state.has(CharacterNames.BlackRose.value, self.player))
-        add_rule(self.multiworld.get_location(Ev.BlackRoseDungeon.value, self.player), lambda state: state.can_reach_location(Ev.BoardProtected.value, self.player))
-        add_rule(self.multiworld.get_location(Ev.BlackRoseDungeon.value, self.player), lambda state: state.has(ServerNames.Theta.value, self.player))
-        add_rule(self.multiworld.get_location(Ev.BlackRoseDungeon.value, self.player), lambda state: state.can_reach_location(PlayStatNames.KiteLevel.value + "15", self.player))
+        add_rule(self.multiworld.get_location(Ev.BlackRoseDungeon.value, self.player),
+                 lambda state: state.can_reach_location(Ev.BoardProtected.value, self.player))
+        add_rule(self.multiworld.get_location(Ev.BlackRoseDungeon.value, self.player),
+                 lambda state: state.has(ServerNames.Theta.value, self.player))
+        add_rule(self.multiworld.get_location(Ev.BlackRoseDungeon.value, self.player),
+                 lambda state: state.can_reach_location(PlayStatNames.KiteLevel.value + "15", self.player))
 
         self.set_list_rules(Ev.ElkMiaFavorite.value, DeltaWordList.PlenteousSmilingHypha)
-        add_rule(self.multiworld.get_location(Ev.ElkMiaFavorite.value, self.player), lambda state: state.has(CharacterNames.Elk.value, self.player) and state.has(CharacterNames.Mia.value, self.player))
-        add_rule(self.multiworld.get_location(Ev.ElkMiaFavorite.value, self.player), lambda state: state.can_reach_location(Ev.BlackRoseDungeon.value, self.player))
+        add_rule(self.multiworld.get_location(Ev.ElkMiaFavorite.value, self.player), lambda state: state.has(
+            CharacterNames.Elk.value, self.player) and state.has(CharacterNames.Mia.value, self.player))
+        add_rule(self.multiworld.get_location(Ev.ElkMiaFavorite.value, self.player),
+                 lambda state: state.can_reach_location(Ev.BlackRoseDungeon.value, self.player))
 
         self.set_list_rules(Ev.PirosDiary.value, DeltaWordList.PutridHotbloodedScaffold)
-        add_rule(self.multiworld.get_location(Ev.PirosDiary.value, self.player), lambda state: state.has(CharacterNames.Piros.value, self.player))
-        add_rule(self.multiworld.get_location(Ev.PirosDiary.value, self.player), lambda state: state.can_reach_location(Ev.ElkMiaFavorite.value, self.player))
+        add_rule(self.multiworld.get_location(Ev.PirosDiary.value, self.player),
+                 lambda state: state.has(CharacterNames.Piros.value, self.player))
+        add_rule(self.multiworld.get_location(Ev.PirosDiary.value, self.player),
+                 lambda state: state.can_reach_location(Ev.ElkMiaFavorite.value, self.player))
 
         self.set_list_rules(Ev.MistralMeetUp.value, ThetaWordList.CollapsedMomentarySpiral)
-        add_rule(self.multiworld.get_location(Ev.MistralMeetUp.value, self.player), lambda state: state.has(CharacterNames.Mistral.value, self.player))
-        add_rule(self.multiworld.get_location(Ev.MistralMeetUp.value, self.player), lambda state: state.can_reach_location(Ev.PirosDiary.value, self.player))
+        add_rule(self.multiworld.get_location(Ev.MistralMeetUp.value, self.player),
+                 lambda state: state.has(CharacterNames.Mistral.value, self.player))
+        add_rule(self.multiworld.get_location(Ev.MistralMeetUp.value, self.player),
+                 lambda state: state.can_reach_location(Ev.PirosDiary.value, self.player))
 
         self.set_list_rules(Ev.Epitaph00.value, ThetaWordList.CursedDespairedParadise)
-        add_rule(self.multiworld.get_location(Ev.Epitaph00.value, self.player), lambda state: state.can_reach_location(Ev.MistralMeetUp.value, self.player))
+        add_rule(self.multiworld.get_location(Ev.Epitaph00.value, self.player),
+                 lambda state: state.can_reach_location(Ev.MistralMeetUp.value, self.player))
 
         self.set_list_rules(Ev.DescendentsOfFianna.value, DeltaWordList.BuriedPaganFierySands)
-        add_rule(self.multiworld.get_location(Ev.DescendentsOfFianna.value, self.player), lambda state: state.can_reach_location(Ev.Epitaph00.value, self.player))
+        add_rule(self.multiworld.get_location(Ev.DescendentsOfFianna.value, self.player),
+                 lambda state: state.can_reach_location(Ev.Epitaph00.value, self.player))
 
         self.set_list_rules(Ev.EpitaphQ.value, DeltaWordList.LonelySilentGreatSeal)
-        add_rule(self.multiworld.get_location(Ev.EpitaphQ.value, self.player), lambda state: state.can_reach_location(Ev.DescendentsOfFianna.value, self.player))
+        add_rule(self.multiworld.get_location(Ev.EpitaphQ.value, self.player),
+                 lambda state: state.can_reach_location(Ev.DescendentsOfFianna.value, self.player))
 
         self.set_list_rules(Ev.MeetAlf.value, ThetaWordList.GreatDistantFertileLand)
-        add_rule(self.multiworld.get_location(Ev.MeetAlf.value, self.player), lambda state: state.can_reach_location(Ev.EpitaphQ.value, self.player))
+        add_rule(self.multiworld.get_location(Ev.MeetAlf.value, self.player),
+                 lambda state: state.can_reach_location(Ev.EpitaphQ.value, self.player))
 
         self.set_list_rules(Ev.InfectionBeat.value, ThetaWordList.ChosenHopelessNothingness)
-        add_rule(self.multiworld.get_location(Ev.InfectionBeat.value, self.player), lambda state: state.can_reach_location(Ev.MeetAlf.value, self.player))
-        add_rule(self.multiworld.get_location(Ev.InfectionBeat.value, self.player), lambda state: state.can_reach_location(PlayStatNames.KiteLevel.value + "20", self.player))
+        add_rule(self.multiworld.get_location(Ev.InfectionBeat.value, self.player),
+                 lambda state: state.can_reach_location(Ev.MeetAlf.value, self.player))
+        add_rule(self.multiworld.get_location(Ev.InfectionBeat.value, self.player),
+                 lambda state: state.can_reach_location(PlayStatNames.KiteLevel.value + "20", self.player))
 
         # Gardenia's quest
         self.set_list_rules(Ev.GracefulBook.value, ThetaWordList.BeautifulSomeonesTreasureGem)
-        add_rule(self.multiworld.get_location(Ev.GracefulBook.value, self.player), lambda state: state.has(CharacterNames.Gardenia.value, self.player))
+        add_rule(self.multiworld.get_location(Ev.GracefulBook.value, self.player),
+                 lambda state: state.has(CharacterNames.Gardenia.value, self.player))
 
         # Golden Goblin quest
         self.set_list_rules(Ev.Stehony.value, DeltaWordList.DetestableGoldenSunnyDemon)
 
         self.set_list_rules(Ev.Jonue.value, DeltaWordList.DetestableGoldenMessenger)
-        add_rule(self.multiworld.get_location(Ev.Jonue.value, self.player), lambda state: state.can_reach_location(Ev.Stehony.value, self.player))
-        add_rule(self.multiworld.get_location(Ev.Jonue.value, self.player), lambda state: state.can_reach_location(Ev.BoardProtected.value, self.player))
+        add_rule(self.multiworld.get_location(Ev.Jonue.value, self.player),
+                 lambda state: state.can_reach_location(Ev.Stehony.value, self.player))
+        add_rule(self.multiworld.get_location(Ev.Jonue.value, self.player),
+                 lambda state: state.can_reach_location(Ev.BoardProtected.value, self.player))
 
         self.set_list_rules(Ev.Zyan.value, DeltaWordList.DetestableGoldenScent)
-        add_rule(self.multiworld.get_location(Ev.Zyan.value, self.player), lambda state: state.can_reach_location(Ev.Jonue.value, self.player))
-        add_rule(self.multiworld.get_location(Ev.Zyan.value, self.player), lambda state: state.can_reach_location(Ev.ElkMiaFavorite.value, self.player))
+        add_rule(self.multiworld.get_location(Ev.Zyan.value, self.player),
+                 lambda state: state.can_reach_location(Ev.Jonue.value, self.player))
+        add_rule(self.multiworld.get_location(Ev.Zyan.value, self.player),
+                 lambda state: state.can_reach_location(Ev.ElkMiaFavorite.value, self.player))
 
         self.set_list_rules(Ev.Albert.value, DeltaWordList.DetestableGoldenNewTruth)
-        add_rule(self.multiworld.get_location(Ev.Albert.value, self.player), lambda state: state.can_reach_location(Ev.Zyan.value, self.player))
-        add_rule(self.multiworld.get_location(Ev.Albert.value, self.player), lambda state: state.can_reach_location(Ev.MistralMeetUp.value, self.player))
+        add_rule(self.multiworld.get_location(Ev.Albert.value, self.player),
+                 lambda state: state.can_reach_location(Ev.Zyan.value, self.player))
+        add_rule(self.multiworld.get_location(Ev.Albert.value, self.player),
+                 lambda state: state.can_reach_location(Ev.MistralMeetUp.value, self.player))
 
         self.set_list_rules(Ev.Martina.value, DeltaWordList.DetestableGoldenGate)
-        add_rule(self.multiworld.get_location(Ev.Martina.value, self.player), lambda state: state.can_reach_location(Ev.Albert.value, self.player))
-        add_rule(self.multiworld.get_location(Ev.Martina.value, self.player), lambda state: state.can_reach_location(Ev.InfectionBeat.value, self.player))
+        add_rule(self.multiworld.get_location(Ev.Martina.value, self.player),
+                 lambda state: state.can_reach_location(Ev.Albert.value, self.player))
+        add_rule(self.multiworld.get_location(Ev.Martina.value, self.player),
+                 lambda state: state.can_reach_location(Ev.InfectionBeat.value, self.player))
 
-    # def pre_fill(self):
-    #     from BaseClasses import CollectionState
-    #     state = CollectionState(self.multiworld)
-    #     # state.add_item(Servers.Delta.name, self.player)
-    #     # state.add_item(AreaWordNames.Bursting.value, self.player)
-    #     # state.add_item(AreaWordNames.AquaField.value, self.player)
-    #     # state.add_item(AreaWordNames.PassedOver.value, self.player)
-    #     # state.add_item(AreaWordNames.Hidden.value, self.player)
-    #     # state.add_item(AreaWordNames.Forbidden.value, self.player)
-    #     # state.add_item(AreaWordNames.HolyGround.value, self.player)
-    #     # state.add_item(CharacterNames.BlackRose.value, self.player)
-    #     # state.add_item(CharacterNames.Orca.value, self.player)
-    #     # state.add_item(get_wordlist_name(DeltaWordList.HiddenForbiddenHolyGround), self.player)
-    #     # state.add_item(get_wordlist_name(DeltaWordList.BurstingPassedOverAquaField), self.player)
-        
     def prepare_ut(self):
         re_gen_passthrough = getattr(self.multiworld, "re_gen_passthrough", {})
         is_in_ut: bool = re_gen_passthrough and self.game in re_gen_passthrough
         if is_in_ut:
             slot_data = re_gen_passthrough[self.game]
-            self.options.always_online_party_members.value = slot_data.get(APHelper.always_online_party_members.value, [])
+            self.options.always_online_party_members.value = slot_data.get(
+                APHelper.always_online_party_members.value, [])
             self.options.automatically_read_emails.value = slot_data.get(APHelper.automatically_read_emails.value, [])
             self.options.include_side_quests.value = slot_data.get(APHelper.include_side_quests.value, [])
         return is_in_ut

@@ -96,6 +96,7 @@ class InfectionCharacterNames(Enum):
     Mistral = "Mistral"
     Helba = "Helba"
 
+
 class InfectionServerNames(Enum):
     _value_: str
     Delta = "Δ Server: Aqua City - Mac Anu"
@@ -103,6 +104,7 @@ class InfectionServerNames(Enum):
     Lambda = "Λ Server: Cultural City - Carmina Gadelica"
     Sigma = "Σ Server: Aerial City - Fort Ouph"
     Omega = "Ω Server: Relic City - Lia Fail"
+
 
 class InfectionPlayStatNames(Enum):
     _value_: str
@@ -160,6 +162,9 @@ class InfectionItemNames(Enum):
     HealthDrink = "Health Drink"
     HealthPotion = "Health Potion"
     HealingElixer = "Healing Elixer"
+    VirusCoreA = "Virus Core A"
+    VirusCoreB = "Virus Core B"
+
 
 class InfectionAreaWordNames(Enum):
     _value_: str
@@ -468,4 +473,3 @@ class InfectionAreaWordNames(Enum):
     Laws = "Laws"
     Talisman = "Talisman"
     Orange = "Orange"
-    

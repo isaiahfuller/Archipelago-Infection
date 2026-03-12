@@ -7,3 +7,5 @@ class Consumables(Enum):
     HealthDrink = {"id": 0x0a0000}
     HealthPotion = {"id": 0x0a0001}
     HealingElixer = {"id": 0x0a0002}
+    VirusCoreA = {"id": 0xa406cc}
+    VirusCoreB = {"id": 0xa406cd}
