@@ -99,28 +99,25 @@ def event_gen(enum) -> list[InfectionEventLocation]:
 
 def playstat_gen(enum) -> list[InfectionPlayStatLocation]:
     res = []
+
+    def append_stat(name: str, stat: PlayStats, progress: int):
+        res.append(InfectionPlayStatLocation(
+            name=name,
+            stat=stat,
+            progress=progress
+        ))
+
     for stat in enum:
+        name = PlayStatNames[stat.name].value
         if stat.value["scale"] == "list":
             for i in stat.value["values"]:
-                res.append(InfectionPlayStatLocation(
-                    name=PlayStatNames[stat.name].value + str(i),
-                    stat=stat,
-                    progress=i
-                ))
+                append_stat(name + str(i), stat, i)
         elif stat.value["scale"] == "range":
             for i in range(stat.value["values"][0], stat.value["values"][1]):
-                res.append(InfectionPlayStatLocation(
-                    name=PlayStatNames[stat.name].value + str(i),
-                    stat=stat,
-                    progress=i
-                ))
+                append_stat(name + str(i), stat, i)
         elif r:
             for i in range(r[0], r[1]):
-                res.append(InfectionPlayStatLocation(
-                    name=PlayStatNames[stat.name].value + str(i),
-                    stat=stat,
-                    progress=i
-                ))
+                append_stat(name + str(i), stat, i)
     return res
 
 DeltaListLocations = wordlist_gen(DeltaWordList)
@@ -160,10 +157,16 @@ PlayStatLocations: InfectionPlayStatLocation = [
     *CharacterLevels
 ]
 
-def generate_name_to_id() -> dict[str, int]:
+def generate_event_name_to_id() -> dict[str, int]:
     name_to_id: dict[str, int] = {el.name: el.location_id for el in EventLocations}
-    name_to_id.update({el.name: el.location_id for el in PlayStatLocations})
     return name_to_id
+
+def generate_playstat_name_to_id() -> dict[str, int]:
+    name_to_id: dict[str, int] = {el.name: el.location_id for el in PlayStatLocations}
+    return name_to_id
+
+def generate_name_to_id() -> dict[str, int]:
+    return {**generate_event_name_to_id(), **generate_playstat_name_to_id()}
 
 
 def generate_location_groups() -> dict[str, int]:

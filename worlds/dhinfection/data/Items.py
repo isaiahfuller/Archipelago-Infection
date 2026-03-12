@@ -159,11 +159,20 @@ for server in Servers:
     ))
 
 ITEMS_MASTER: Sequence[Sequence] = [
-    *PartyMemberItems, *ServerItems, *WordListItems, *AreaWordItems, *FillerItems
+    *PartyMemberItems,
+    *ServerItems,
+    *WordListItems,
+    *AreaWordItems,
+    *FillerItems
 ]
 
 ITEMS_INDEX: Sequence[Sequence] = [
-    ITEMS_MASTER, PartyMemberItems, ServerItems, WordListItems, AreaWordItems, FillerItems
+    ITEMS_MASTER,
+    PartyMemberItems,
+    ServerItems,
+    WordListItems,
+    AreaWordItems,
+    FillerItems
 ]
 
 

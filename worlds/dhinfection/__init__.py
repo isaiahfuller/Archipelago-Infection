@@ -118,6 +118,8 @@ class InfectionWorld(World):
 
     # Define the Items and Locations to/for Archipelago
     item_name_to_id = Items.generate_name_to_id()
+    event_location_name_to_id = Locations.generate_event_name_to_id()
+    playstat_location_name_to_id = Locations.generate_playstat_name_to_id()
     location_name_to_id = Locations.generate_name_to_id()
 
     item_name_groups = Items.generate_item_groups()
@@ -137,17 +139,15 @@ class InfectionWorld(World):
 
     def create_regions(self):
         main_region = Region("Menu", self.player, self.multiworld)
-        # self.multiworld.regions.append(menu_region)
-
-        # main_region = Region("Main", self.player, self.multiworld)
+        story_region = Region("Story", self.player, self.multiworld)
         self.multiworld.regions.append(main_region)
-        main_region.add_locations(self.location_name_to_id, InfectionLocation)
-        main_region.add_event(Ev.InfectionBeat.value)
-        # for wl in WordListLocations:
-        #     main_region.add_event(wl.name)
-        #     words = [AreaWordNames[w.name].value for w in wl.wordlist.value["words"]]
-        #     add_rule(self.multiworld.get_location(wl.name, self.player), lambda state: all(state.has(word, self.player) for word in words))
-                
+        self.multiworld.regions.append(story_region)
+
+        main_region.connect(story_region)
+
+        story_region.add_locations(self.event_location_name_to_id, InfectionLocation)
+        story_region.add_event(Ev.InfectionBeat.value)
+        main_region.add_locations(self.playstat_location_name_to_id, InfectionLocation)
 
 
     def create_item(self, item: str) -> InfectionItem:
