@@ -103,6 +103,7 @@ class InfectionContext(SuperContext):
 
     # Session Properties
     unlocked_word_lists: List[int] = [0x0e, 0x0f]
+    obtained_word_lists: List[int] = [0x0e, 0x0f]
     unlocked_party_members: List[PartyMembers] = [PartyMembers.BlackRose, PartyMembers.Orca, PartyMembers.Mia]
     unlocked_servers: List[Server] = [Server.Delta]
     unlocked_words: List[AreaWords] = []

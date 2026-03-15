@@ -345,16 +345,39 @@ class InfectionInterface:
         self.pine.write_int8(addr, val)
 
     async def scan_party_member(self, ctx) -> None:
+        """
+        Scans the party member list and locks/unlocks based on whether the party member is in ctx.unlocked_party_members
+        Reported issue: Unlocks Natsume and Rachel when only Nuke Usagimaru is unlocked.
+        - ids: Natsume (11), Rachel (12), Nuke Usagimaru (5)
+
+        Order: 
+        - Iterate through ALL members
+        - Calculate offset
+        - Read current value
+        - Apply mask
+        - Write value
+        """
         addr: int = 0xa41bf0
         for member in PartyMembers:
             offset: int = math.floor(member.value["id"] / 8)
             unlocked_members: int = self.pine.read_int8(offset + addr)
+            val = unlocked_members
             if member not in ctx.unlocked_party_members:
-                self.pine.write_int8(offset + addr, unlocked_members & ~(2 ** (member.value["id"] % 8)))
+                val &= ~(2 ** (member.value["id"] % 8))
             else:
-                self.pine.write_int8(offset + addr, unlocked_members | 2 ** (member.value["id"] % 8))
+                val |= 2 ** (member.value["id"] % 8)
+            self.pine.write_int8(offset + addr, val)
 
     async def scan_word_list(self, ctx) -> None:
+        """
+        Scans the word list and locks/unlocks based on whether the word list is in ctx.unlocked_word_lists
+        TODO:
+        - Lock/unlock the individual words
+          - Needs an additional data structure to keep track of the status of each word
+        - Manually add/remove lists
+          - The structure of the addresses makes this difficult. This would likely require rewriting
+            the word list structure each time the game adds one.
+        """
         starting_addr: int = 0xa44d46
         ending_addr: int = 0xa44c47
         current_list: int | None = None
@@ -366,15 +389,28 @@ class InfectionInterface:
             theta_member: ThetaWordList | None = ThetaWordList.from_address(
                 current_addr)
             current_list: int | None = None
+            current_list_obj: WordListBase | None = None
             if delta_member:
                 current_list = delta_member.value["address"]
+                current_list_obj = delta_member
             elif theta_member:
                 current_list = theta_member.value["address"]
+                current_list_obj = theta_member
             if current_list:
+                if current_list not in ctx.obtained_word_lists:
+                    ctx.obtained_word_lists.append(current_list)
+                    if ctx.server:
+                        await ctx.send_msgs([{"cmd": "LocationChecks", "locations": [ctx.locations_name_to_id[current_list_obj.name]]}])
                 if current_list in ctx.unlocked_word_lists:
                     self.pine.write_int8(i + 1, 0x00)
+                else:
+                    self.pine.write_int8(i + 1, 0xff)
 
     def modify_word(self, word_obj: AreaWords, lock: bool = False) -> None:
+        """
+        Locks/unlocks a word. 
+        Based on feedback from party member/server, this might not work correctly.
+        """
         word: int = word_obj.value["idx"]
         offset: int = math.floor(word / 8)
         unlocked_words: int = self.pine.read_int8(offset + 0xa44c0c)

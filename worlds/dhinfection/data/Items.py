@@ -140,12 +140,12 @@ VirusCoreItems: list[VirusCoreItem] = []
 #         type=word.value["importance"]
 #     ))
 
-AreaWordItems.append(AreaWordItem(
-    name="Extra Word",
-    id=ExtraAreaWords.Stalking.value["id"],
-    address=AreaWordAddress + 43768578,
-    type=ItemClassification.filler
-))
+# AreaWordItems.append(AreaWordItem(
+#     name="Extra Word",
+#     id=ExtraAreaWords.Stalking.value["id"],
+#     address=AreaWordAddress + 43768578,
+#     type=ItemClassification.filler
+# ))
 
 for consumable in Consumables:
     ConsumableItems.append(ConsumableItem(
