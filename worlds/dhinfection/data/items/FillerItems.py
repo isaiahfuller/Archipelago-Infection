@@ -29,6 +29,9 @@ class Consumables(Enum):
     NobleWine = {"id": 0x000a0015}
     RiskyCoffee = {"id": 0x000a0016}
     RecoveryDrink = {"id": 0x000a0017}
+    FortuneWire = {"id": 0x000d0000}
+    SpriteOcarina = {"id": 0x000d0001}
+    FairysOrb = {"id": 0x000d0002}
 
 
 class VirusCores(Enum):

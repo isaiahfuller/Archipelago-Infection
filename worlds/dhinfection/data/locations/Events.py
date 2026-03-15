@@ -33,8 +33,12 @@ class InfectionStoryEvents(InfectionEventBase):
     Epitaph00 = {"address": 0xa44f92, "bits": 0b00000001}
     DescendentsOfFianna = {"address": 0xa44fa8, "bits": 0b00000001}
     EpitaphQ = {"address": 0xa44fb0, "bits": 0b00000001}
-    MeetAlf = {"address": 0xa44fb8, "bits": 0b00000001}
-    # InfectionBeat = {"address": 0xa44fc0, "bits": 0b00000001}
+    # MeetAlf = {"address": 0xa44fb8, "bits": 0b00000001}
+
+
+class CompletionConditions(InfectionEventBase):
+    SkeithDefeated = {"address": 0xa44fc0, "bits": 0b00000001}
+    ParasiteDragonDefeated = {"address": 0xa450b8, "bits": 0b00010000}
 
 
 class InfectionGoldenGoblins(InfectionEventBase):

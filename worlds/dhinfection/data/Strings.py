@@ -185,6 +185,9 @@ class InfectionItemNames(Enum):
     NobleWine = "Noble Wine"
     RiskyCoffee = "Risky Coffee"
     RecoveryDrink = "Recovery Drink"
+    FortuneWire = "Fortune Wire"
+    SpriteOcarina = "Sprite Ocarina"
+    FairysOrb = "Fairy's Orb"
     VirusCoreA = "Virus Core A"
     VirusCoreB = "Virus Core B"
 
