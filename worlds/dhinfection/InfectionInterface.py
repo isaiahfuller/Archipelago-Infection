@@ -295,6 +295,10 @@ class InfectionInterface:
             self.set_last_item_index(ctx.next_item_slot)
 
     async def resync_items(self, ctx) -> None:
+        """
+        Syncs items that were received before the client was fully initialized.
+        Issue: Virus Cores and Consumables are currently only given once.
+        """
         if ctx.last_item_processed_index < 0:
             return
         received_id = [item[0] for item in ctx.items_received[self.get_last_item_index():]]
