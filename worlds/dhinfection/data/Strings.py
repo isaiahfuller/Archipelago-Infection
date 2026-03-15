@@ -58,6 +58,8 @@ class APHelper(Enum):
     servers = "Servers"
     inventory_items = "Inventory Items"
     filler = "Filler Items"
+    virus_cores = "Virus Cores"
+    consumables = "Consumables"
 
 
 class Meta(Enum):

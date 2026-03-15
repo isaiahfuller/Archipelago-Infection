@@ -2,7 +2,7 @@ import asyncio
 import typing
 import multiprocessing
 import traceback
-from typing import Optional, Sequence
+from typing import Optional, Sequence, List
 
 from CommonClient import ClientStatus, logger
 from settings import get_settings
@@ -12,6 +12,11 @@ from . import InfectionSettings
 from .data.Strings import APConsole, APHelper, InfectionGameStateNames, InfectionCharacterNames, InfectionAreaWordNames, Meta
 from .InfectionInterface import InfectionInterface, ConnectionStatus
 from .data import Locations, Items
+
+from .data.locations.WordList import InfectionWordListBase as WordListBase
+from .data.items.PartyMembers import InfectionPartyMembers as PartyMembers
+from .data.items.Servers import InfectionServers as Server
+from .data.items.AreaWords import InfectionAreaWords as AreaWords
 
 gui_loaded_from_utils: bool = False
 try:
@@ -39,12 +44,18 @@ class InfectionCommandProcessor(ClientCommandProcessor):
         super().__init__(ctx)
 
     def _cmd_resync(self) -> None:
+        """
+        Resyncs the client with the game.
+        """
         if not isinstance(self.ctx, InfectionContext):
             return
         if self.ctx.is_game_connected and self.ctx.server:
             self.ctx.pending_resync = True
 
     def _cmd_status(self) -> None:
+        """
+        Shows the status of the client.
+        """
         if isinstance(self.ctx, InfectionContext):
             logger.info(f"Client Status")
             if tracker_loaded:
@@ -76,14 +87,27 @@ class InfectionContext(SuperContext):
 
     # Interface Properties
     ipc: InfectionInterface = InfectionInterface
-    is_game_connected: bool = ConnectionStatus.DISCONNECTED.value
+    is_game_connected: bool = bool(ConnectionStatus.DISCONNECTED.value)
     has_just_connected: bool = False
     interface_sync_task: asyncio.tasks = None
     last_message: Optional[str] = None
 
+    pending_resync: bool = True
+
+    # Server Properties
+    next_item_slot: int = -1
+
     # APWorld Properties
     locations_name_to_id: dict[str, int] = Locations.generate_name_to_id()
     items_name_to_id: dict[str, int] = Items.generate_name_to_id()
+
+    # Session Properties
+    unlocked_word_lists: List[int] = [0x0e, 0x0f]
+    unlocked_party_members: List[PartyMembers] = [PartyMembers.BlackRose, PartyMembers.Orca, PartyMembers.Mia]
+    unlocked_servers: List[Server] = [Server.Delta]
+    unlocked_words: List[AreaWords] = []
+
+    are_item_status_synced: bool = False
 
     # Local Session Save Properties
     last_item_processed_index = -1
@@ -109,8 +133,6 @@ class InfectionContext(SuperContext):
         super().on_package(cmd, args)
         if cmd == APHelper.cmd_conn.value:
             data = args[APHelper.arg_sl_dt.value]
-            logger.info("Received connection package: " + cmd)
-            logger.info(args)
 
             if APHelper.version.value in data:
                 world_ver: str = data[APHelper.version.value]
@@ -129,14 +151,14 @@ class InfectionContext(SuperContext):
             if self.are_item_status_synced or not self.items_received:
                 return
 
-            elif cmd == APHelper.cmd_rminfo.value:
-                seed: str = args[APHelper.seed.value]
+        elif cmd == APHelper.cmd_rminfo.value:
+            seed: str = args[APHelper.arg_seed.value]
 
-                if self.seed_name is not seed:
-                    self.checked_locations.clear()
-                    self.locations_checked.clear()
+            if self.seed_name is not seed:
+                self.checked_locations.clear()
+                self.locations_checked.clear()
 
-                    self.seed_name = seed
+                self.seed_name = seed
 
     def on_deathlink(self, data: typing.Dict[str, typing.Any]) -> None:
         if not self.death_link:
@@ -169,7 +191,7 @@ def update_connection_status(ctx: InfectionContext, status: bool):
         logger.info(APConsole.Err.sock_fail.value +
                     APConsole.Err.sock_re.value)
 
-    ctx.has_just_connected = status
+    ctx.is_game_connected = status
 
 
 async def main_sync_task(ctx: InfectionContext):
@@ -183,6 +205,10 @@ async def main_sync_task(ctx: InfectionContext):
 
             # Check Progress if connection is good
             if is_game_connected:
+                status = ctx.ipc.get_ingame_status()
+                if status is None:
+                    await asyncio.sleep(3)
+                    continue
                 await check_game(ctx)
 
             # Attempt reconnection to PCSX2 otherwise
@@ -203,7 +229,36 @@ async def main_sync_task(ctx: InfectionContext):
 
 async def check_game(ctx: InfectionContext):
     """Check game progress, send deathlink updates, and update connection status"""
-    await asyncio.sleep(3)
+
+    if ctx.server:
+        ctx.last_message = None
+        if not ctx.slot:
+            await asyncio.sleep(1)
+            return
+        if ctx.last_item_processed_index < 0:
+            ctx.last_item_processed_index = ctx.ipc.get_last_item_index()
+
+        ctx.ipc.initial_state()
+
+        await ctx.ipc.check_locations(ctx)
+        await ctx.ipc.receive_items(ctx)
+
+        await ctx.ipc.scan_party_member(ctx)
+        await ctx.ipc.scan_server(ctx)
+        await ctx.ipc.scan_word_list(ctx)
+
+        if ctx.has_just_connected or ctx.pending_resync:
+            await ctx.ipc.resync_items(ctx)
+            ctx.has_just_connected = False
+            if ctx.pending_resync:
+                logger.info("Resyncing complete")
+                ctx.pending_resync = False
+    else:
+        message: str = APConsole.Info.p_init_g_sre.value
+        if ctx.last_message is not message:
+            logger.info(message)
+            ctx.last_message = message
+    await asyncio.sleep(1.5)
     return
 
 

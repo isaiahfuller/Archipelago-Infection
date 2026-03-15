@@ -598,6 +598,22 @@ class Events(Enum):
     # Natsume's event - Raging Passionate Melody
 
 
+def add_consumable(item: int) -> None:
+    address = 0xa40540
+    for i in range(address, address + 99, 4):
+        curr: int = pine.read_int32(i)
+        amt: int = pine.read_int8(i+3)
+        if curr | 0xff000000 == item | 0xff000000:
+            # Print message if item matches
+            print(f"Item {item} added")
+            pine.write_int8(i+3, amt + 1)
+            return
+        if curr == 0x00ffffff:
+            pine.write_int32(i, item)
+            pine.write_int8(i+3, 1)
+            break
+
+
 async def pcsx2_sync_task(ctx):
     # pine = Pine()
     game_state = 0x01
@@ -624,6 +640,7 @@ async def pcsx2_sync_task(ctx):
         book_of_law = pine.read_int8(0xa40708)
         if book_of_law == 0:
             pine.write_int8(0xa40708, 1)
+        add_consumable(0x000a0007)
         await sleep(0.5)
         for event in Events:
             if pine.read_int8(event.value["addr"]) & event.value["mask"] and event not in seen_events:

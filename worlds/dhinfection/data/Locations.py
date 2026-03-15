@@ -193,6 +193,6 @@ def generate_location_groups() -> dict[str, int]:
         "Optional Party Members": {el.name: el.location_id for el in OptionalPartyMembers},
         "Play Stats": {el.name: el.location_id for el in PlayStatLocations},
         "Area Words": {el.name: el.location_id for el in AreaWordLocations},
-        "Word Lists": {el.name: el.location_id for el in WordListLocations}
+        # "Word Lists": {el.name: el.location_id for el in WordListLocations}
     })
     return groups
