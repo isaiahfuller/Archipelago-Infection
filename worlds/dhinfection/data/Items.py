@@ -33,7 +33,7 @@ class InfectionItemMeta(ABC):
 class AreaWordItem(InfectionItemMeta):
     def __init__(self, name, id, address, type):
         self.name = name
-        self.item_id = id + address
+        self.item_id = (address * 331) + (id * 10)
         self.classification = type
 
     def to_item(self, player: int) -> InfectionItem:
@@ -50,7 +50,7 @@ class InfectionWordListItem(InfectionItemMeta):
         self.name = name
         self.classification = wordlist.value["importance"]
         self.wordlist = wordlist
-        self.item_id = self.wordlist.value["address"] * 100 + WordListAddress
+        self.item_id = self.wordlist.value["address"] * 125 + WordListAddress
 
     def to_item(self, player: int) -> InfectionItem:
         return InfectionItem(
@@ -64,7 +64,7 @@ class InfectionWordListItem(InfectionItemMeta):
 class PartyMemberItem(InfectionItemMeta):
     def __init__(self, party_member, name, id, address, type):
         self.name = name
-        self.item_id = id + address
+        self.item_id = (address * 268) + (id * 10)
         self.classification = type
         self.party_member = party_member
 
@@ -81,7 +81,7 @@ class ServerItem(InfectionItemMeta):
     def __init__(self, server, name, id, address, type):
         self.server: Servers = server
         self.name = name
-        self.item_id = id + address
+        self.item_id = (address * 723) + (id * 10)
         self.classification = type
 
     def to_item(self, player: int) -> InfectionItem:
@@ -96,7 +96,7 @@ class ServerItem(InfectionItemMeta):
 class ConsumableItem(InfectionItemMeta):
     def __init__(self, name, item, address):
         self.name = name
-        self.item_id = item.value["id"] + address
+        self.item_id = (address * 38) + item.value["id"]
         self.classification = ItemClassification.filler
         self.item = item
 
@@ -112,7 +112,7 @@ class ConsumableItem(InfectionItemMeta):
 class VirusCoreItem(InfectionItemMeta):
     def __init__(self, name, item, address):
         self.name = name
-        self.item_id = item.value["id"] + address
+        self.item_id = (address * 94) + item.value["id"]
         self.classification = ItemClassification.filler
         self.item = item
 

@@ -2,7 +2,7 @@ import asyncio
 import typing
 import multiprocessing
 import traceback
-from typing import Optional, Sequence, List
+from typing import Optional, Set
 
 from CommonClient import ClientStatus, logger
 from settings import get_settings
@@ -102,11 +102,11 @@ class InfectionContext(SuperContext):
     items_name_to_id: dict[str, int] = Items.generate_name_to_id()
 
     # Session Properties
-    unlocked_word_lists: List[int] = [0x0e, 0x0f]
-    obtained_word_lists: List[int] = [0x0e, 0x0f]
-    unlocked_party_members: List[PartyMembers] = [PartyMembers.BlackRose]
-    unlocked_servers: List[Server] = [Server.Delta]
-    unlocked_words: List[AreaWords] = []
+    unlocked_word_lists: Set[int] = {0x0e, 0x0f}
+    obtained_word_lists: Set[int] = {0x0e, 0x0f}
+    unlocked_party_members: Set[PartyMembers] = {PartyMembers.BlackRose}
+    unlocked_servers: Set[Server] = {Server.Delta}
+    unlocked_words: Set[AreaWords] = set()
 
     are_item_status_synced: bool = False
 

@@ -57,4 +57,4 @@ class InfectionOptionalPartyMembers(InfectionEventBase):
 
 class InfectionOtherSideQuests(InfectionEventBase):
     GracefulBook = {"address": 0xa450a9, "bits": 0b00000001}
-    ParasiteDragon = {"address": 0xa450b8, "bits": 0b00010000}
+    ParasiteDragonDefeated = {"address": 0xa450b8, "bits": 0b00010000}

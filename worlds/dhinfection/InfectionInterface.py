@@ -1,4 +1,5 @@
 
+from worlds.dhinfection.data.locations.Events import CompletionConditions
 from worlds.dhinfection.data.locations.PlayStats import RyuBookI, RyuBookII, RyuBookVI, RyuBookVII, OtherStats
 from worlds.dhinfection import PlayStatNames
 from worlds.dhinfection.data.locations.PlayStats import PlayStats, CharacterLevels
@@ -12,7 +13,7 @@ from .pcsx2_interface.pine import Pine
 from . import InfectionItem
 from .data.Strings import APConsole, Meta, InfectionGameStateNames as GameStateNames, InfectionAreaWordNames as AreaWordNames, InfectionEventNames as EventNames
 from .data.GameState import InfectionGameState as GameState
-from .data.locations.WordList import InfectionDeltaWordList as DeltaWordList, InfectionThetaWordList as ThetaWordList, InfectionWordListBase as WordListBase
+from .data.locations.WordList import InfectionDeltaWordList as DeltaWordList, InfectionThetaWordList as ThetaWordList, InfectionWordListBase as WordListBase, get_wordlist_name
 from .data.locations.Events import InfectionStoryEvents as StoryEvents, InfectionGoldenGoblins as GoldenGoblins, InfectionOtherSideQuests as SideQuests, InfectionOptionalPartyMembers as OptionalPartyMembers
 
 from .data.items.AreaWords import InfectionAreaWords as AreaWords
@@ -86,8 +87,12 @@ class InfectionInterface:
 
     def get_ingame_status(self) -> GameStateNames | None:
         address = 0xa3f5f0
+        overlay_address = 0x00400804
         try:
             st_val = self.pine.read_int8(address)
+            overlay_val = self.pine.read_int8(overlay_address)
+            if overlay_val == 0:
+                return None
             status = GameStateNames[GameState(st_val).name]
             if status in [GameStateNames.LoggedIn, GameStateNames.Login, GameStateNames.Desktop]:
                 return status
@@ -248,6 +253,15 @@ class InfectionInterface:
         for stat in OtherStats:
             stat_check(stat)
 
+        # Completion Conditions
+        for condition in CompletionConditions:
+            addr: int = condition.value["address"]
+            bitflags: int = condition.value["bits"]
+            loc_id = get_location_id(name)
+            if loc_id is None:
+                continue
+            addr_check(addr, bitflags, loc_id)
+
         if checked:
             ctx.checked_locations.update(checked)
             if ctx.server:
@@ -284,13 +298,13 @@ class InfectionInterface:
                 """Unlock word"""
             if isinstance(item, WordListItem):
                 """Add to list of word lists to unlock"""
-                ctx.unlocked_word_lists.append(item.wordlist.value["address"])
+                ctx.unlocked_word_lists.add(item.wordlist.value["address"])
             if isinstance(item, PartyMemberItem):
                 """Add to list of allowed party members"""
-                ctx.unlocked_party_members.append(item.party_member)
+                ctx.unlocked_party_members.add(item.party_member)
             if isinstance(item, ServerItem):
                 """Add to list of allowed servers"""
-                ctx.unlocked_servers.append(item.server)
+                ctx.unlocked_servers.add(item.server)
         if received:
             self.set_last_item_index(ctx.next_item_slot)
 
@@ -299,24 +313,26 @@ class InfectionInterface:
         Syncs items that were received before the client was fully initialized.
         Issue: Virus Cores and Consumables are currently only given once.
         """
-        if ctx.last_item_processed_index < 0:
-            return
-        received_id = [item[0] for item in ctx.items_received[self.get_last_item_index():]]
+        # if ctx.last_item_processed_index < 0:
+        #     return
+        self.logger.info(f"items_received: {[item[0] for item in ctx.items_received]}")
+        received_id = [item[0] for item in ctx.items_received]
+        self.logger.info(f"received_id: {received_id}")
         for member in PartyMemberItems:
             if member.item_id in received_id:
-                ctx.unlocked_party_members.append(member.party_member)
+                ctx.unlocked_party_members.add(member.party_member)
         for server in ServerItems:
             if server.item_id in received_id:
-                ctx.unlocked_servers.append(server.server)
+                ctx.unlocked_servers.add(server.server)
         for wordlist in WordListItems:
             if wordlist.item_id in received_id:
-                ctx.unlocked_word_lists.append(wordlist.wordlist.value["address"])
-        for item in ConsumableItems:
-            if item.item_id in received_id:
-                self.add_consumable(item)
-        for item in VirusCoreItems:
-            if item.item_id in received_id:
-                self.add_key(item.item.value["id"])
+                ctx.unlocked_word_lists.add(wordlist.wordlist.value["address"])
+        # for item in ConsumableItems:
+        #     if item.item_id in received_id:
+        #         self.add_consumable(item)
+        # for item in VirusCoreItems:
+        #     if item.item_id in received_id:
+        #         self.add_key(item.item.value["id"])
         self.set_last_item_index(len(ctx.items_received))
 
     def add_consumable(self, item_obj: ConsumableItem) -> None:
@@ -362,6 +378,7 @@ class InfectionInterface:
         - Write value
         """
         addr: int = 0xa41bf0
+        self.logger.info(f"unlocked_party_members: {[member.name for member in ctx.unlocked_party_members]}")
         for member in PartyMembers:
             offset: int = math.floor(member.value["id"] / 8)
             unlocked_members: int = self.pine.read_int8(offset + addr)
@@ -402,9 +419,9 @@ class InfectionInterface:
                 current_list_obj = theta_member
             if current_list:
                 if current_list not in ctx.obtained_word_lists:
-                    ctx.obtained_word_lists.append(current_list)
+                    ctx.obtained_word_lists.add(current_list)
                     if ctx.server:
-                        await ctx.send_msgs([{"cmd": "LocationChecks", "locations": [ctx.locations_name_to_id[current_list_obj.name]]}])
+                        await ctx.send_msgs([{"cmd": "LocationChecks", "locations": [ctx.locations_name_to_id[get_wordlist_name(current_list_obj)]]}])
                 if current_list in ctx.unlocked_word_lists:
                     self.pine.write_int8(i + 1, 0x00)
                 else:

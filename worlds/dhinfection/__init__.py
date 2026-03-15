@@ -145,7 +145,7 @@ class InfectionWorld(World):
         main_region.connect(story_region)
 
         story_region.add_locations(self.event_location_name_to_id, InfectionLocation)
-        story_region.add_event(Ev.InfectionBeat.value)
+        story_region.add_event(Ev.SkeithDefeated.value)
         main_region.add_locations(self.playstat_location_name_to_id, InfectionLocation)
 
     def create_item(self, item: str) -> InfectionItem:
@@ -208,9 +208,10 @@ class InfectionWorld(World):
         self.set_stats_rules(RyuBookVII)
 
         # Set completion condition
-        self.multiworld.completion_condition[self.player] = lambda state: state.has(Ev.InfectionBeat.value, self.player)
-        add_rule(self.multiworld.get_location(Ev.ParasiteDragon.value, self.player),
-                 lambda state: state.has(Ev.InfectionBeat.value, self.player))
+        self.multiworld.completion_condition[self.player] = lambda state: state.has(
+            Ev.SkeithDefeated.value, self.player)
+        add_rule(self.multiworld.get_location(Ev.ParasiteDragonDefeated.value, self.player),
+                 lambda state: state.has(Ev.SkeithDefeated.value, self.player))
 
         # Story missions
         self.set_list_rules(Ev.FirstDataBug.value, DeltaWordList.ExpansiveHauntedSeaOfSand)
@@ -272,14 +273,14 @@ class InfectionWorld(World):
         add_rule(self.multiworld.get_location(Ev.EpitaphQ.value, self.player),
                  lambda state: state.can_reach_location(Ev.DescendentsOfFianna.value, self.player))
 
-        self.set_list_rules(Ev.MeetAlf.value, ThetaWordList.GreatDistantFertileLand)
-        add_rule(self.multiworld.get_location(Ev.MeetAlf.value, self.player),
-                 lambda state: state.can_reach_location(Ev.EpitaphQ.value, self.player))
+        # self.set_list_rules(Ev.MeetAlf.value, ThetaWordList.GreatDistantFertileLand)
+        # add_rule(self.multiworld.get_location(Ev.MeetAlf.value, self.player),
+        #          lambda state: state.can_reach_location(Ev.EpitaphQ.value, self.player))
 
-        self.set_list_rules(Ev.InfectionBeat.value, ThetaWordList.ChosenHopelessNothingness)
-        add_rule(self.multiworld.get_location(Ev.InfectionBeat.value, self.player),
-                 lambda state: state.can_reach_location(Ev.MeetAlf.value, self.player))
-        add_rule(self.multiworld.get_location(Ev.InfectionBeat.value, self.player),
+        self.set_list_rules(Ev.SkeithDefeated.value, ThetaWordList.ChosenHopelessNothingness)
+        add_rule(self.multiworld.get_location(Ev.SkeithDefeated.value, self.player),
+                 lambda state: state.can_reach_location(Ev.EpitaphQ.value, self.player))
+        add_rule(self.multiworld.get_location(Ev.SkeithDefeated.value, self.player),
                  lambda state: state.can_reach_location(PlayStatNames.KiteLevel.value + "20", self.player))
 
         # Gardenia's quest
@@ -312,7 +313,7 @@ class InfectionWorld(World):
         add_rule(self.multiworld.get_location(Ev.Martina.value, self.player),
                  lambda state: state.can_reach_location(Ev.Albert.value, self.player))
         add_rule(self.multiworld.get_location(Ev.Martina.value, self.player),
-                 lambda state: state.can_reach_location(Ev.InfectionBeat.value, self.player))
+                 lambda state: state.can_reach_location(Ev.SkeithDefeated.value, self.player))
 
     def prepare_ut(self):
         re_gen_passthrough = getattr(self.multiworld, "re_gen_passthrough", {})
