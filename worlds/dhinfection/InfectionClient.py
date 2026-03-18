@@ -103,7 +103,7 @@ class InfectionContext(SuperContext):
 
     # Session Properties
     unlocked_word_lists: Set[int] = {0x0e, 0x0f}
-    obtained_word_lists: Set[int] = {0x0e, 0x0f}
+    obtained_word_lists: Set[int] = set()
     unlocked_party_members: Set[PartyMembers] = {PartyMembers.BlackRose}
     unlocked_servers: Set[Server] = {Server.Delta}
     unlocked_words: Set[AreaWords] = set()
@@ -115,12 +115,16 @@ class InfectionContext(SuperContext):
 
     # Player Set Settings
     settings: InfectionSettings
+    always_online_party_members: bool = False
+    automatically_read_emails: bool = False
 
     def __init__(self, address: str, password: str | None = None,):
         super().__init__(address, password)
         self.ipc = InfectionInterface(logger)
         Utils.init_logging(APConsole.Info.client_name_clean.value + self.client_version)
-        self.settings = get_settings().get("dot_hack_infection_options", False)
+        self.settings = get_settings().get("dhinfection_options", False)
+        self.always_online_party_members = self.settings.always_online_party_members
+        self.automatically_read_emails = self.settings.automatically_read_emails
 
     # Archipelago Server Authentication
     async def server_auth(self, password_requested: bool = False) -> None:

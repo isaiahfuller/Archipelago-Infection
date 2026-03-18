@@ -378,7 +378,6 @@ class InfectionInterface:
         - Write value
         """
         addr: int = 0xa41bf0
-        self.logger.info(f"unlocked_party_members: {[member.name for member in ctx.unlocked_party_members]}")
         for member in PartyMembers:
             offset: int = math.floor(member.value["id"] / 8)
             unlocked_members: int = self.pine.read_int8(offset + addr)

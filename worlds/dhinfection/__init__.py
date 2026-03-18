@@ -72,12 +72,8 @@ class InfectionSettings(settings.Group):
         def __getitem__(self, index):
             return self[index]
 
-    save_state_on_room_transition: SessionPreferences | bool = False
-    save_state_on_item_received: SessionsPreferences | bool = True
-    save_state_on_location_check: SessionsPreferences | bool = False
-    load_state_on_connect: SessionsPreferences | bool = False
-
-    auto_equip: GamePreferences | bool = True
+    always_online_party_members: SessionPreferences | bool = False
+    automatically_read_emails: SessionPreferences | bool = False
 
 
 class InfectionWeb(WebWorld):
