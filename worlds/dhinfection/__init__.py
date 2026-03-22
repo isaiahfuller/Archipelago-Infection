@@ -1,3 +1,4 @@
+from worlds.dhinfection.data.Items import generate_name_to_id
 from BaseClasses import ItemClassification
 from copy import deepcopy
 from typing import ClassVar, List, Optional, TextIO
@@ -12,7 +13,7 @@ from worlds.generic.Rules import add_rule, set_rule
 from .data.Strings import APConsole, APHelper, Meta, InfectionEventNames as Ev, InfectionAreaWordNames as AreaWordNames, InfectionCharacterNames as CharacterNames, InfectionPlayStatNames as PlayStatNames, InfectionServerNames as ServerNames, InfectionItemNames as ItemNames
 from .data import Locations, Items
 from .data.Items import InfectionItem, InfectionItemMeta, ITEMS_MASTER
-from .data.Locations import PlayStatLocations, InfectionLocation, EventLocations, WordListLocations, RyuBookI, RyuBookII, RyuBookVI, RyuBookVII, OtherStats, CharacterLevels
+from .data.Locations import InfectionLocation, EventLocations, WordListLocations
 from .data.items.PartyMembers import InfectionPartyMembers as PartyMembers
 from .data.items.AreaWords import InfectionAreaWords as AreaWords
 from .data.items.Servers import InfectionServers as Servers
@@ -72,8 +73,12 @@ class InfectionSettings(settings.Group):
         def __getitem__(self, index):
             return self[index]
 
-    always_online_party_members: SessionPreferences | bool = False
-    automatically_read_emails: SessionPreferences | bool = False
+    always_online_party_members: GamePreferences | bool = False
+    automatically_read_emails: GamePreferences | bool = False
+    completion_condition: GenerationPreferences | int = 0
+    include_opened_portals: GenerationPreferences | int = 100
+    include_cleared_portals: GenerationPreferences | int = 10
+    include_gott_treasures: GenerationPreferences | int = 10
 
 
 class InfectionWeb(WebWorld):
@@ -113,10 +118,10 @@ class InfectionWorld(World):
 
     # Define the Items and Locations to/for Archipelago
     item_name_to_id = Items.generate_name_to_id()
-    event_location_name_to_id = Locations.generate_event_name_to_id()
-    playstat_location_name_to_id = Locations.generate_playstat_name_to_id()
-    location_name_to_id = Locations.generate_name_to_id()
-
+    event_location_name_to_id: dict[str, int] = Locations.generate_event_name_to_id()
+    playstat_location_name_to_id: dict[str, int] = Locations.generate_playstat_name_to_id()
+    location_name_to_id: dict[str, int] = {**event_location_name_to_id, **playstat_location_name_to_id}
+    playstat_locations: List[Location] = []
     item_name_groups = Items.generate_item_groups()
     location_name_groups = Locations.generate_location_groups()
 
@@ -131,6 +136,24 @@ class InfectionWorld(World):
         ut_initialized: bool = self.prepare_ut()
         if ut_initialized:
             return
+        stats = {}
+        stats[PlayStatNames.AreasVisited.name] = self.options.areas_visited.value
+        stats[PlayStatNames.ChestsOpened.name] = self.options.chests.value
+        stats[PlayStatNames.BreakablesBroken.name] = self.options.breakables.value
+        stats[PlayStatNames.SymbolsActivated.name] = self.options.symbols_activated.value
+        stats[PlayStatNames.TotalDataDrains.name] = self.options.data_drains.value
+        stats[PlayStatNames.KiteLevel.name] = self.options.kite_levels.value
+        stats[PlayStatNames.GottOpened.name] = self.options.gott_treasures.value
+        stats[PlayStatNames.AllDungeonPortalsOpened.name] = self.options.cleared_portals.value
+        stats[PlayStatNames.AllFieldPortalsOpened.name] = self.options.cleared_portals.value
+        stats[PlayStatNames.PortalsOpened.name] = self.options.opened_portals.value
+        self.playstat_locations = Locations.playstat_gen(stats)
+        self.playstat_location_name_to_id = Locations.generate_playstat_name_to_id(self.playstat_locations)
+        # self.multiworld.locations.extend(playstat_locations)
+        # self.logger.info(self.playstat_locations)
+        for loc in self.playstat_locations:
+            self.logger.info(loc.name)
+        self.location_name_to_id = {**self.event_location_name_to_id, **self.playstat_location_name_to_id}
 
     def create_regions(self):
         main_region = Region("Menu", self.player, self.multiworld)
@@ -196,12 +219,7 @@ class InfectionWorld(World):
                      lambda state: state.can_reach_location(stats[1-(i+1)].name, self.player))
 
     def set_rules(self):
-        self.set_stats_rules(CharacterLevels)
-        self.set_stats_rules(OtherStats)
-        self.set_stats_rules(RyuBookI)
-        self.set_stats_rules(RyuBookII)
-        self.set_stats_rules(RyuBookVI)
-        self.set_stats_rules(RyuBookVII)
+        self.set_stats_rules(self.playstat_locations)
 
         # Set completion condition
         self.multiworld.completion_condition[self.player] = lambda state: state.has(
@@ -320,6 +338,24 @@ class InfectionWorld(World):
                 APHelper.always_online_party_members.value, [])
             self.options.automatically_read_emails.value = slot_data.get(APHelper.automatically_read_emails.value, [])
             self.options.include_side_quests.value = slot_data.get(APHelper.include_side_quests.value, [])
+            stats = {}
+            stats[PlayStatNames.AreasVisited.name] = self.options.areas_visited.value
+            stats[PlayStatNames.ChestsOpened.name] = self.options.chests.value
+            stats[PlayStatNames.BreakablesBroken.name] = self.options.breakables.value
+            stats[PlayStatNames.SymbolsActivated.name] = self.options.symbols_activated.value
+            stats[PlayStatNames.TotalDataDrains.name] = self.options.data_drains.value
+            stats[PlayStatNames.KiteLevel.name] = self.options.kite_levels.value
+            stats[PlayStatNames.GottOpened.name] = self.options.gott_treasures.value
+            stats[PlayStatNames.AllDungeonPortalsOpened.name] = self.options.cleared_portals.value
+            stats[PlayStatNames.AllFieldPortalsOpened.name] = self.options.cleared_portals.value
+            stats[PlayStatNames.PortalsOpened.name] = self.options.opened_portals.value
+            self.playstat_locations = Locations.playstat_gen(stats)
+            self.playstat_location_name_to_id = Locations.generate_playstat_name_to_id(self.playstat_locations)
+            # self.multiworld.locations.extend(playstat_locations)
+            # self.logger.info(self.playstat_locations)
+            for loc in self.playstat_locations:
+                self.logger.info(loc.name)
+            self.location_name_to_id = {**self.event_location_name_to_id, **self.playstat_location_name_to_id}
         return is_in_ut
 
     def fill_slot_data(self):

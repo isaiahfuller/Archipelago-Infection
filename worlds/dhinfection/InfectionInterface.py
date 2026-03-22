@@ -1,8 +1,7 @@
 
 from worlds.dhinfection.data.locations.Events import CompletionConditions
-from worlds.dhinfection.data.locations.PlayStats import RyuBookI, RyuBookII, RyuBookVI, RyuBookVII, OtherStats
+from worlds.dhinfection.data.locations.PlayStats import PlayStats
 from worlds.dhinfection import PlayStatNames
-from worlds.dhinfection.data.locations.PlayStats import PlayStats, CharacterLevels
 import math
 from enum import IntEnum
 from logging import Logger
@@ -242,15 +241,7 @@ class InfectionInterface:
             stat_check(level)
 
         # Ryu Book stats
-        for stat in RyuBookI:
-            stat_check(stat)
-        for stat in RyuBookII:
-            stat_check(stat)
-        for stat in RyuBookVI:
-            stat_check(stat)
-        for stat in RyuBookVII:
-            stat_check(stat)
-        for stat in OtherStats:
+        for stat in PlayStats:
             stat_check(stat)
 
         # Completion Conditions

@@ -117,6 +117,10 @@ class InfectionContext(SuperContext):
     settings: InfectionSettings
     always_online_party_members: bool = False
     automatically_read_emails: bool = False
+    completion_condition: int = 0
+    include_opened_portals: int = 100
+    include_cleared_portals: int = 10
+    include_gott_treasures: int = 10
 
     def __init__(self, address: str, password: str | None = None,):
         super().__init__(address, password)
@@ -125,6 +129,10 @@ class InfectionContext(SuperContext):
         self.settings = get_settings().get("dhinfection_options", False)
         self.always_online_party_members = self.settings.always_online_party_members
         self.automatically_read_emails = self.settings.automatically_read_emails
+        self.completion_condition = self.settings.completion_condition
+        self.include_opened_portals = self.settings.include_opened_portals
+        self.include_cleared_portals = self.settings.include_cleared_portals
+        self.include_gott_treasures = self.settings.include_gott_treasures
 
     # Archipelago Server Authentication
     async def server_auth(self, password_requested: bool = False) -> None:

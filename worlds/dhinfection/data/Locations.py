@@ -9,7 +9,7 @@ from BaseClasses import Location
 from .items.AreaWords import InfectionAreaWords as AreaWords, ADDRESS as AreaWordAddress
 from .locations.Events import InfectionStoryEvents, InfectionGoldenGoblins, InfectionOptionalPartyMembers, InfectionOtherSideQuests
 from .locations.WordList import InfectionDeltaWordList as DeltaWordList, InfectionThetaWordList as ThetaWordList, ADDRESS as WordListAddress, InfectionWordListBase, get_wordlist_name
-from .locations.PlayStats import PlayStats, RyuBookI, RyuBookII, RyuBookVI, RyuBookVII, Affection, OtherStats, CharacterLevels as CharacterLevelStats
+from .locations.PlayStats import PlayStats
 from .Strings import Meta, InfectionAreaWordNames as AreaWordNames, InfectionEventNames as EventNames, InfectionPlayStatNames as PlayStatNames
 
 
@@ -106,8 +106,10 @@ def event_gen(enum) -> list[InfectionEventLocation]:
     return res
 
 
-def playstat_gen(enum) -> list[InfectionPlayStatLocation]:
+def playstat_gen(stats: dict[str, int] | None = None) -> list[InfectionPlayStatLocation]:
     res = []
+    if stats is None:
+        return res
 
     def append_stat(name: str, stat: PlayStats, progress: int):
         res.append(InfectionPlayStatLocation(
@@ -116,13 +118,18 @@ def playstat_gen(enum) -> list[InfectionPlayStatLocation]:
             progress=progress
         ))
 
-    for stat in enum:
-        name = PlayStatNames[stat.name].value
+    for name, value in stats.items():
+        stat = PlayStats[name]
+        name = PlayStatNames[name].value
         if stat.value["scale"] == "list":
             for i in stat.value["values"]:
+                if i > value:
+                    break
                 append_stat(name + str(i), stat, i)
         elif stat.value["scale"] == "range":
             for i in range(stat.value["values"][0], stat.value["values"][1]):
+                if i > value:
+                    break
                 append_stat(name + str(i), stat, i)
         elif r:
             for i in range(r[0], r[1]):
@@ -139,12 +146,7 @@ GoldenGoblins: InfectionEventLocation = event_gen(InfectionGoldenGoblins)
 SideQuests: InfectionEventLocation = event_gen(InfectionOtherSideQuests)
 OptionalPartyMembers: InfectionEventLocation = event_gen(
     InfectionOptionalPartyMembers)
-RyuBookI: InfectionPlayStatLocation = playstat_gen(RyuBookI)
-RyuBookII: InfectionPlayStatLocation = playstat_gen(RyuBookII)
-RyuBookVI: InfectionPlayStatLocation = playstat_gen(RyuBookVI)
-RyuBookVII: InfectionPlayStatLocation = playstat_gen(RyuBookVII)
-OtherStats: InfectionPlayStatLocation = playstat_gen(OtherStats)
-CharacterLevels: InfectionPlayStatLocation = playstat_gen(CharacterLevelStats)
+PlayStatLocsList: InfectionPlayStatLocation = playstat_gen()
 
 WordListLocations: InfectionWordListLocation = [
     *DeltaListLocations,
@@ -159,12 +161,7 @@ EventLocations: InfectionEventLocation = [
 ]
 
 PlayStatLocations: InfectionPlayStatLocation = [
-    *RyuBookI,
-    *RyuBookII,
-    *RyuBookVI,
-    *RyuBookVII,
-    *OtherStats,
-    *CharacterLevels
+    *PlayStatLocsList
 ]
 
 
@@ -174,8 +171,8 @@ def generate_event_name_to_id() -> dict[str, int]:
     return name_to_id
 
 
-def generate_playstat_name_to_id() -> dict[str, int]:
-    name_to_id: dict[str, int] = {el.name: el.location_id for el in PlayStatLocations}
+def generate_playstat_name_to_id(locs: list[InfectionPlayStatLocation] = PlayStatLocations) -> dict[str, int]:
+    name_to_id: dict[str, int] = {el.name: el.location_id for el in locs}
     return name_to_id
 
 
