@@ -25,14 +25,6 @@ class CompletionCondition(Choice):
     default = 0
 
 
-class IncludeSideQuests(Toggle):
-    """
-    Include side quests (Golden Goblins, Parasite Dragon, and party members incl. Gardenia's quest) in the randomizer.
-    Default: Disabled
-    """
-    display_name = "Include Side Quests"
-
-
 class AutomaticallyReadEmails(Toggle):
     """
     Automatically read emails.
@@ -46,7 +38,7 @@ class OpenedPortals(Range):
     Include opened dungeon/field portals in the randomizer.
     Default: 100
     """
-    display_name = "Include Opened Portals"
+    display_name = "Opened Portals"
     range_start = 0
     range_end = 100
     default = 100
@@ -57,7 +49,7 @@ class ClearedPortals(Range):
     Include fully cleared dungeons/fields in the randomizer.
     Default: 10
     """
-    display_name = "Include Cleared Dungeons and Fields"
+    display_name = "Cleared Dungeons and Fields"
     range_start = 0
     range_end = 30
     default = 10
@@ -68,7 +60,7 @@ class GottTreasures(Range):
     Include Gott Treasures in the randomizer.
     Default: 10
     """
-    display_name = "Include Gott Treasures"
+    display_name = "Gott Treasures"
     range_start = 0
     range_end = 30
     default = 10
@@ -145,7 +137,6 @@ infection_option_groups: dict[str, list] = {
         DeathLink,
     ],
     "Quest Options": [
-        IncludeSideQuests,
         CompletionCondition,
     ],
     "Quality of Life Options": [
@@ -169,7 +160,6 @@ infection_option_groups: dict[str, list] = {
 @dataclass
 class InfectionOptions(PerGameCommonOptions):
     always_online_party_members: AlwaysOnlinePartyMembers
-    include_side_quests: IncludeSideQuests
     automatically_read_emails: AutomaticallyReadEmails
     completion_condition: CompletionCondition
     opened_portals: OpenedPortals
@@ -194,7 +184,6 @@ def create_option_groups() -> list[OptionGroup]:
 def slot_data_options() -> list[str]:
     return [
         APHelper.always_online_party_members.value,
-        APHelper.include_side_quests.value,
         APHelper.automatically_read_emails.value,
         APHelper.completion_condition.value,
         APHelper.opened_portals.value,

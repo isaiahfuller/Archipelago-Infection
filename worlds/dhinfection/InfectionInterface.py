@@ -152,6 +152,9 @@ class InfectionInterface:
         self.pine.write_int8(0xa44f23, self.pine.read_int8(0xa44f23) | 0b00000001)
         self.pine.write_int8(0xa44f27, self.pine.read_int8(0xa44f27) | 0b10000000)
 
+        # Give Virus Core M
+        self.pine.write_int8(0xa406d8, max(self.pine.read_int8(0xa406d8), 1))
+
         # Get Mia and Elk out of your way
         self.pine.write_int8(0xa44f58, self.pine.read_int8(0xa44f58) | 0xff)
 
@@ -160,7 +163,7 @@ class InfectionInterface:
 
         def get_location_id(name: str) -> int | None:
             loc_id = ctx.locations_name_to_id.get(name)
-            if loc_id is None or loc_id in checked:
+            if loc_id is None or loc_id in checked or loc_id in ctx.checked_locations:
                 return None
             return loc_id
 
@@ -178,7 +181,7 @@ class InfectionInterface:
             try:
                 val: int = self.pine.read_int16(stat.value["addr"])
                 name: str = PlayStatNames[stat.name].value
-                if stat.value["scale"] == "list" and val in stat.value["values"]:
+                if stat.value["scale"] == "list":
                     for i in stat.value["values"]:
                         if val < i:
                             break
@@ -186,8 +189,8 @@ class InfectionInterface:
                         if loc_id is None:
                             continue
                         checked.add(loc_id)
-                elif stat.value["scale"] == "range" and val in range(stat.value["values"][0], stat.value["values"][1] + 1):
-                    for i in range(stat.value["values"][0], stat.value["values"][1] + 1):
+                elif stat.value["scale"] == "range":
+                    for i in range(stat.value["values"][0], stat.value["values"][1]):
                         if val < i:
                             break
                         loc_id = get_location_id(f"{name}{i}")
@@ -235,10 +238,6 @@ class InfectionInterface:
             if loc_id is None:
                 continue
             addr_check(addr, bitflags, loc_id)
-
-        # Character Levels
-        for level in CharacterLevels:
-            stat_check(level)
 
         # Ryu Book stats
         for stat in PlayStats:

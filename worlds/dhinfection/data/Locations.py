@@ -22,6 +22,11 @@ class InfectionLocationMeta(ABC):
     location_id: int
     address: int
 
+    def to_location(self, player: int, parent) -> InfectionLocation:
+        loc = InfectionLocation(player, self.name, self.location_id, parent)
+        loc.progress_type = getattr(self, "progress_type", LocationProgressType.DEFAULT)
+        return loc
+
 
 class InfectionAreaWordLocation(InfectionLocationMeta):
     word: AreaWords
@@ -30,9 +35,6 @@ class InfectionAreaWordLocation(InfectionLocationMeta):
         self.name = AreaWordNames[word.name].value
         self.location_id = word.value["id"]*10 + AreaWordAddress
         self.word = word
-
-    def to_location(self, player: int) -> Location:
-        return Location(player, self.name, self.location_id, parent)
 
 
 class InfectionWordListLocation(InfectionLocationMeta):
@@ -43,9 +45,6 @@ class InfectionWordListLocation(InfectionLocationMeta):
         self.location_id = WordListAddress * 10 + wordlist.value["address"]
         self.wordlist = wordlist
         self.progress_type = LocationProgressType.PRIORITY
-
-    def to_location(self, player: int) -> Location:
-        return Location(player, self.name, self.location_id, parent)
 
 
 class InfectionEventLocation(InfectionLocationMeta):
@@ -59,20 +58,15 @@ class InfectionEventLocation(InfectionLocationMeta):
         self.bitflags = bitflags
         self.progress_type = LocationProgressType.PRIORITY
 
-    def to_location(self, player: int) -> Location:
-        return Location(player, self.name, self.location_id, parent)
-
 
 class InfectionPlayStatLocation(InfectionLocationMeta):
     stat: PlayStats
 
-    def __init__(self, name: str, stat: PlayStats, progress: int) -> InfectionLocation:
+    def __init__(self, name: str, stat: PlayStats, progress: int, progress_type: LocationProgressType) -> InfectionLocation:
         self.name = name
         self.location_id = (stat.value["addr"] * 500) + progress
         self.stat = stat
-
-    def to_location(self, player: int) -> Location:
-        return Location(player, self.name, self.location_id, parent)
+        self.progress_type = progress_type
 
 
 def area_word_gen(enum) -> list[InfectionAreaWordLocation]:
@@ -106,16 +100,32 @@ def event_gen(enum) -> list[InfectionEventLocation]:
     return res
 
 
+PlayStatLocsList: InfectionPlayStatLocation
+
+
 def playstat_gen(stats: dict[str, int] | None = None) -> list[InfectionPlayStatLocation]:
     res = []
     if stats is None:
-        return res
+        stats = {
+            PlayStatNames.AreasVisited.name: 30,
+            PlayStatNames.KiteLevel.name: 30,
+            PlayStatNames.PortalsOpened.name: 100,
+            PlayStatNames.AllFieldPortalsOpened.name: 30,
+            PlayStatNames.AllDungeonPortalsOpened.name: 30,
+            PlayStatNames.GottOpened.name: 30,
+            PlayStatNames.ChestsOpened.name: 400,
+            PlayStatNames.BreakablesBroken.name: 400,
+            PlayStatNames.SymbolsActivated.name: 30,
+            PlayStatNames.TotalDataDrains.name: 100,
+        }
 
-    def append_stat(name: str, stat: PlayStats, progress: int):
+    def append_stat(name: str, stat: PlayStats, progress: int, max_progress: int):
+        progress_type = LocationProgressType.EXCLUDED if progress > max_progress else LocationProgressType.DEFAULT
         res.append(InfectionPlayStatLocation(
             name=name,
             stat=stat,
-            progress=progress
+            progress=progress,
+            progress_type=progress_type
         ))
 
     for name, value in stats.items():
@@ -123,17 +133,10 @@ def playstat_gen(stats: dict[str, int] | None = None) -> list[InfectionPlayStatL
         name = PlayStatNames[name].value
         if stat.value["scale"] == "list":
             for i in stat.value["values"]:
-                if i > value:
-                    break
-                append_stat(name + str(i), stat, i)
+                append_stat(name + str(i), stat, i, value)
         elif stat.value["scale"] == "range":
             for i in range(stat.value["values"][0], stat.value["values"][1]):
-                if i > value:
-                    break
-                append_stat(name + str(i), stat, i)
-        elif r:
-            for i in range(r[0], r[1]):
-                append_stat(name + str(i), stat, i)
+                append_stat(name + str(i), stat, i, value)
     return res
 
 
@@ -146,7 +149,7 @@ GoldenGoblins: InfectionEventLocation = event_gen(InfectionGoldenGoblins)
 SideQuests: InfectionEventLocation = event_gen(InfectionOtherSideQuests)
 OptionalPartyMembers: InfectionEventLocation = event_gen(
     InfectionOptionalPartyMembers)
-PlayStatLocsList: InfectionPlayStatLocation = playstat_gen()
+PlayStatLocsList = playstat_gen()
 
 WordListLocations: InfectionWordListLocation = [
     *DeltaListLocations,
@@ -177,7 +180,9 @@ def generate_playstat_name_to_id(locs: list[InfectionPlayStatLocation] = PlaySta
 
 
 def generate_name_to_id() -> dict[str, int]:
-    return {**generate_event_name_to_id(), **generate_playstat_name_to_id()}
+    name_to_id = generate_event_name_to_id()
+    name_to_id.update(generate_playstat_name_to_id())
+    return name_to_id
 
 
 def generate_location_groups() -> dict[str, int]:

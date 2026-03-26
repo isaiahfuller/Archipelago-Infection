@@ -1,3 +1,4 @@
+from BaseClasses import LocationProgressType
 from worlds.dhinfection.data.Items import generate_name_to_id
 from BaseClasses import ItemClassification
 from copy import deepcopy
@@ -151,21 +152,24 @@ class InfectionWorld(World):
         self.playstat_location_name_to_id = Locations.generate_playstat_name_to_id(self.playstat_locations)
         # self.multiworld.locations.extend(playstat_locations)
         # self.logger.info(self.playstat_locations)
-        for loc in self.playstat_locations:
-            self.logger.info(loc.name)
         self.location_name_to_id = {**self.event_location_name_to_id, **self.playstat_location_name_to_id}
 
     def create_regions(self):
         main_region = Region("Menu", self.player, self.multiworld)
-        story_region = Region("Story", self.player, self.multiworld)
+        # story_region = Region("Story", self.player, self.multiworld)
         self.multiworld.regions.append(main_region)
-        self.multiworld.regions.append(story_region)
+        # self.multiworld.regions.append(story_region)
 
-        main_region.connect(story_region)
+        # main_region.connect(story_region)
+        # story_region.connect(main_region)
 
-        story_region.add_locations(self.event_location_name_to_id, InfectionLocation)
-        story_region.add_event(Ev.SkeithDefeated.value)
-        main_region.add_locations(self.playstat_location_name_to_id, InfectionLocation)
+        for loc_meta in self.playstat_locations:
+            main_region.locations.append(loc_meta.to_location(self.player, main_region))
+        for loc_meta in Locations.EventLocations:
+            main_region.locations.append(loc_meta.to_location(self.player, main_region))
+        for loc_meta in Locations.WordListLocations:
+            main_region.locations.append(loc_meta.to_location(self.player, main_region))
+        main_region.add_event(Ev.SkeithDefeated.value)
 
     def create_item(self, item: str) -> InfectionItem:
         for itm in ITEMS_MASTER:
@@ -229,6 +233,8 @@ class InfectionWorld(World):
 
         # Story missions
         self.set_list_rules(Ev.FirstDataBug.value, DeltaWordList.ExpansiveHauntedSeaOfSand)
+        add_rule(self.multiworld.get_location(Ev.FirstDataBug.value, self.player),
+                 lambda state: state.can_reach_location(PlayStatNames.KiteLevel.value + "1", self.player))
 
         self.set_list_rules(Ev.LearnGateHacking.value, DeltaWordList.BoundlessCorruptedFortWalls)
         add_rule(self.multiworld.get_location(Ev.LearnGateHacking.value, self.player),
@@ -337,7 +343,6 @@ class InfectionWorld(World):
             self.options.always_online_party_members.value = slot_data.get(
                 APHelper.always_online_party_members.value, [])
             self.options.automatically_read_emails.value = slot_data.get(APHelper.automatically_read_emails.value, [])
-            self.options.include_side_quests.value = slot_data.get(APHelper.include_side_quests.value, [])
             stats = {}
             stats[PlayStatNames.AreasVisited.name] = self.options.areas_visited.value
             stats[PlayStatNames.ChestsOpened.name] = self.options.chests.value
@@ -353,8 +358,6 @@ class InfectionWorld(World):
             self.playstat_location_name_to_id = Locations.generate_playstat_name_to_id(self.playstat_locations)
             # self.multiworld.locations.extend(playstat_locations)
             # self.logger.info(self.playstat_locations)
-            for loc in self.playstat_locations:
-                self.logger.info(loc.name)
             self.location_name_to_id = {**self.event_location_name_to_id, **self.playstat_location_name_to_id}
         return is_in_ut
 
