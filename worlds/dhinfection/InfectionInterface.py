@@ -265,41 +265,47 @@ class InfectionInterface:
                 ctx.offline_locations_checked.update(checked)
 
     async def receive_items(self, ctx) -> None:
-        if ctx.last_item_processed_index < 0:
-            ctx.last_item_processed_index = self.get_last_item_index()
-        if ctx.last_item_processed_index >= 0:
-            if ctx.next_item_slot < 0:
-                ctx.next_item_slot = ctx.last_item_processed_index
-            else:
-                ctx.next_item_slot = max(min(ctx.last_item_processed_index, ctx.next_item_slot), 0)
+        if ctx.next_item_slot < 0:
+            last_in_mem = self.get_last_item_index()
+            if last_in_mem < 0:
+                last_in_mem = 0
+            ctx.next_item_slot = last_in_mem
+            ctx.last_item_processed_index = last_in_mem
+
+        items_count = len(ctx.items_received)
+        if ctx.next_item_slot >= items_count:
+            return
 
         received: List[NetworkItem] = ctx.items_received[ctx.next_item_slot:]
-        ctx.next_item_slot += len(received)
-        ctx.last_item_processed_index = ctx.next_item_slot
-        for server_item in received:
-            item: InfectionItem = Items.from_id(server_item.item)
+        self.logger.debug(f"Processing {len(received)} items from Archipelago...")
 
-            if isinstance(item, ConsumableItem):
-                """Add item to storage"""
-                self.add_consumable(item)
-            if isinstance(item, VirusCoreItem):
-                """Add item to inventory"""
-                addr: int = item.item.value["id"]
-                curr_amt = self.pine.read_int8(addr)
-                self.pine.write_int8(addr, curr_amt + 1)
-            if isinstance(item, AreaWordItem):
-                """Unlock word"""
-            if isinstance(item, WordListItem):
-                """Add to list of word lists to unlock"""
-                ctx.unlocked_word_lists.add(item.wordlist.value["address"])
-            if isinstance(item, PartyMemberItem):
-                """Add to list of allowed party members"""
-                ctx.unlocked_party_members.add(item.party_member)
-            if isinstance(item, ServerItem):
-                """Add to list of allowed servers"""
-                ctx.unlocked_servers.add(item.server)
-            await asyncio.sleep(0.1)
-        if received:
+        for server_item in received:
+            item = Items.from_id(server_item.item)
+            if item:
+                self.logger.debug(f"Applying item [{ctx.next_item_slot}]: {item.name}")
+                if isinstance(item, ConsumableItem):
+                    """Add item to storage"""
+                    self.add_consumable(item)
+                elif isinstance(item, VirusCoreItem):
+                    """Add item to inventory"""
+                    self.add_key(item.item.value["id"])
+                elif isinstance(item, WordListItem):
+                    """Add to list of word lists to unlock"""
+                    ctx.unlocked_word_lists.add(item.wordlist.value["address"])
+                elif isinstance(item, PartyMemberItem):
+                    """Add to list of allowed party members"""
+                    ctx.unlocked_party_members.add(item.party_member)
+                elif isinstance(item, ServerItem):
+                    """Add to list of allowed servers"""
+                    ctx.unlocked_servers.add(item.server)
+                elif isinstance(item, AreaWordItem):
+                    """Unlock word"""
+                    pass
+            else:
+                self.logger.warning(f"Unknown item ID {server_item.item} received at slot {ctx.next_item_slot}")
+
+            ctx.next_item_slot += 1
+            ctx.last_item_processed_index = ctx.next_item_slot
             self.set_last_item_index(ctx.next_item_slot)
 
     async def resync_items(self, ctx) -> None:
@@ -309,9 +315,9 @@ class InfectionInterface:
         """
         # if ctx.last_item_processed_index < 0:
         #     return
-        self.logger.info(f"items_received: {[item[0] for item in ctx.items_received]}")
+        self.logger.debug(f"items_received: {[item[0] for item in ctx.items_received]}")
         received_id = [item[0] for item in ctx.items_received]
-        self.logger.info(f"received_id: {received_id}")
+        self.logger.debug(f"received_id: {received_id}")
         for member in PartyMemberItems:
             if member.item_id in received_id:
                 ctx.unlocked_party_members.add(member.party_member)
