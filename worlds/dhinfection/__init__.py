@@ -293,9 +293,9 @@ class InfectionWorld(World):
         add_rule(self.multiworld.get_location(Ev.EpitaphQ.value, self.player),
                  lambda state: state.can_reach_location(Ev.DescendentsOfFianna.value, self.player))
 
-        # self.set_list_rules(Ev.MeetAlf.value, ThetaWordList.GreatDistantFertileLand)
-        # add_rule(self.multiworld.get_location(Ev.MeetAlf.value, self.player),
-        #          lambda state: state.can_reach_location(Ev.EpitaphQ.value, self.player))
+        self.set_list_rules(Ev.MeetAlf.value, ThetaWordList.GreatDistantFertileLand)
+        add_rule(self.multiworld.get_location(Ev.MeetAlf.value, self.player),
+                 lambda state: state.can_reach_location(Ev.EpitaphQ.value, self.player))
 
         self.set_list_rules(Ev.SkeithDefeated.value, ThetaWordList.ChosenHopelessNothingness)
         add_rule(self.multiworld.get_location(Ev.SkeithDefeated.value, self.player),
@@ -326,6 +326,8 @@ class InfectionWorld(World):
                  lambda state: state.has(CharacterNames.Gardenia.value, self.player))
         add_rule(self.multiworld.get_location(Ev.GracefulBook.value, self.player),
                  lambda state: state.can_reach_location(Ev.MistralMeetUp.value, self.player))
+        add_rule(self.multiworld.get_location(Ev.GracefulBook.value, self.player),
+                 lambda state: state.can_reach_location(Ev.Gardenia.value, self.player))
 
         # Golden Goblin quest
         self.set_list_rules(Ev.Stehony.value, DeltaWordList.DetestableGoldenSunnyDemon)

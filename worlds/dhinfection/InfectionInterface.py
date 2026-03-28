@@ -214,6 +214,7 @@ class InfectionInterface:
 
         # Golden Goblins
         for goblin in GoldenGoblins:
+            name: str = EventNames[goblin.name].value
             addr: int = goblin.value["address"]
             bitflags: int = goblin.value["bits"]
             loc_id = get_location_id(name)
@@ -223,6 +224,7 @@ class InfectionInterface:
 
         # Optional Party Members
         for member in OptionalPartyMembers:
+            name: str = EventNames[member.name].value
             addr: int = member.value["address"]
             bitflags: int = member.value["bits"]
             loc_id = get_location_id(name)
@@ -232,6 +234,7 @@ class InfectionInterface:
 
         # Other Side Quests
         for quest in SideQuests:
+            name: str = EventNames[quest.name].value
             addr: int = quest.value["address"]
             bitflags: int = quest.value["bits"]
             loc_id = get_location_id(name)
@@ -245,6 +248,7 @@ class InfectionInterface:
 
         # Completion Conditions
         for condition in CompletionConditions:
+            name: str = EventNames[condition.name].value
             addr: int = condition.value["address"]
             bitflags: int = condition.value["bits"]
             loc_id = get_location_id(name)

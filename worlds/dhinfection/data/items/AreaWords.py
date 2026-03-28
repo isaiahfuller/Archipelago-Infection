@@ -4,6 +4,8 @@ from BaseClasses import Item, ItemClassification
 
 ADDRESS = 0xa44c0c
 
+CURRENTLY_ENTERED_ADDRESS = 0xADA71C
+
 
 class InfectionAreaWordListBase(Enum):
     @classmethod
@@ -181,7 +183,7 @@ class InfectionAreaWords(InfectionAreaWordListBase):
     TreasureGem = {"id": 160, "importance": ItemClassification.progression}
     Passionate = {"id": 296, "importance": ItemClassification.filler}
 
-    
+
 class ExtraAreaWords(InfectionAreaWordListBase):
     Stalking = {"id": 161, "importance": ItemClassification.filler}
     Bitter = {"id": 162, "importance": ItemClassification.filler}

@@ -33,7 +33,7 @@ class InfectionStoryEvents(InfectionEventBase):
     Epitaph00 = {"address": 0xa44f92, "bits": 0b00000001}
     DescendentsOfFianna = {"address": 0xa44fa8, "bits": 0b00000001}
     EpitaphQ = {"address": 0xa44fb0, "bits": 0b00000001}
-    # MeetAlf = {"address": 0xa44fb8, "bits": 0b00000001}
+    MeetAlf = {"address": 0xa44fb8, "bits": 0b00000001}
 
 
 class CompletionConditions(InfectionEventBase):
