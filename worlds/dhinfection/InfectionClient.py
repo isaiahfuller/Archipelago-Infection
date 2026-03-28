@@ -118,21 +118,33 @@ class InfectionContext(SuperContext):
     always_online_party_members: bool = False
     automatically_read_emails: bool = False
     completion_condition: int = 0
-    include_opened_portals: int = 100
-    include_cleared_portals: int = 10
-    include_gott_treasures: int = 10
+    opened_portals: int = 100
+    cleared_portals: int = 10
+    gott_treasures: int = 10
+    areas_visited: int = 10
+    chests: int = 200
+    breakables: int = 200
+    symbols_activated: int = 10
+    data_drains: int = 30
+    kite_levels: int = 25
 
     def __init__(self, address: str, password: str | None = None,):
         super().__init__(address, password)
         self.ipc = InfectionInterface(logger)
         Utils.init_logging(APConsole.Info.client_name_clean.value + self.client_version)
-        self.settings = get_settings().get("dhinfection_options", False)
-        self.always_online_party_members = self.settings.always_online_party_members
-        self.automatically_read_emails = self.settings.automatically_read_emails
-        self.completion_condition = self.settings.completion_condition
-        self.include_opened_portals = self.settings.include_opened_portals
-        self.include_cleared_portals = self.settings.include_cleared_portals
-        self.include_gott_treasures = self.settings.include_gott_treasures
+        self.settings = get_settings().get("dhinfection_options", {})
+        self.always_online_party_members = self.settings.get("always_online_party_members", False)
+        self.automatically_read_emails = self.settings.get("automatically_read_emails", False)
+        self.completion_condition = self.settings.get("completion_condition", 0)
+        self.opened_portals = self.settings.get("opened_portals", 100)
+        self.cleared_portals = self.settings.get("cleared_portals", 10)
+        self.gott_treasures = self.settings.get("gott_treasures", 10)
+        self.areas_visited = self.settings.get("areas_visited", 10)
+        self.chests = self.settings.get("chests", 200)
+        self.breakables = self.settings.get("breakables", 200)
+        self.symbols_activated = self.settings.get("symbols_activated", 10)
+        self.data_drains = self.settings.get("data_drains", 30)
+        self.kite_levels = self.settings.get("kite_levels", 25)
 
     # Archipelago Server Authentication
     async def server_auth(self, password_requested: bool = False) -> None:
@@ -146,6 +158,21 @@ class InfectionContext(SuperContext):
         super().on_package(cmd, args)
         if cmd == APHelper.cmd_conn.value:
             data = args[APHelper.arg_sl_dt.value]
+
+            self.always_online_party_members = data.get(
+                APHelper.always_online_party_members.value, self.always_online_party_members)
+            self.automatically_read_emails = data.get(
+                APHelper.automatically_read_emails.value, self.automatically_read_emails)
+            self.completion_condition = data.get(APHelper.completion_condition.value, self.completion_condition)
+            self.opened_portals = data.get(APHelper.opened_portals.value, self.opened_portals)
+            self.cleared_portals = data.get(APHelper.cleared_portals.value, self.cleared_portals)
+            self.gott_treasures = data.get(APHelper.gott_treasures.value, self.gott_treasures)
+            self.areas_visited = data.get(APHelper.areas_visited.value, self.areas_visited)
+            self.chests = data.get(APHelper.chests.value, self.chests)
+            self.breakables = data.get(APHelper.breakables.value, self.breakables)
+            self.symbols_activated = data.get(APHelper.symbols_activated.value, self.symbols_activated)
+            self.data_drains = data.get(APHelper.data_drains.value, self.data_drains)
+            self.kite_levels = data.get(APHelper.kite_levels.value, self.kite_levels)
 
             if APHelper.version.value in data:
                 world_ver: str = data[APHelper.version.value]

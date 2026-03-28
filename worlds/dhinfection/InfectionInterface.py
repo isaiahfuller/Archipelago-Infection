@@ -375,6 +375,8 @@ class InfectionInterface:
 
             if new_val != val:
                 self.pine.write_int32(addr, new_val)
+                if ctx.always_online_party_members:
+                    self.pine.write_int32(addr + 4, new_val)
         except (RuntimeError, ConnectionError):
             return
 

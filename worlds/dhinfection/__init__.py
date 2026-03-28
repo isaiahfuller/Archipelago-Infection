@@ -77,9 +77,9 @@ class InfectionSettings(settings.Group):
     always_online_party_members: GamePreferences | bool = False
     automatically_read_emails: GamePreferences | bool = False
     completion_condition: GenerationPreferences | int = 0
-    include_opened_portals: GenerationPreferences | int = 100
-    include_cleared_portals: GenerationPreferences | int = 10
-    include_gott_treasures: GenerationPreferences | int = 10
+    opened_portals: GenerationPreferences | int = 100
+    cleared_portals: GenerationPreferences | int = 10
+    gott_treasures: GenerationPreferences | int = 10
 
 
 class InfectionWeb(WebWorld):
