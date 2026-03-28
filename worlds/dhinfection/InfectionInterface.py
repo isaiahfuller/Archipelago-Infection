@@ -3,6 +3,7 @@ from worlds.dhinfection.data.locations.Events import CompletionConditions
 from worlds.dhinfection.data.locations.PlayStats import PlayStats
 from worlds.dhinfection import PlayStatNames
 import math
+import asyncio
 from enum import IntEnum
 from logging import Logger
 from typing import Optional, List, Set
@@ -266,14 +267,12 @@ class InfectionInterface:
     async def receive_items(self, ctx) -> None:
         if ctx.last_item_processed_index < 0:
             ctx.last_item_processed_index = self.get_last_item_index()
-        elif ctx.last_item_processed_index:
+        if ctx.last_item_processed_index >= 0:
             if ctx.next_item_slot < 0:
                 ctx.next_item_slot = ctx.last_item_processed_index
             else:
                 ctx.next_item_slot = max(min(ctx.last_item_processed_index, ctx.next_item_slot), 0)
 
-        if not ctx.next_item_slot and ctx.items_received and ctx.checked_locations:
-            ctx.next_item_slot = len(ctx.items_received)
         received: List[NetworkItem] = ctx.items_received[ctx.next_item_slot:]
         ctx.next_item_slot += len(received)
         ctx.last_item_processed_index = ctx.next_item_slot
@@ -299,6 +298,7 @@ class InfectionInterface:
             if isinstance(item, ServerItem):
                 """Add to list of allowed servers"""
                 ctx.unlocked_servers.add(item.server)
+            await asyncio.sleep(0.1)
         if received:
             self.set_last_item_index(ctx.next_item_slot)
 
@@ -332,7 +332,7 @@ class InfectionInterface:
     def add_consumable(self, item_obj: ConsumableItem) -> None:
         addr: int = 0xa40540
         item: int = item_obj.item.value["id"]
-        for i in range(addr, addr + 99, 4):
+        for i in range(addr, addr + 396, 4):
             curr: int = self.pine.read_int32(i)
             amt: int = self.pine.read_int8(i+3)
             if curr | 0xff000000 == item | 0xff000000:
@@ -361,26 +361,22 @@ class InfectionInterface:
     async def scan_party_member(self, ctx) -> None:
         """
         Scans the party member list and locks/unlocks based on whether the party member is in ctx.unlocked_party_members
-        Reported issue: Unlocks Natsume and Rachel when only Nuke Usagimaru is unlocked.
-        - ids: Natsume (11), Rachel (12), Nuke Usagimaru (5)
-
-        Order: 
-        - Iterate through ALL members
-        - Calculate offset
-        - Read current value
-        - Apply mask
-        - Write value
         """
         addr: int = 0xa41bf0
-        for member in PartyMembers:
-            offset: int = math.floor(member.value["id"] / 8)
-            unlocked_members: int = self.pine.read_int8(offset + addr)
-            val = unlocked_members
-            if member not in ctx.unlocked_party_members:
-                val &= ~(2 ** (member.value["id"] % 8))
-            else:
-                val |= 2 ** (member.value["id"] % 8)
-            self.pine.write_int8(offset + addr, val)
+        try:
+            val = self.pine.read_int32(addr)
+            new_val = val
+            for member in PartyMembers:
+                m_id = member.value["id"]
+                if member in ctx.unlocked_party_members:
+                    new_val |= (1 << m_id)
+                else:
+                    new_val &= ~(1 << (m_id % 32))
+
+            if new_val != val:
+                self.pine.write_int32(addr, new_val)
+        except (RuntimeError, ConnectionError):
+            return
 
     async def scan_word_list(self, ctx) -> None:
         """
@@ -392,33 +388,42 @@ class InfectionInterface:
           - The structure of the addresses makes this difficult. This would likely require rewriting
             the word list structure each time the game adds one.
         """
-        starting_addr: int = 0xa44d46
-        ending_addr: int = 0xa44c47
-        current_list: int | None = None
+        starting_addr: int = 0xa44c47
+        size: int = 256
+        try:
+            data = bytearray(self.pine.read_bytes(starting_addr, size))
+            for i in range(255, 0, -1):
+                current_addr = data[i]
+                if current_addr == 0x00 or current_addr == 0xff:
+                    continue
 
-        for i in range(starting_addr, ending_addr, -1):
-            current_addr: int = self.pine.read_int8(i)
-            delta_member: DeltaWordList | None = DeltaWordList.from_address(
-                current_addr)
-            theta_member: ThetaWordList | None = ThetaWordList.from_address(
-                current_addr)
-            current_list: int | None = None
-            current_list_obj: WordListBase | None = None
-            if delta_member:
-                current_list = delta_member.value["address"]
-                current_list_obj = delta_member
-            elif theta_member:
-                current_list = theta_member.value["address"]
-                current_list_obj = theta_member
-            if current_list:
-                if current_list not in ctx.obtained_word_lists:
-                    ctx.obtained_word_lists.add(current_list)
-                    if ctx.server:
-                        await ctx.send_msgs([{"cmd": "LocationChecks", "locations": [ctx.locations_name_to_id[get_wordlist_name(current_list_obj)]]}])
-                if current_list in ctx.unlocked_word_lists:
-                    self.pine.write_int8(i + 1, 0x00)
-                else:
-                    self.pine.write_int8(i + 1, 0xff)
+                delta_member: DeltaWordList | None = DeltaWordList.from_address(current_addr)
+                theta_member: ThetaWordList | None = ThetaWordList.from_address(current_addr)
+                current_list_val: int | None = None
+                current_list_obj: WordListBase | None = None
+
+                if delta_member:
+                    current_list_val = delta_member.value["address"]
+                    current_list_obj = delta_member
+                elif theta_member:
+                    current_list_val = theta_member.value["address"]
+                    current_list_obj = theta_member
+
+                if current_list_val:
+                    if current_list_val not in ctx.obtained_word_lists:
+                        ctx.obtained_word_lists.add(current_list_val)
+                        if ctx.server:
+                            await ctx.send_msgs([{"cmd": "LocationChecks", "locations": [ctx.locations_name_to_id[get_wordlist_name(current_list_obj)]]}])
+
+                    status_byte_idx = i + 1
+                    if status_byte_idx < size:
+                        old_status = data[status_byte_idx]
+                        new_status = 0x00 if current_list_val in ctx.unlocked_word_lists else 0xff
+                        if old_status != new_status:
+                            data[status_byte_idx] = new_status
+                            self.pine.write_int8(starting_addr + status_byte_idx, new_status)
+        except (RuntimeError, ConnectionError):
+            return
 
     def modify_word(self, word_obj: AreaWords, lock: bool = False) -> None:
         """

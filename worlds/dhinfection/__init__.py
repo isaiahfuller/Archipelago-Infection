@@ -306,13 +306,9 @@ class InfectionWorld(World):
         # Optional Party Members
         self.set_list_rules(Ev.Natsume.value, DeltaWordList.RagingPassionateMelody)
         add_rule(self.multiworld.get_location(Ev.Natsume.value, self.player),
-                 lambda state: state.has(CharacterNames.Elk.value, self.player) and state.has(CharacterNames.Mia.value, self.player))
-        add_rule(self.multiworld.get_location(Ev.Natsume.value, self.player),
                  lambda state: state.can_reach_location(Ev.BoardProtected.value, self.player))
 
         self.set_list_rules(Ev.Gardenia.value, ThetaWordList.SoftSolitaryTriPansy)
-        add_rule(self.multiworld.get_location(Ev.Gardenia.value, self.player),
-                 lambda state: state.has(CharacterNames.Elk.value, self.player))
         add_rule(self.multiworld.get_location(Ev.Gardenia.value, self.player),
                  lambda state: state.can_reach_location(Ev.ElkMiaFavorite.value, self.player))
 

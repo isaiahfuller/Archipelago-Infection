@@ -271,7 +271,7 @@ async def check_game(ctx: InfectionContext):
         if ctx.last_message is not message:
             logger.info(message)
             ctx.last_message = message
-    await asyncio.sleep(1.5)
+    await asyncio.sleep(0.5)
     return
 
 

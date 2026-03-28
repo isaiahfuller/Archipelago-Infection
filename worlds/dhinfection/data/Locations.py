@@ -56,7 +56,7 @@ class InfectionEventLocation(InfectionLocationMeta):
         self.location_id = location_id
         self.event = event
         self.bitflags = bitflags
-        self.progress_type = LocationProgressType.PRIORITY
+        self.progress_type = LocationProgressType.DEFAULT
 
 
 class InfectionPlayStatLocation(InfectionLocationMeta):
