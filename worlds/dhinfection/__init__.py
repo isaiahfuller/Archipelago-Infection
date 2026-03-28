@@ -303,10 +303,29 @@ class InfectionWorld(World):
         add_rule(self.multiworld.get_location(Ev.SkeithDefeated.value, self.player),
                  lambda state: state.can_reach_location(PlayStatNames.KiteLevel.value + "20", self.player))
 
+        # Optional Party Members
+        self.set_list_rules(Ev.Natsume.value, DeltaWordList.RagingPassionateMelody)
+        add_rule(self.multiworld.get_location(Ev.Natsume.value, self.player),
+                 lambda state: state.has(CharacterNames.Elk.value, self.player) and state.has(CharacterNames.Mia.value, self.player))
+        add_rule(self.multiworld.get_location(Ev.Natsume.value, self.player),
+                 lambda state: state.can_reach_location(Ev.BoardProtected.value, self.player))
+
+        self.set_list_rules(Ev.Gardenia.value, ThetaWordList.SoftSolitaryTriPansy)
+        add_rule(self.multiworld.get_location(Ev.Gardenia.value, self.player),
+                 lambda state: state.has(CharacterNames.Elk.value, self.player))
+        add_rule(self.multiworld.get_location(Ev.Gardenia.value, self.player),
+                 lambda state: state.can_reach_location(Ev.ElkMiaFavorite.value, self.player))
+
+        self.set_list_rules(Ev.Sanjuro.value, DeltaWordList.HideousDestroyersFarThunder)
+        add_rule(self.multiworld.get_location(Ev.Sanjuro.value, self.player),
+                 lambda state: state.can_reach_location(Ev.ElkMiaFavorite.value, self.player))
+
         # Gardenia's quest
         self.set_list_rules(Ev.GracefulBook.value, ThetaWordList.BeautifulSomeonesTreasureGem)
         add_rule(self.multiworld.get_location(Ev.GracefulBook.value, self.player),
                  lambda state: state.has(CharacterNames.Gardenia.value, self.player))
+        add_rule(self.multiworld.get_location(Ev.GracefulBook.value, self.player),
+                 lambda state: state.can_reach_location(Ev.MistralMeetUp.value, self.player))
 
         # Golden Goblin quest
         self.set_list_rules(Ev.Stehony.value, DeltaWordList.DetestableGoldenSunnyDemon)

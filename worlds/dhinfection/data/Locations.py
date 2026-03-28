@@ -44,7 +44,7 @@ class InfectionWordListLocation(InfectionLocationMeta):
         self.name = get_wordlist_name(wordlist)
         self.location_id = WordListAddress * 10 + wordlist.value["address"]
         self.wordlist = wordlist
-        self.progress_type = LocationProgressType.PRIORITY
+        self.progress_type = LocationProgressType.DEFAULT
 
 
 class InfectionEventLocation(InfectionLocationMeta):
