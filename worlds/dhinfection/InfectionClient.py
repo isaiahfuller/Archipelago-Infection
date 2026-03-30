@@ -287,6 +287,9 @@ async def check_game(ctx: InfectionContext):
         await ctx.ipc.scan_server(ctx)
         await ctx.ipc.scan_word_list(ctx)
 
+        if ctx.automatically_read_emails:
+            await ctx.ipc.scan_emails()
+
         if ctx.has_just_connected or ctx.pending_resync:
             await ctx.ipc.resync_items(ctx)
             ctx.has_just_connected = False

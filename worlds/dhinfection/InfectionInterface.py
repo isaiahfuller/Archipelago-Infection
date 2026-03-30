@@ -445,3 +445,20 @@ class InfectionInterface:
             self.pine.write_int8(offset + 0xa44c0c, unlocked_words & ~(2 ** (word % 8)))
         else:
             self.pine.write_int8(offset + 0xa44c0c, unlocked_words | 2 ** (word % 8))
+
+    def email_state(self, offset: int, value: int | None = None) -> int | None:
+        BASE_ADDR: int = 0xa41c34
+        # print(f"Email state: {hex(BASE_ADDR + offset)}: {bin(pine.read_int8(BASE_ADDR + offset))}")
+        try:
+            if value is None:
+                return self.pine.read_int8(BASE_ADDR + offset)
+            self.pine.write_int8(BASE_ADDR + offset, value)
+        except (RuntimeError, ConnectionError):
+            return None
+
+    async def scan_emails(self) -> None:
+        """Reads all received emails"""
+        for i in range(0, 0x140):
+            curr = self.email_state(i)
+            if curr == 2:
+                self.email_state(i, 4)

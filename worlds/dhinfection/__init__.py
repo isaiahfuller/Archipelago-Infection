@@ -213,6 +213,9 @@ class InfectionWorld(World):
     def set_list_rules(self, location, wordlist):
         add_rule(self.multiworld.get_location(location, self.player),
                  lambda state: state.has(get_wordlist_name(wordlist), self.player))
+        if wordlist in ThetaWordList:
+            add_rule(self.multiworld.get_location(location, self.player),
+                     lambda state: state.has(ServerNames.Theta.value, self.player))
         return
 
     def set_stats_rules(self, stats):
@@ -280,6 +283,8 @@ class InfectionWorld(World):
                  lambda state: state.has(CharacterNames.Mistral.value, self.player))
         add_rule(self.multiworld.get_location(Ev.MistralMeetUp.value, self.player),
                  lambda state: state.can_reach_location(Ev.PirosDiary.value, self.player))
+        add_rule(self.multiworld.get_location(Ev.MistralMeetUp.value, self.player),
+                 lambda state: state.has(ServerNames.Theta.value, self.player))
 
         self.set_list_rules(Ev.Epitaph00.value, ThetaWordList.CursedDespairedParadise)
         add_rule(self.multiworld.get_location(Ev.Epitaph00.value, self.player),
@@ -299,7 +304,7 @@ class InfectionWorld(World):
 
         self.set_list_rules(Ev.SkeithDefeated.value, ThetaWordList.ChosenHopelessNothingness)
         add_rule(self.multiworld.get_location(Ev.SkeithDefeated.value, self.player),
-                 lambda state: state.can_reach_location(Ev.EpitaphQ.value, self.player))
+                 lambda state: state.can_reach_location(Ev.MeetAlf.value, self.player))
         add_rule(self.multiworld.get_location(Ev.SkeithDefeated.value, self.player),
                  lambda state: state.can_reach_location(PlayStatNames.KiteLevel.value + "20", self.player))
 
