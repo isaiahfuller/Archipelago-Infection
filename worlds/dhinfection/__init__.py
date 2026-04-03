@@ -257,7 +257,7 @@ class InfectionWorld(World):
         add_rule(self.multiworld.get_location(Ev.BoardProtected.value, self.player),
                  lambda state: state.can_reach_location(PlayStatNames.KiteLevel.value + "5", self.player))
 
-        self.set_list_rules(Ev.BlackRoseDungeon.value, ThetaWordList.CollapsedMomentarySpiral)
+        self.set_list_rules(Ev.BlackRoseDungeon.value, ThetaWordList.QuietEternalWhiteDevil)
         # add_rule(self.multiworld.get_location(Ev.BlackRoseDungeon.value, self.player), lambda state: state.has(CharacterNames.BlackRose.value, self.player))
         add_rule(self.multiworld.get_location(Ev.BlackRoseDungeon.value, self.player),
                  lambda state: state.can_reach_location(Ev.BoardProtected.value, self.player))
