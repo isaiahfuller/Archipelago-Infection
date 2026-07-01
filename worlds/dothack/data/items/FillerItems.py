@@ -1,6 +1,5 @@
 from enum import Enum
 
-
 class Consumables(Enum):
     HealthDrink = {"id": 0x000a0000}
     HealthPotion = {"id": 0x000a0001}
@@ -53,3 +52,6 @@ class GruntyFood(Enum):
     BearCatEgg = {"id": 0xA406F3}
     InvisibleEgg = {"id": 0xA406F4}
     BloodyEgg = {"id": 0xA406F5}
+
+class InfectionLevel(Enum):
+    InfectionLevel = {"id": 0xA4613E}
