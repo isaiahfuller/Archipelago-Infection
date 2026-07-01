@@ -225,6 +225,7 @@ class DotHackWorld(World):
             slot_data = re_gen_passthrough[self.game]
             self.options.automatically_read_emails.value = slot_data.get(APHelper.automatically_read_emails.value, [])
             stats = {}
+            self.options.monster_hunt = slot_data.get(APHelper.monster_hunt.value, [] )
             self.options.kite_class.value = slot_data.get(APHelper.kite_class.value, [])
             stats[PlayStatNames.AreasVisited.name] = self.options.areas_visited.value
             stats[PlayStatNames.ChestsOpened.name] = self.options.chests.value
@@ -236,6 +237,7 @@ class DotHackWorld(World):
             stats[PlayStatNames.AllDungeonPortalsOpened.name] = self.options.cleared_portals.value
             stats[PlayStatNames.AllFieldPortalsOpened.name] = self.options.cleared_portals.value
             stats[PlayStatNames.PortalsOpened.name] = self.options.opened_portals.value
+            stats[PlayStatNames.MonsterHuntInfection.name] = self.options.monster_hunt.value
             self.playstat_locations = Locations.playstat_gen(stats)
         return is_in_ut
 
