@@ -32,7 +32,7 @@ class Consumables(Enum):
     EmperorsSoul = {"id": 0x000a0014, "weight": 35}
     NobleWine = {"id": 0x000a0015, "weight": 35}
     RiskyCoffee = {"id": 0x000a0016, "weight": 35}
-    RecoveryDrink = {"id": 0x000a0017, "weight": 100}
+    RecoveryDrink = {"id": 0x000a0017, "weight": 10}
     FortuneWire = {"id": 0x000d0000, "weight": 35}
     SpriteOcarina = {"id": 0x000d0001, "weight": 35}
     FairysOrb = {"id": 0x000d0002, "weight": 35}
