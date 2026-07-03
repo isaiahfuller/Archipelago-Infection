@@ -174,7 +174,9 @@ class DotHackWorld(World):
         raise ValueError(f"Could not create item '{item}'")
 
     def get_filler_item_name(self) -> str:
-        return self.random.choice(self.filler_items).name
+        res = self.random.choices(self.filler_items, weights=[item.weight for item in self.filler_items], k=1)
+        # print(f"Creating item: {res[0].name} ({res[0].weight})")
+        return res[0].name if isinstance(res, list) else res.name
 
     def create_items(self):
         # Define items
