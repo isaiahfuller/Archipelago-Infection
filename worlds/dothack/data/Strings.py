@@ -924,7 +924,7 @@ class MonsterNamesInfection(Enum):
     LeadSnakoid196 = "Lead Snakoid"
     RedWyrm200 = "Red Wyrm"
     RedWyrmDataBug202 = "_ed^|}"
-    ParasiteDragon = "Parasite Dragon"
+    ParasiteDragon215 = "Parasite Dragon"
     TwinkleGrass219 = "Twinkle Grass"
     MadGrass220 = "Mad Grass"
     HungryGrass221 = "Hungry Grass"
