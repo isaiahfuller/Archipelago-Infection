@@ -8,8 +8,25 @@ class InfectionEventAttributes(TypedDict):
     volumes: list[int]
 
 
+class InfectionMonsterAttributes(TypedDict):
+    address: int
+    bits: int
+    volumes: list[int]
+
+
 class InfectionEventBase(Enum):
     _value_: InfectionEventAttributes
+
+    @classmethod
+    def from_address(self, address: int):
+        for member in self:
+            if member.value["address"] == address:
+                return member
+        return None
+
+
+class InfectionMonsterBase(Enum):
+    _value_: InfectionMonsterAttributes
 
     @classmethod
     def from_address(self, address: int):
@@ -52,3 +69,12 @@ class InfectionOptionalPartyMembers(InfectionEventBase):
     Gardenia = {"address": 0xa450a2, "bits": 0b00000100, "volumes": [1]}
     Natsume = {"address": 0xa450b0, "bits": 0b10000000, "volumes": [1]}
     GracefulBook = {"address": 0xa450a9, "bits": 0b00000001, "volumes": [1]}
+
+
+class MonsterHunt1(InfectionMonsterBase):
+    Razine1 = {"address": 0xa46287, "bits": 0b00000001, "volumes": [1]}
+    Swordmanoid2 = {"address": 0xa46288, "bits": 0b00000001, "volumes": [1]}
+    Gladiator3 = {"address": 0xa46289, "bits": 0b00000001, "volumes": [1]}
+    Ochimusha4 = {"address": 0xa4628a,"bits": 0b00000001, "volumes": [1]}
+    HeavyMetal6 = {"address": 0xa4628c, "bits": 0b00000001, "volumes": [1]}
+    DarkRider8 = {"address": 0xa46288, "bits": 0b00000001, "volumes": [1]}

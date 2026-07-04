@@ -1,13 +1,14 @@
 from abc import ABC
 from typing import Dict
 
-from .Strings import ItemNames, EventNames, PlayStatNames
+from .Strings import ItemNames, EventNames, PlayStatNames, MonsterNamesInfection
 
 
 class VolumeAddresses(ABC):
     Items: Dict[str, int]
     Events: Dict[str, int]
     PlayStats: Dict[str, int]
+    MonsterNames: Dict[str, int]
     AreaWords: int
     WordLists: int
     Storage: int
@@ -86,7 +87,14 @@ class InfectionAddresses(VolumeAddresses):
         PlayStatNames.TotalDataDrains.name: 0xa4622e,
         PlayStatNames.KiteLevel.name: 0xa46e66,
     }
-
+    MonsterNames = {
+        MonsterNamesInfection.Razine1.name: 0xa46287,
+        MonsterNamesInfection.Swordmanoid2.name: 0xa46288,
+        MonsterNamesInfection.Gladiator3.name: 0xa46289,
+        MonsterNamesInfection.Ochimusha4.name: 0xa4628a,
+        MonsterNamesInfection.HeavyMetal6.name: 0xa4628c,
+        MonsterNamesInfection.DarkRider8.name: 0xa4628e,
+    }
 
 class MutationAddresses(VolumeAddresses):
     """"""

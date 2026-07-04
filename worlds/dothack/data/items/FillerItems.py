@@ -103,8 +103,11 @@ class Consumables(Enum):
     FortuneWire = {"id": 0x000d0000}
     SpriteOcarina = {"id": 0x000d0001}
     FairysOrb = {"id": 0x000d0002}
-
-
+    ##Gott Treasures - Infection
+    GruntDoll = {"id": 0x000E0000}
+    RainbowCard = {"id": 0x000E0001}
+    YellowCandy = {"id": 0x000E0002}
+    SilverScarab = {"id": 0x000E0003}
 class VirusCores(Enum):
     VirusCoreA = {"id": 0xa406cc}
     VirusCoreB = {"id": 0xa406cd}

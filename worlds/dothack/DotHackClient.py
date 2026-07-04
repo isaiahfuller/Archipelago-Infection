@@ -119,6 +119,7 @@ class InfectionContext(SuperContext):  # pyrefly: ignore
     volume: int = 1
     settings: InfectionSettings
     kite_class: int = 0
+    monster_hunt: bool = False
     automatically_read_emails: bool = False
     completion_condition: int = 0
     opened_portals: int = 100
@@ -136,6 +137,7 @@ class InfectionContext(SuperContext):  # pyrefly: ignore
         Utils.init_logging(APConsole.Info.client_name_clean.value + self.client_version)
         self.settings = get_settings().get("dothack_options", {})
         self.kite_class = self.settings.get("kite_class", 0)
+        self.monster_hunt = self.settings.get("monster_hunt", False)
         self.automatically_read_emails = self.settings.get("automatically_read_emails", False)
         self.completion_condition = self.settings.get("completion_condition", 0)
         self.opened_portals = self.settings.get("opened_portals", 100)
@@ -175,6 +177,7 @@ class InfectionContext(SuperContext):  # pyrefly: ignore
             self.data_drains = data.get(APHelper.data_drains.value, self.data_drains)
             self.kite_levels = data.get(APHelper.kite_levels.value, self.kite_levels)
             self.kite_class = data.get(APHelper.kite_class.value, self.kite_class)
+            self.monster_hunt = data.get(APHelper.monster_hunt.value, self.monster_hunt)
 
             if APHelper.version.value in data:
                 world_ver: str = data[APHelper.version.value]

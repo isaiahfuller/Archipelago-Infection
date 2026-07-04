@@ -279,6 +279,11 @@ class ItemNames(Enum):
     FortuneWire = "Fortune Wire"
     SpriteOcarina = "Sprite Ocarina"
     FairysOrb = "Fairy's Orb"
+    ##Gott Treasures
+    GruntDoll = "Grunt Doll"
+    RainbowCard = "Rainbow Card"
+    YellowCandy = "Yellow Candy"
+    SilverScarab = "Silver Scarab"
     ## Weapons Start
     ## Twin Blades - Infection
     AmateurBlades = "Amateur Blades"

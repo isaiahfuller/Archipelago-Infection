@@ -17,13 +17,13 @@ from .data.Items import InfectionWordListItem as WordListItem, PartyMemberItem, 
 from .data.Items import PartyMemberItems
 from .data.Items import ServerItems
 from .data.Items import WordListItems, RyuBookItems
-from .data.Strings import APConsole, Meta, GameStateNames, EventNames
+from .data.Strings import APConsole, Meta, GameStateNames, EventNames, MonsterNamesInfection
 from .data.items.AreaWords import AreaWords
 from .data.items.PartyMembers import PartyMembers
 from .data.items.RyuBooks import RyuBooks
 from .data.items.Servers import Servers
 from .data.locations.Events import InfectionStoryEvents as StoryEvents, InfectionGoldenGoblins as GoldenGoblins, \
-    InfectionOptionalPartyMembers as OptionalPartyMembers
+    InfectionOptionalPartyMembers as OptionalPartyMembers, MonsterHunt1
 from .data.locations.WordList import InfectionDeltaWordList as DeltaWordList, InfectionThetaWordList as ThetaWordList, \
     WordListBase, get_wordlist_name
 from .pcsx2_interface.pine import Pine
@@ -129,14 +129,14 @@ class DotHackInterface:
 
         # Ryu Books have been changed to items
         # # Give Ryu Books
-        # self.pine.write_int8(0xA407DD, 1)
-        # self.pine.write_int8(0xA407DE, 1)
-        # self.pine.write_int8(0xA407DF, 1)
-        # self.pine.write_int8(0xA407E0, 1)
-        # self.pine.write_int8(0xA407E1, 1)
-        # self.pine.write_int8(0xA407E2, 1)
-        # self.pine.write_int8(0xA407E3, 1)
-        # self.pine.write_int8(0xA407E4, 1)
+        ##self.pine.write_int8(0xA407DD, 1)
+        ##self.pine.write_int8(0xA407DE, 1)
+        ##self.pine.write_int8(0xA407DF, 1)
+        ##self.pine.write_int8(0xA407E0, 1)
+        ##self.pine.write_int8(0xA407E1, 1)
+        ##self.pine.write_int8(0xA407E2, 1)
+        ##self.pine.write_int8(0xA407E3, 1)
+        ##self.pine.write_int8(0xA407E4, 1)
 
         # Add starting lists
         self.pine.write_int8(0xA44CC6, 0x0e)
@@ -256,6 +256,16 @@ class DotHackInterface:
             loc_id = get_location_id(name)
             if loc_id is None:
                 continue
+            addr_check(addr, bitflags, loc_id)
+
+            # Monster Hunt
+        for monster_hunt in MonsterHunt1:
+            name: str = MonsterNamesInfection[monster_hunt.name].value
+            addr: int = self.addresses.Events[monster_hunt.name]
+            bitflags: int = monster_hunt.value["bits"]
+            loc_id = get_location_id(name)
+            if loc_id is None:
+              continue
             addr_check(addr, bitflags, loc_id)
 
         # Ryu Book stats
