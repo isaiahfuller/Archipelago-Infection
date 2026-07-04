@@ -2,13 +2,13 @@ from enum import Enum
 from typing import TypedDict
 
 
-class WeaponAttributes(TypedDict):
+class EquipmentAttributes(TypedDict):
     id: int
     volumes: list[int]
 
 
 class Weapons(Enum):
-    _value_: WeaponAttributes
+    _value_: EquipmentAttributes
     # Twin Blades - Infection
     AmateurBlades = {"id": 0x00000000, "volumes": [1]}
     SteelBlades = {"id": 0x00000001, "volumes": [1]}
@@ -141,4 +141,102 @@ class Weapons(Enum):
     AlmightyWand = {"id": 0x00050011, "volumes": [1]}
     GroovyStick = {"id": 0x000500012, "volumes": [1]}
     StarStormWand = {"id": 0x000500013, "volumes": [1]}
-    # Rings
+
+class Armors(Enum):
+    _value_: EquipmentAttributes
+    # Light Headgear - Infection
+    Bandana = {"id": 0x00060000, "volumes": [1]}
+    SteelCap = {"id": 0x00060001, "volumes": [1]}
+    CougarBandana = {"id": 0x00060002, "volumes": [1]}
+    RaccooonEarcap = {"id": 0x00060003, "volumes": [1]}
+    NewtNecklace = {"id": 0x00060004, "volumes": [1]}
+    ScarabEarring = {"id": 0x00060005, "volumes": [1]}
+    ThunderTorque = {"id": 0x00060006, "volumes": [1]}
+    # Medium Headgear - Infection
+    NomadsHood = {"id": 0x00060014, "volumes": [1]}
+    GuardCap = {"id": 0x00060015, "volumes": [1]}
+    HuntersHood = {"id": 0x00060016, "volumes": [1]}
+    IceHunterCap = {"id": 0x00060017, "volumes": [1]}
+    FireDanceHat = {"id": 0x00060018, "volumes": [1]}
+    PeasantsCap = {"id": 0x00060019, "volumes": [1]}
+    LightningCap = {"id": 0x0006001A, "volumes": [1]}
+    # Heavy Headgear - Infection
+    HeadGear = {"id": 0x00060028, "volumes": [1]}
+    FaceGuard = {"id": 0x00060029, "volumes": [1]}
+    MountainHelm = {"id": 0x0006002A, "volumes": [1]}
+    IceHelm = {"id": 0x0006002B, "volumes": [1]}
+    FireHelm = {"id": 0x0006002C, "volumes": [1]}
+    ForesterHelm = {"id": 0x0006002D, "volumes": [1]}
+    StormlordHelm = {"id": 0x0006002E, "volumes": [1]}
+    # Light Body Armor - Infection
+    LeatherCoat = {"id": 0x00070000, "volumes": [1]}
+    NobleCloak = {"id": 0x00070001, "volumes": [1]}
+    HikingGear = {"id": 0x00070002, "volumes": [1]}
+    WinterCoat = {"id": 0x00070003, "volumes": [1]}
+    FiremansCoat = {"id": 0x00070004, "volumes": [1]}
+    LincolnGreen = {"id": 0x00070005, "volumes": [1]}
+    ThunderCloak = {"id": 0x00070006, "volumes": [1]}
+    # Medium Body Armor - Infection
+    LeatherArmor = {"id": 0x00070014, "volumes": [1]}
+    RingMail = {"id": 0x00070015, "volumes": [1]}
+    WyrmHide = {"id": 0x00070016, "volumes": [1]}
+    WyrmScale = {"id": 0x00070017, "volumes": [1]}
+    FiredrakeMail = {"id": 0x00070018, "volumes": [1]}
+    HolyTreeMail = {"id": 0x00070019, "volumes": [1]}
+    QuakebeastFur = {"id": 0x0007001A, "volumes": [1]}
+    # Heavy Body Armor - Infection
+    Brigandine = {"id": 0x00070028, "volumes": [1]}
+    PlateArmor = {"id": 0x00070029, "volumes": [1]}
+    GrandArmor = {"id": 0x0007002A, "volumes": [1]}
+    FrostArmor = {"id": 0x0007002B, "volumes": [1]}
+    BlazeArmor = {"id": 0x0007002C, "volumes": [1]}
+    SpiritArmor = {"id": 0x0007002D, "volumes": [1]}
+    ThunderArmor = {"id": 0x0007002E, "volumes": [1]}
+    # Light Hand Armor
+    WristBand = {"id": 0x00080000, "volumes": [1]}
+    SilverBracer = {"id": 0x00080001, "volumes": [1]}
+    FossilBracer = {"id": 0x00080002, "volumes": [1]}
+    FrostBracer = {"id": 0x00080003, "volumes": [1]}
+    FireBracer = {"id": 0x00080004, "volumes": [1]}
+    AirBracer = {"id": 0x00080005, "volumes": [1]}
+    StormBracer = {"id": 0x00080006, "volumes": [1]}
+    # Medium Hand Armor
+    LeatherGloves = {"id": 0x00080014, "volumes": [1]}
+    SilverGloves = {"id": 0x00080015, "volumes": [1]}
+    MinersGloves = {"id": 0x00080016, "volumes": [1]}
+    FishingGloves = {"id": 0x00080017, "volumes": [1]}
+    SmithsGloves = {"id": 0x00080018, "volumes": [1]}
+    ForestGloves = {"id": 0x00080019, "volumes": [1]}
+    ThunderGloves = {"id": 0x0008001A, "volumes": [1]}
+    # Heavy Hand Armor
+    RustedHands = {"id": 0x00080028, "volumes": [1]}
+    SilverHands = {"id": 0x00080029, "volumes": [1]}
+    HandsOfEarth = {"id": 0x0008002A, "volumes": [1]}
+    HandsOfWater = {"id": 0x0008002B, "volumes": [1]}
+    HandsOfFire = {"id": 0x0008002C, "volumes": [1]}
+    HandsOfWood = {"id": 0x0008002D, "volumes": [1]}
+    HandsOfStorm = {"id": 0x0008002E, "volumes": [1]}
+    # Light Leg Armor
+    Sandals = {"id": 0x00090000, "volumes": [1]}
+    LegMail = {"id": 0x00090001, "volumes": [1]}
+    CeramicAnklet = {"id": 0x00090002, "volumes": [1]}
+    FrostAnklet = {"id": 0x00090003, "volumes": [1]}
+    IronAnklet = {"id": 0x00090004, "volumes": [1]}
+    OakAnklet = {"id": 0x00090005, "volumes": [1]}
+    ThunderAnklet = {"id": 0x00090006, "volumes": [1]}
+    # Medium Leg Armor
+    SafetyShoes = {"id": 0x00090014, "volumes": [1]}
+    JungleBoots = {"id": 0x00090015, "volumes": [1]}
+    MountainBoots = {"id": 0x00090016, "volumes": [1]}
+    SnowPanther = {"id": 0x00090017, "volumes": [1]}
+    FireLizard = {"id": 0x00090018, "volumes": [1]}
+    RangersBoots = {"id": 0x00090019, "volumes": [1]}
+    ThunderBoots = {"id": 0x0009001A, "volumes": [1]}
+    # Heavy Leg Armor
+    UsedGreaves = {"id": 0x00090028, "volumes": [1]}
+    LeatherLegs = {"id": 0x00090029, "volumes": [1]}
+    MountainGuard = {"id": 0x0009002A, "volumes": [1]}
+    AquaGuard = {"id": 0x0009002B, "volumes": [1]}
+    FlareGuard = {"id": 0x0009002C, "volumes": [1]}
+    GreenGuard = {"id": 0x0009002D, "volumes": [1]}
+    ElectricGuard = {"id": 0x0009002E, "volumes": [1]}

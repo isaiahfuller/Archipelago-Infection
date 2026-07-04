@@ -13,7 +13,7 @@ from .data.Addresses import VolumeAddresses, InfectionAddresses, MutationAddress
     QuarantineAddresses
 from .data.GameState import InfectionGameState as GameState
 from .data.Items import InfectionWordListItem as WordListItem, PartyMemberItem, ServerItem, ConsumableItem, \
-    VirusCoreItem, RyuBookItem, GruntyFoodItem, InfectionLevelItem, WeaponItem
+    VirusCoreItem, RyuBookItem, GruntyFoodItem, InfectionLevelItem, WeaponItem, ArmorItem
 from .data.Items import PartyMemberItems
 from .data.Items import ServerItems
 from .data.Items import WordListItems, RyuBookItems
@@ -313,6 +313,9 @@ class DotHackInterface:
                 elif isinstance(item, WeaponItem):
                     """Add weapon to storage"""
                     self.add_weapon(item)
+                elif isinstance(item, ArmorItem):
+                    """Add armor to storage"""
+                    self.add_armor(item)
                 elif isinstance(item, VirusCoreItem):
                     """Add item to inventory"""
                     self.add_key(self.addresses.Items[item.virus_core.name])
@@ -390,6 +393,20 @@ class DotHackInterface:
     def add_weapon(self, item_obj: WeaponItem) -> None:
         addr: int = self.addresses.Storage
         item: int = item_obj.weapon.value["id"]
+        for i in range(addr, addr + 396, 4):
+            curr: int = self.pine.read_int32(i)
+            amt: int = self.pine.read_int8(i+3)
+            if curr | 0xff000000 == item | 0xff000000:
+                self.pine.write_int8(i+3, amt + 1)
+                return
+            if curr == 0x00ffffff:
+                self.pine.write_int32(i, item)
+                self.pine.write_int8(i+3, 1)
+                break
+
+    def add_armor(self, item_obj: ArmorItem) -> None:
+        addr: int = self.addresses.Storage
+        item: int = item_obj.armor.value["id"]
         for i in range(addr, addr + 396, 4):
             curr: int = self.pine.read_int32(i)
             amt: int = self.pine.read_int8(i+3)
