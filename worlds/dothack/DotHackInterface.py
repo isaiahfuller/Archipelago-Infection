@@ -261,7 +261,7 @@ class DotHackInterface:
             # Monster Hunt
         for monster_hunt in MonsterHunt1:
             name: str = MonsterNamesInfection[monster_hunt.name].value
-            addr: int = self.addresses.Events[monster_hunt.name]
+            addr: int = self.addresses.MonsterNames[monster_hunt.name]
             bitflags: int = monster_hunt.value["bits"]
             loc_id = get_location_id(name)
             if loc_id is None:
