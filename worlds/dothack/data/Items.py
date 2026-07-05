@@ -1,3 +1,4 @@
+from typing import Optional
 from collections.abc import Sequence
 from abc import ABC
 
@@ -17,6 +18,11 @@ from .Addresses import InfectionAddresses as Addresses
 
 class InfectionItem(Item):
     game: str = str(Meta.game.value)
+    weight: float = 50
+
+    def __init__(self, name: str, classification: ItemClassification, code: Optional[int], player: int, weight: float = 50):
+        super().__init__(name, classification, code, player)
+        self.weight: float = weight
 
 
 class InfectionItemMeta(ABC):
@@ -96,13 +102,15 @@ class ConsumableItem(InfectionItemMeta):
         self.item_id = (address * 38) + item.value["id"]
         self.classification = ItemClassification.filler
         self.consumable = item
+        self.weight = item.value["weight"]
 
     def to_item(self, player: int) -> InfectionItem:
         return InfectionItem(
             name=self.name,
             code=self.item_id,
             player=player,
-            classification=self.classification
+            classification=self.classification,
+            weight=self.weight
         )
 
 class WeaponItem(InfectionItemMeta):
@@ -147,13 +155,15 @@ class VirusCoreItem(InfectionItemMeta):
         self.item_id = (address * 94) + item.value["id"]
         self.classification = ItemClassification.filler
         self.virus_core = item
+        self.weight = item.value["weight"]
 
     def to_item(self, player: int) -> InfectionItem:
         return InfectionItem(
             name=self.name,
             code=self.item_id,
             player=player,
-            classification=self.classification
+            classification=self.classification,
+            weight=self.weight
         )
 
 class GruntyFoodItem(InfectionItemMeta):
@@ -164,13 +174,15 @@ class GruntyFoodItem(InfectionItemMeta):
         self.item_id = (address * 16) + item.value["id"]
         self.classification = ItemClassification.filler
         self.grunty_food = item
+        self.weight = item.value["weight"]
 
     def to_item(self, player: int) -> InfectionItem:
         return InfectionItem(
             name=self.name,
             code=self.item_id,
             player=player,
-            classification=self.classification
+            classification=self.classification,
+            weight=self.weight
         )
 class RyuBookItem(InfectionItemMeta):
     ryu_book: RyuBooks
