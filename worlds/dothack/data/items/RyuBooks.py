@@ -1,6 +1,6 @@
 from enum import Enum
 from BaseClasses import ItemClassification
-from ..locations.PlayStats import PlayStats
+from ..locations.PlayStats import PlayStats, MonsterHuntInfection
 
 
 class RyuBooks(Enum):
@@ -25,7 +25,7 @@ class RyuBooks(Enum):
     RyuBookI = [PlayStats.AreasVisited]
     RyuBookII = [PlayStats.PortalsOpened, PlayStats.AllFieldPortalsOpened, PlayStats.AllDungeonPortalsOpened]
     RyuBookIII = []
-    RyuBookIV = []
+    RyuBookIV = [MonsterHuntInfection]
     RyuBookV = []
     RyuBookVI = [PlayStats.GottOpened, PlayStats.ChestsOpened, PlayStats.BreakablesBroken]
     RyuBookVII = [PlayStats.SymbolsActivated]
