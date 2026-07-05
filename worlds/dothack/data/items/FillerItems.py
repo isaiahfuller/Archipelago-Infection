@@ -63,3 +63,6 @@ class GruntyFood(Enum):
     BearCatEgg = {"id": 0xA406F3, "weight": 25}
     InvisibleEgg = {"id": 0xA406F4, "weight": 25}
     BloodyEgg = {"id": 0xA406F5, "weight": 25}
+
+class InfectionLevel(Enum):
+    InfectionLevel = {"id": 0xA4613E, "weight": 25}
