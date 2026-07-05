@@ -41,7 +41,7 @@ class CompletionCondition(Choice):
 
 class MonsterHunt(Toggle):
     """
-    Gain a check for each new monster you fight. NONFUNCTIONAL
+    Gain a check for each new monster you defeat. NONFUNCTIONAL
     """
     display_name = "Monster Hunt"
 
