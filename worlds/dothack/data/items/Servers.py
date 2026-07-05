@@ -7,6 +7,7 @@ class ServerAttributes(TypedDict):
     id: int
     classifications: dict[int, ItemClassification]
     volumes: list[int]
+    weight: int
 
 
 class Servers(Enum):
@@ -18,8 +19,8 @@ class Servers(Enum):
             if member.value["id"] == id:
                 return member
         return None
-    Delta = {"id": 0, "classifications": {1: ItemClassification.progression}, "volumes": [1]}
-    Theta = {"id": 1, "classifications": {1: ItemClassification.progression}, "volumes": [1]}
-    Lambda = {"id": 2, "classifications": {1: ItemClassification.useful}, "volumes": [1]}
-    Sigma = {"id": 3, "classifications": {1: ItemClassification.useful}, "volumes": [1]}
-    Omega = {"id": 4, "classifications": {1: ItemClassification.useful}, "volumes": [1]}
+    Delta = {"id": 0, "classifications": {1: ItemClassification.progression}, "volumes": [1], "weight": 88 }
+    Theta = {"id": 1, "classifications": {1: ItemClassification.progression}, "volumes": [1], "weight": 93 }
+    Lambda = {"id": 2, "classifications": {1: ItemClassification.useful}, "volumes": [1], "weight": 96 }
+    Sigma = {"id": 3, "classifications": {1: ItemClassification.useful}, "volumes": [1], "weight": 98 }
+    Omega = {"id": 4, "classifications": {1: ItemClassification.useful}, "volumes": [1], "weight": 99 }

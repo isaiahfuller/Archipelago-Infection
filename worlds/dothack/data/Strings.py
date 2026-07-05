@@ -284,6 +284,41 @@ class ItemNames(Enum):
     RainbowCard = "Rainbow Card"
     YellowCandy = "Yellow Candy"
     SilverScarab = "Silver Scarab"
+    ## Rare Items
+    PowerBook = "Power Book"
+    ToleranceBook = "Tolerance Book"
+    InsightBook = "Insight Book"
+    SpiritualBook = "Spiritual Book"
+    GracefulBook = "Graceful Book"
+    SwiftBook = "Swift Book"
+    FengShui = "Feng Shui"
+    WaterMagic = "Water Magic"
+    FireMagic = "Fire Magic"
+    WoodMagic = "Wood Magic"
+    ThunderMagic = "Thunder Magic"
+    BlackMagic = "Black Magic"
+    SecretMight = "Secret: Might"
+    SecretRigid = "Secret: Rigid"
+    SecretAwaken = "Secret: Awaken"
+    SecretReason = "Secret: Reason"
+    SecretDivine = "Secret: Divine"
+    SecretThief = "Secret: Thief"
+    Earthlore = "Earthlore"
+    Sealore = "Sealore"
+    Firelore = "Firelore"
+    Forestlore = "Forestlore"
+    Stormlore = "Stormlore"
+    Darklore = "Darklore"
+    PirosDiary = "Piros' Diary"
+    BLYokohama = "BL Yokohama"
+    BookOfIdeals = "Book of Ideals"
+    BookOfIdeas = "Book of Ideas"
+    SecretSage = "Secret: Sage"
+    SecretDreams = "Secret: Dreams"
+    GoldenGrunty = "Golden Grunty"
+    SilverGrunty = "Silver Grunty"
+    EnergySutras = "Energy Sutras"
+    SpiritSutras = "Spirit Sutras"
     ## Weapons Start
     ## Twin Blades - Infection
     AmateurBlades = "Amateur Blades"
@@ -306,6 +341,13 @@ class ItemNames(Enum):
     MasterBlades = "Master Blades"
     HellsGate = "Hell's Gate"
     DantesBlades = "Dante's Blades"
+    ## Rare Twin Blades - Infection
+    SpiralEdge = "Spiral Edge"
+    RustyNails = "Rusty Nails"
+    TimeBlades = "Time Blades"
+    SoulBlades = "Soul's Blades"
+    BomBaYe = "Bom-Ba-Ye"
+    Hyakkidouran = "Hyakkidouran"
     ## Blades - Infection
     BasicSword = "Basic Sword"
     BraveSword = "Brave Sword"
@@ -327,6 +369,9 @@ class ItemNames(Enum):
     Steelblade = "Steelblade"
     Glitter = "Glitter"
     SealSword = "Seal Sword"
+    # Rare Blades - Infection
+    Jinsaran = "Jinsaran"
+    PhoenixsWing = "Phoenix's Wing"
     ## Heavy Blades - Infection
     Adventurer = "Adventurer"
     Kikuichimonji = "Kikuichimonji"
@@ -354,6 +399,10 @@ class ItemNames(Enum):
     LifeSword = "Life Sword"
     FlameSword = "Flame Sword"
     DryadsSword = "Dryad's Sword"
+    # Rare Heavy Blades - Infection
+    KotetsuSword = "Kotetsu Sword"
+    Sakabatou = "Sakabatou"
+    Shikisokuzeku = "Shikisokuzeku"
     ## Heavy Axes - Infection
     Hatchet = "Hatchet"
     ShortSwing = "Short Swing"
@@ -375,6 +424,9 @@ class ItemNames(Enum):
     MastersAxe = "Master's Axe"
     PapillonAxe = "Papillon Axe"
     DevilsAxe = "Devil's Axe"
+    # Rare Heavy Axes - Infection
+    GiantHill = "Giant Hill"
+    AxeBomber = "Axe Bomber"
     ## Spears - Infection
     BronzeSpear = "Bronze Spear"
     IronSpear = "Iron Spear"
@@ -396,6 +448,9 @@ class ItemNames(Enum):
     Sleipner = "Sleipner"
     FairySpear = "Fairy Spear"
     FiendSpear = "Fiend Spear"
+    # Rare Spears - Infection
+    MilliondollarSpear = "Million$ Spear"
+    ScarletAutumn = "Scarlet Autumn"
     ## Wands - Infection
     CypressWand = "Cypress Wand"
     IronRod = "Iron Rod"
@@ -417,12 +472,15 @@ class ItemNames(Enum):
     AlmightyWand = "Almighty Wand"
     GroovyStick = "Groovy Stick"
     StarStormWand = "Star Storm Wand"
+    # Rare Wands - Infection
+    JestersWand = "Jester's Wand"
+    DarkHistory = "Dark History"
     ## Armor Start
     ## Headgear - Infection
     Bandana = "Bandana"
     SteelCap = "Steel Cap"
     CougarBandana = "Cougar Bandana"
-    RaccooonEarcap = "Raccooon Earcap"
+    RaccoonEarcap = "Raccoon Earcap"
     NewtNecklace = "Newt Necklace"
     ScarabEarring = "Scarab Earring"
     ThunderTorque = "Thunder Torque"
@@ -440,6 +498,10 @@ class ItemNames(Enum):
     FireHelm = "Fire Helm"
     ForesterHelm = "Forester Helm"
     StormlordHelm = "Stormlord Helm"
+    # Rare Headgear - Infection
+    GoblinCap = "Goblin Cap"
+    CeramicHelm = "Ceramic Helm"
+    TimeHeadband = "Time Headband"
     ## Body Armor - Infection
     LeatherCoat= "Leather Coat"
     NobleCloak = "Noble Cloak"
@@ -462,6 +524,10 @@ class ItemNames(Enum):
     BlazeArmor = "Blaze Armor"
     SpiritArmor = "Spirit Armor"
     ThunderArmor = "Thunder Armor"
+    # Rare Body Armor - Infection
+    Kagayuzen = "Kagayuzen"
+    TimeSash = "Time Sash"
+    GoblinMail = "Goblin Mail"
     ## Hand Armor - Infection
     WristBand = "Wrist Band"
     SilverBracer = "Silver Bracer"
@@ -484,6 +550,9 @@ class ItemNames(Enum):
     HandsOfFire = "Hands of Fire"
     HandsOfWood = "Hands of Wood"
     HandsOfStorm = "Hands of Storm"
+    # Rare Hand Armor - Infection
+    GoblinGloves = "Goblin Gloves"
+    TimeBracer = "Time Bracer"
     # Leg Armor - Infection
     Sandals = "Sandals"
     LegMail = "Leg Mail"
@@ -506,6 +575,9 @@ class ItemNames(Enum):
     FlareGuard = "Flare Guard"
     GreenGuard = "Green Guard"
     ElectricGuard = "Electric Guard"
+    # Rare Leg Armor - Infection
+    GoblinBoots = "Goblin Boots"
+    TimeSandals = "Time Sandals"
     ##Key Items
     VirusCoreA = "Virus Core A"
     VirusCoreB = "Virus Core B"
