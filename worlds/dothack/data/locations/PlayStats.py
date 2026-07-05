@@ -21,6 +21,14 @@ class PlayStats(Enum):
     TotalDataDrains = {"addr": 0xa4622e, "scale": "list", "values": [5, 10, 25, 50, 75, 100]}
     KiteLevel = {"addr": 0xa46e66, "scale": "range", "values": (1, 31)}
 
+class MonsterHuntInfection(Enum):
+    Razine1 = {"addr": 0xa46287, "values": [1]}
+    Swordmanoid2 = {"addr": 0xa46288, "values": [1]}
+    Gladiator3 = {"addr": 0xa46289, "values": [1]}
+    Ochimusha4 = {"addr": 0xa4628a, "values": [1]}
+    HeavyMetal6 = {"addr": 0xa4628c, "values": [1]}
+    DarkRider8 = {"addr": 0xa46288, "values": [1]}
+
 
 # 16 bit
 class Affection(Enum):

@@ -60,6 +60,7 @@ class InfectionAddresses(VolumeAddresses):
         ItemNames.BearCatEgg.name: 0xA406F3,
         ItemNames.InvisibleEgg.name: 0xA406F4,
         ItemNames.BloodyEgg.name: 0xA406F5,
+        ItemNames.InfectionLevel.name: 0xA4613E
 
     }
     Events = {
