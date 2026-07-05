@@ -65,4 +65,4 @@ class GruntyFood(Enum):
     BloodyEgg = {"id": 0xA406F5, "weight": 25}
 
 class InfectionLevel(Enum):
-    InfectionLevel = {"id": 0xA4613E}
+    InfectionLevel = {"id": 0xA4613E, "weight": 25}
