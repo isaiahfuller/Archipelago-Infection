@@ -179,36 +179,37 @@ def infection_rules(world):
              lambda state: state.can_reach_location(Ev.Gardenia.value, world.player))
 
     # Golden Goblin quest
-    set_list_rules(world, Ev.Stehony.value, DeltaWordList.DetestableGoldenSunnyDemon)
+    if world.options.golden_goblins:
+        set_list_rules(world, Ev.Stehony.value, DeltaWordList.DetestableGoldenSunnyDemon)
 
-    set_list_rules(world, Ev.Jonue.value, DeltaWordList.DetestableGoldenMessenger)
-    add_rule(world.multiworld.get_location(get_wordlist_name(DeltaWordList.DetestableGoldenMessenger), world.player),
-             lambda state: state.can_reach_location(Ev.Stehony.value, world.player))
-    add_rule(world.multiworld.get_location(Ev.Jonue.value, world.player),
-             lambda state: state.can_reach_location(Ev.Stehony.value, world.player))
-    add_rule(world.multiworld.get_location(Ev.Jonue.value, world.player),
-             lambda state: state.can_reach_location(Ev.BoardProtected.value, world.player))
+        set_list_rules(world, Ev.Jonue.value, DeltaWordList.DetestableGoldenMessenger)
+        add_rule(world.multiworld.get_location(get_wordlist_name(DeltaWordList.DetestableGoldenMessenger), world.player),
+                 lambda state: state.can_reach_location(Ev.Stehony.value, world.player))
+        add_rule(world.multiworld.get_location(Ev.Jonue.value, world.player),
+                 lambda state: state.can_reach_location(Ev.Stehony.value, world.player))
+        add_rule(world.multiworld.get_location(Ev.Jonue.value, world.player),
+                 lambda state: state.can_reach_location(Ev.BoardProtected.value, world.player))
 
-    set_list_rules(world, Ev.Zyan.value, DeltaWordList.DetestableGoldenScent)
-    add_rule(world.multiworld.get_location(get_wordlist_name(DeltaWordList.DetestableGoldenScent), world.player),
-             lambda state: state.can_reach_location(Ev.Jonue.value, world.player))
-    add_rule(world.multiworld.get_location(Ev.Zyan.value, world.player),
-             lambda state: state.can_reach_location(Ev.Jonue.value, world.player))
-    add_rule(world.multiworld.get_location(Ev.Zyan.value, world.player),
-             lambda state: state.can_reach_location(Ev.ElkMiaFavorite.value, world.player))
+        set_list_rules(world, Ev.Zyan.value, DeltaWordList.DetestableGoldenScent)
+        add_rule(world.multiworld.get_location(get_wordlist_name(DeltaWordList.DetestableGoldenScent), world.player),
+                 lambda state: state.can_reach_location(Ev.Jonue.value, world.player))
+        add_rule(world.multiworld.get_location(Ev.Zyan.value, world.player),
+                 lambda state: state.can_reach_location(Ev.Jonue.value, world.player))
+        add_rule(world.multiworld.get_location(Ev.Zyan.value, world.player),
+                 lambda state: state.can_reach_location(Ev.ElkMiaFavorite.value, world.player))
 
-    set_list_rules(world, Ev.Albert.value, DeltaWordList.DetestableGoldenNewTruth)
-    add_rule(world.multiworld.get_location(get_wordlist_name(DeltaWordList.DetestableGoldenNewTruth), world.player),
-             lambda state: state.can_reach_location(Ev.Zyan.value, world.player))
-    add_rule(world.multiworld.get_location(Ev.Albert.value, world.player),
-             lambda state: state.can_reach_location(Ev.Zyan.value, world.player))
-    add_rule(world.multiworld.get_location(Ev.Albert.value, world.player),
-             lambda state: state.can_reach_location(Ev.MistralMeetUp.value, world.player))
+        set_list_rules(world, Ev.Albert.value, DeltaWordList.DetestableGoldenNewTruth)
+        add_rule(world.multiworld.get_location(get_wordlist_name(DeltaWordList.DetestableGoldenNewTruth), world.player),
+                 lambda state: state.can_reach_location(Ev.Zyan.value, world.player))
+        add_rule(world.multiworld.get_location(Ev.Albert.value, world.player),
+                 lambda state: state.can_reach_location(Ev.Zyan.value, world.player))
+        add_rule(world.multiworld.get_location(Ev.Albert.value, world.player),
+                 lambda state: state.can_reach_location(Ev.MistralMeetUp.value, world.player))
 
-    set_list_rules(world, Ev.Martina.value, DeltaWordList.DetestableGoldenGate)
-    add_rule(world.multiworld.get_location(get_wordlist_name(DeltaWordList.DetestableGoldenGate), world.player),
-             lambda state: state.can_reach_location(Ev.Albert.value, world.player))
-    add_rule(world.multiworld.get_location(Ev.Martina.value, world.player),
-             lambda state: state.can_reach_location(Ev.Albert.value, world.player))
-    add_rule(world.multiworld.get_location(Ev.Martina.value, world.player),
-             lambda state: state.can_reach_location(Ev.SkeithDefeated.value, world.player))
+        set_list_rules(world, Ev.Martina.value, DeltaWordList.DetestableGoldenGate)
+        add_rule(world.multiworld.get_location(get_wordlist_name(DeltaWordList.DetestableGoldenGate), world.player),
+                 lambda state: state.can_reach_location(Ev.Albert.value, world.player))
+        add_rule(world.multiworld.get_location(Ev.Martina.value, world.player),
+                 lambda state: state.can_reach_location(Ev.Albert.value, world.player))
+        add_rule(world.multiworld.get_location(Ev.Martina.value, world.player),
+                 lambda state: state.can_reach_location(Ev.SkeithDefeated.value, world.player))

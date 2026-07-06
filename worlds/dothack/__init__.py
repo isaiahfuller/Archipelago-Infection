@@ -1,3 +1,5 @@
+from worlds.dothack.data.locations.WordList import InfectionDeltaWordList
+from .data.locations.Events import InfectionGoldenGoblins
 from BaseClasses import LocationProgressType, ItemClassification
 from typing import ClassVar, List, cast
 import logging
@@ -68,6 +70,7 @@ class InfectionSettings(settings.Group):
             return self[index]
 
     automatically_read_emails: GamePreferences | bool = False
+    golden_goblins: GenerationPreferences | bool = True
     completion_condition: GenerationPreferences | int = 0
     opened_portals: GenerationPreferences | int = 100
     cleared_portals: GenerationPreferences | int = 10
@@ -146,12 +149,33 @@ class DotHackWorld(World):
     def create_regions(self):
         main_region = Region("Menu", self.player, self.multiworld)
         self.multiworld.regions.append(main_region)
+        excluded_events = set()
+        excluded_wordlists = set()
+
+        if not self.options.golden_goblins.value:
+            excluded_events.update(InfectionGoldenGoblins)
+            excluded_wordlists.update([
+                InfectionDeltaWordList.DetestableGoldenSunnyDemon,
+                InfectionDeltaWordList.DetestableGoldenMessenger,
+                InfectionDeltaWordList.DetestableGoldenScent,
+                InfectionDeltaWordList.DetestableGoldenNewTruth,
+                InfectionDeltaWordList.DetestableGoldenGate
+            ])
+
+        print(f"Excluded Locations: {excluded_events}")
+        print(f"Excluded Wordlists: {excluded_wordlists}")
 
         v_data = VOLUME_DATA[self.options.volume.value]
 
         for loc_meta in self.playstat_locations:
+            if loc_meta.stat in excluded_events:
+                print(f"Excluding PlayStat Location: {loc_meta.name}")
+                continue
             main_region.locations.append(loc_meta.to_location(self.player, main_region))
         for loc_meta in v_data.event_locations:
+            if loc_meta.event in excluded_events:
+                print(f"Excluding Event Location: {loc_meta.name}")
+                continue
             if loc_meta.event == Locations.CompletionConditions.SkeithDefeated and self.options.completion_condition == 1:
                 loc_meta.progress_type = LocationProgressType.EXCLUDED
             if loc_meta.event == Locations.CompletionConditions.ParasiteDragonDefeated and self.options.completion_condition == 0:
@@ -159,6 +183,9 @@ class DotHackWorld(World):
             loc = loc_meta.to_location(self.player, main_region)
             main_region.locations.append(loc)
         for loc_meta in v_data.wordlist_locations:
+            if loc_meta.wordlist in excluded_wordlists:
+                print(f"Excluding Wordlist Location: {loc_meta.name}")
+                continue
             if loc_meta.wordlist == DeltaWordList.HideousSomeonesGiant and self.options.completion_condition == 0:
                 loc_meta.progress_type = LocationProgressType.EXCLUDED
             loc = loc_meta.to_location(self.player, main_region)
@@ -227,7 +254,7 @@ class DotHackWorld(World):
             slot_data = re_gen_passthrough[self.game]
             self.options.automatically_read_emails.value = slot_data.get(APHelper.automatically_read_emails.value, [])
             stats = {}
-            self.options.monster_hunt = slot_data.get(APHelper.monster_hunt.value, [] )
+            self.options.monster_hunt = slot_data.get(APHelper.monster_hunt.value, [])
             self.options.kite_class.value = slot_data.get(APHelper.kite_class.value, [])
             stats[PlayStatNames.AreasVisited.name] = self.options.areas_visited.value
             stats[PlayStatNames.ChestsOpened.name] = self.options.chests.value

@@ -62,6 +62,7 @@ class APHelper(Enum):
     kite_levels = "kite_levels"
     kite_class = "kite_class"
     monster_hunt = "monster_hunt"
+    golden_goblins = "golden_goblins"
 
     # Item Groups
     area_words = "Area Words"

@@ -152,13 +152,21 @@ class KiteLevels(Range):
     range_end = 30
     default = 25
 
+class GoldenGoblins(Toggle):
+    """
+    Include the golden goblin side quests in the randomizer.
+    Default: Enabled
+    """
+    display_name = "Include golden goblins"
+
 
 infection_option_groups: dict[str, list] = {
     "Quest Options": [
         Volume,
         KiteClass,
         CompletionCondition,
-        MonsterHunt
+        MonsterHunt,
+        GoldenGoblins
     ],
     "Quality of Life Options": [
         AutomaticallyReadEmails,
@@ -197,6 +205,7 @@ class DotHackOptions(PerGameCommonOptions):
     volume: Volume
     kite_class: KiteClass
     monster_hunt: MonsterHunt
+    golden_goblins: GoldenGoblins
 
 
 def create_option_groups() -> list[OptionGroup]:
@@ -223,4 +232,5 @@ def slot_data_options() -> list[str]:
         APHelper.volume.value,
         APHelper.kite_class.value,
         APHelper.monster_hunt.value,
+        APHelper.golden_goblins.value,
     ]
