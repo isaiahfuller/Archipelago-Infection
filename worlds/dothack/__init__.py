@@ -1,3 +1,4 @@
+from worlds.dothack.data.Strings import CharacterNames
 from BaseClasses import ItemClassification
 from typing import ClassVar, List, cast
 import logging
@@ -10,8 +11,8 @@ from worlds.LauncherComponents import Component, components, launch_subprocess, 
 from .data.Strings import APConsole, APHelper, Meta, PlayStatNames, ServerNames
 from .data import Locations, Items
 from .data.Items import InfectionItem, InfectionItemMeta, ITEMS_MASTER
-from .data.locations.WordList import InfectionDeltaWordList as DeltaWordList, WordListBase, get_wordlist_name
-from .data.locations.Events import InfectionEventBase, InfectionGoldenGoblins
+from .data.locations.WordList import InfectionDeltaWordList as DeltaWordList, InfectionThetaWordList as ThetaWordList, WordListBase, get_wordlist_name
+from .data.locations.Events import InfectionEventBase, InfectionGoldenGoblins, InfectionOptionalPartyMembers
 from .DotHackOptions import DotHackOptions, slot_data_options, create_option_groups
 from .data.DataManager import VOLUME_DATA
 
@@ -71,6 +72,7 @@ class InfectionSettings(settings.Group):
 
     automatically_read_emails: GamePreferences | bool = False
     golden_goblins: GenerationPreferences | bool = True
+    optional_party_members: GenerationPreferences | bool = True
     completion_condition: GenerationPreferences | int = 0
     opened_portals: GenerationPreferences | int = 100
     cleared_portals: GenerationPreferences | int = 10
@@ -162,6 +164,14 @@ class DotHackWorld(World):
                 DeltaWordList.DetestableGoldenNewTruth,
                 DeltaWordList.DetestableGoldenGate
             ])
+        if not self.options.optional_party_members.value:
+            excluded_events.update(InfectionOptionalPartyMembers)
+            excluded_wordlist_locs.update([
+                DeltaWordList.RagingPassionateMelody,
+                ThetaWordList.SoftSolitaryTriPansy,
+                DeltaWordList.HideousDestroyersFarThunder,
+                ThetaWordList.BeautifulSomeonesTreasureGem
+            ])
         if self.options.completion_condition == 0:
             excluded_wordlist_locs.add(DeltaWordList.HideousSomeonesGiant)
             excluded_events.add(Locations.CompletionConditions.ParasiteDragonDefeated)
@@ -228,6 +238,17 @@ class DotHackWorld(World):
                 get_wordlist_name(DeltaWordList.DetestableGoldenScent),
                 get_wordlist_name(DeltaWordList.DetestableGoldenNewTruth),
                 get_wordlist_name(DeltaWordList.DetestableGoldenGate),
+            ])
+
+        if not self.options.optional_party_members.value:
+            excluded_items.update([
+                get_wordlist_name(DeltaWordList.RagingPassionateMelody),
+                get_wordlist_name(ThetaWordList.SoftSolitaryTriPansy),
+                get_wordlist_name(DeltaWordList.HideousDestroyersFarThunder),
+                get_wordlist_name(ThetaWordList.BeautifulSomeonesTreasureGem),
+                CharacterNames.Sanjuro.value,
+                CharacterNames.Gardenia.value,
+                CharacterNames.Natsume.value,
             ])
 
         for item_name in starting_items:

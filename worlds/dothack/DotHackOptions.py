@@ -39,6 +39,7 @@ class CompletionCondition(Choice):
     option_defeat_parasite_dragon = 1
     default = 0
 
+
 class MonsterHunt(Toggle):
     """
     Gain a check for each new monster you fight. NONFUNCTIONAL
@@ -152,12 +153,21 @@ class KiteLevels(Range):
     range_end = 30
     default = 25
 
+
 class GoldenGoblins(Toggle):
     """
     Include the golden goblin side quests in the randomizer.
     Default: Enabled
     """
-    display_name = "Include golden goblins"
+    display_name = "Include golden goblin challenges"
+
+
+class OptionalPartyMembers(Toggle):
+    """
+    Include optional party members in the randomizer.
+    Default: Enabled
+    """
+    display_name = "Include optional party member quests"
 
 
 infection_option_groups: dict[str, list] = {
@@ -165,8 +175,9 @@ infection_option_groups: dict[str, list] = {
         Volume,
         KiteClass,
         CompletionCondition,
+        GoldenGoblins,
+        OptionalPartyMembers,
         MonsterHunt,
-        GoldenGoblins
     ],
     "Quality of Life Options": [
         AutomaticallyReadEmails,
@@ -206,6 +217,7 @@ class DotHackOptions(PerGameCommonOptions):
     kite_class: KiteClass
     monster_hunt: MonsterHunt
     golden_goblins: GoldenGoblins
+    optional_party_members: OptionalPartyMembers
 
 
 def create_option_groups() -> list[OptionGroup]:
@@ -233,4 +245,5 @@ def slot_data_options() -> list[str]:
         APHelper.kite_class.value,
         APHelper.monster_hunt.value,
         APHelper.golden_goblins.value,
+        APHelper.optional_party_members.value,
     ]

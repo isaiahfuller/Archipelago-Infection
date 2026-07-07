@@ -147,36 +147,37 @@ def infection_rules(world):
              lambda state: state.can_reach_location(PlayStatNames.KiteLevel.value + "20", world.player))
 
     # Optional Party Members
-    set_list_rules(world, Ev.Natsume.value, DeltaWordList.RagingPassionateMelody)
-    add_rule(world.multiworld.get_location(get_wordlist_name(DeltaWordList.RagingPassionateMelody), world.player),
-             lambda state: state.can_reach_location(Ev.BoardProtected.value, world.player))
-    add_rule(world.multiworld.get_location(Ev.Natsume.value, world.player),
-             lambda state: state.can_reach_location(Ev.BoardProtected.value, world.player))
+    if world.options.optional_party_members:
+        set_list_rules(world, Ev.Natsume.value, DeltaWordList.RagingPassionateMelody)
+        add_rule(world.multiworld.get_location(get_wordlist_name(DeltaWordList.RagingPassionateMelody), world.player),
+                 lambda state: state.can_reach_location(Ev.BoardProtected.value, world.player))
+        add_rule(world.multiworld.get_location(Ev.Natsume.value, world.player),
+                 lambda state: state.can_reach_location(Ev.BoardProtected.value, world.player))
 
-    set_list_rules(world, Ev.Gardenia.value, ThetaWordList.SoftSolitaryTriPansy)
-    add_rule(world.multiworld.get_location(get_wordlist_name(ThetaWordList.SoftSolitaryTriPansy), world.player),
-             lambda state: state.can_reach_location(Ev.ElkMiaFavorite.value, world.player))
-    add_rule(world.multiworld.get_location(Ev.Gardenia.value, world.player),
-             lambda state: state.can_reach_location(Ev.ElkMiaFavorite.value, world.player))
+        set_list_rules(world, Ev.Gardenia.value, ThetaWordList.SoftSolitaryTriPansy)
+        add_rule(world.multiworld.get_location(get_wordlist_name(ThetaWordList.SoftSolitaryTriPansy), world.player),
+                 lambda state: state.can_reach_location(Ev.ElkMiaFavorite.value, world.player))
+        add_rule(world.multiworld.get_location(Ev.Gardenia.value, world.player),
+                 lambda state: state.can_reach_location(Ev.ElkMiaFavorite.value, world.player))
 
-    set_list_rules(world, Ev.Sanjuro.value, DeltaWordList.HideousDestroyersFarThunder)
-    add_rule(world.multiworld.get_location(get_wordlist_name(DeltaWordList.HideousDestroyersFarThunder), world.player),
-             lambda state: state.can_reach_location(Ev.ElkMiaFavorite.value, world.player))
-    add_rule(world.multiworld.get_location(Ev.Sanjuro.value, world.player),
-             lambda state: state.can_reach_location(Ev.ElkMiaFavorite.value, world.player))
+        set_list_rules(world, Ev.Sanjuro.value, DeltaWordList.HideousDestroyersFarThunder)
+        add_rule(world.multiworld.get_location(get_wordlist_name(DeltaWordList.HideousDestroyersFarThunder), world.player),
+                 lambda state: state.can_reach_location(Ev.ElkMiaFavorite.value, world.player))
+        add_rule(world.multiworld.get_location(Ev.Sanjuro.value, world.player),
+                 lambda state: state.can_reach_location(Ev.ElkMiaFavorite.value, world.player))
 
-    # Gardenia's quest
-    set_list_rules(world, Ev.GracefulBook.value, ThetaWordList.BeautifulSomeonesTreasureGem)
-    add_rule(world.multiworld.get_location(get_wordlist_name(ThetaWordList.BeautifulSomeonesTreasureGem), world.player),
-             lambda state: state.has(CharacterNames.Gardenia.value, world.player))
-    add_rule(world.multiworld.get_location(get_wordlist_name(ThetaWordList.BeautifulSomeonesTreasureGem), world.player),
-             lambda state: state.can_reach_location(Ev.MistralMeetUp.value, world.player))
-    add_rule(world.multiworld.get_location(Ev.GracefulBook.value, world.player),
-             lambda state: state.has(CharacterNames.Gardenia.value, world.player))
-    add_rule(world.multiworld.get_location(Ev.GracefulBook.value, world.player),
-             lambda state: state.can_reach_location(Ev.MistralMeetUp.value, world.player))
-    add_rule(world.multiworld.get_location(Ev.GracefulBook.value, world.player),
-             lambda state: state.can_reach_location(Ev.Gardenia.value, world.player))
+        # Gardenia's quest
+        set_list_rules(world, Ev.GracefulBook.value, ThetaWordList.BeautifulSomeonesTreasureGem)
+        add_rule(world.multiworld.get_location(get_wordlist_name(ThetaWordList.BeautifulSomeonesTreasureGem), world.player),
+                 lambda state: state.has(CharacterNames.Gardenia.value, world.player))
+        add_rule(world.multiworld.get_location(get_wordlist_name(ThetaWordList.BeautifulSomeonesTreasureGem), world.player),
+                 lambda state: state.can_reach_location(Ev.MistralMeetUp.value, world.player))
+        add_rule(world.multiworld.get_location(Ev.GracefulBook.value, world.player),
+                 lambda state: state.has(CharacterNames.Gardenia.value, world.player))
+        add_rule(world.multiworld.get_location(Ev.GracefulBook.value, world.player),
+                 lambda state: state.can_reach_location(Ev.MistralMeetUp.value, world.player))
+        add_rule(world.multiworld.get_location(Ev.GracefulBook.value, world.player),
+                 lambda state: state.can_reach_location(Ev.Gardenia.value, world.player))
 
     # Golden Goblin quest
     if world.options.golden_goblins:
