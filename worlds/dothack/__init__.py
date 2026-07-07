@@ -1,23 +1,23 @@
-from worlds.dothack.data.locations.WordList import InfectionDeltaWordList
-from .data.locations.Events import InfectionGoldenGoblins
-from BaseClasses import LocationProgressType, ItemClassification
+from BaseClasses import ItemClassification
 from typing import ClassVar, List, cast
 import logging
 import settings
 
-from BaseClasses import MultiWorld, Tutorial, Location, Region
+from BaseClasses import MultiWorld, Tutorial, Region
 from worlds.AutoWorld import World, WebWorld
 from worlds.LauncherComponents import Component, components, launch_subprocess, Type
 
-from .data.Strings import APConsole, APHelper, Meta, AreaWordNames, CharacterNames, PlayStatNames, ServerNames
+from .data.Strings import APConsole, APHelper, Meta, PlayStatNames, ServerNames
 from .data import Locations, Items
 from .data.Items import InfectionItem, InfectionItemMeta, ITEMS_MASTER
-from .data.locations.WordList import InfectionDeltaWordList as DeltaWordList, get_wordlist_name
+from .data.locations.WordList import InfectionDeltaWordList as DeltaWordList, WordListBase, get_wordlist_name
+from .data.locations.Events import InfectionEventBase, InfectionGoldenGoblins
 from .DotHackOptions import DotHackOptions, slot_data_options, create_option_groups
 from .data.DataManager import VOLUME_DATA
 
-
 # Identifier for Archipelago to recognize and run the client
+
+
 def run_client():
     from .DotHackClient import launch
     launch_subprocess(launch, name="DotHackClient")
@@ -149,45 +149,43 @@ class DotHackWorld(World):
     def create_regions(self):
         main_region = Region("Menu", self.player, self.multiworld)
         self.multiworld.regions.append(main_region)
-        excluded_events = set()
-        excluded_wordlists = set()
+
+        excluded_events: set[InfectionEventBase] = set()
+        excluded_wordlist_locs: set[WordListBase] = set()
 
         if not self.options.golden_goblins.value:
             excluded_events.update(InfectionGoldenGoblins)
-            excluded_wordlists.update([
-                InfectionDeltaWordList.DetestableGoldenSunnyDemon,
-                InfectionDeltaWordList.DetestableGoldenMessenger,
-                InfectionDeltaWordList.DetestableGoldenScent,
-                InfectionDeltaWordList.DetestableGoldenNewTruth,
-                InfectionDeltaWordList.DetestableGoldenGate
+            excluded_wordlist_locs.update([
+                DeltaWordList.DetestableGoldenSunnyDemon,
+                DeltaWordList.DetestableGoldenMessenger,
+                DeltaWordList.DetestableGoldenScent,
+                DeltaWordList.DetestableGoldenNewTruth,
+                DeltaWordList.DetestableGoldenGate
             ])
+        if self.options.completion_condition == 0:
+            excluded_wordlist_locs.add(DeltaWordList.HideousSomeonesGiant)
+            excluded_events.add(Locations.CompletionConditions.ParasiteDragonDefeated)
+        if self.options.completion_condition == 1:
+            # excluded_events.add(Locations.CompletionConditions.SkeithDefeated)
+            pass
 
-        print(f"Excluded Locations: {excluded_events}")
-        print(f"Excluded Wordlists: {excluded_wordlists}")
+        self.logger.debug(f"Excluded Locations: {excluded_events}")
+        self.logger.debug(f"Excluded Wordlists: {excluded_wordlist_locs}")
 
         v_data = VOLUME_DATA[self.options.volume.value]
 
         for loc_meta in self.playstat_locations:
-            if loc_meta.stat in excluded_events:
-                print(f"Excluding PlayStat Location: {loc_meta.name}")
-                continue
             main_region.locations.append(loc_meta.to_location(self.player, main_region))
         for loc_meta in v_data.event_locations:
             if loc_meta.event in excluded_events:
-                print(f"Excluding Event Location: {loc_meta.name}")
+                self.logger.debug(f"Excluding Event Location: {loc_meta.name}")
                 continue
-            if loc_meta.event == Locations.CompletionConditions.SkeithDefeated and self.options.completion_condition == 1:
-                loc_meta.progress_type = LocationProgressType.EXCLUDED
-            if loc_meta.event == Locations.CompletionConditions.ParasiteDragonDefeated and self.options.completion_condition == 0:
-                loc_meta.progress_type = LocationProgressType.EXCLUDED
             loc = loc_meta.to_location(self.player, main_region)
             main_region.locations.append(loc)
         for loc_meta in v_data.wordlist_locations:
-            if loc_meta.wordlist in excluded_wordlists:
-                print(f"Excluding Wordlist Location: {loc_meta.name}")
+            if loc_meta.wordlist in excluded_wordlist_locs:
+                self.logger.debug(f"Excluding Wordlist Location: {loc_meta.name}")
                 continue
-            if loc_meta.wordlist == DeltaWordList.HideousSomeonesGiant and self.options.completion_condition == 0:
-                loc_meta.progress_type = LocationProgressType.EXCLUDED
             loc = loc_meta.to_location(self.player, main_region)
             main_region.locations.append(loc)
 
@@ -202,7 +200,7 @@ class DotHackWorld(World):
 
     def get_filler_item_name(self) -> str:
         res = self.random.choices(self.filler_items, weights=[item.weight for item in self.filler_items], k=1)
-        # print(f"Creating item: {res[0].name} ({res[0].weight})")
+        self.logger.debug(f"Creating item: {res[0].name} ({res[0].weight})")
         return res[0].name if isinstance(res, list) else res.name
 
     def create_items(self):
@@ -221,6 +219,17 @@ class DotHackWorld(World):
             # get_wordlist_name(DeltaWordList.HiddenForbiddenHolyGround),
             # get_wordlist_name(DeltaWordList.BurstingPassedOverAquaField),
         ]
+        excluded_items: set[str] = set(starting_items)
+
+        if not self.options.golden_goblins.value:
+            excluded_items.update([
+                get_wordlist_name(DeltaWordList.DetestableGoldenSunnyDemon),
+                get_wordlist_name(DeltaWordList.DetestableGoldenMessenger),
+                get_wordlist_name(DeltaWordList.DetestableGoldenScent),
+                get_wordlist_name(DeltaWordList.DetestableGoldenNewTruth),
+                get_wordlist_name(DeltaWordList.DetestableGoldenGate),
+            ])
+
         for item_name in starting_items:
             item = self.create_item(item_name)
             self.multiworld.push_precollected(item)
@@ -228,7 +237,8 @@ class DotHackWorld(World):
         v_data = VOLUME_DATA[self.options.volume.value]
 
         for item in v_data.items:
-            if item.name in starting_items:
+            if item.name in excluded_items:
+                self.logger.debug(f"Excluding Item: {item.name}")
                 continue
             elif item.classification == ItemClassification.filler:
                 self.filler_items.append(item.to_item(self.player))
