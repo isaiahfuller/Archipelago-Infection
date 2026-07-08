@@ -121,7 +121,7 @@ class WeaponItem(InfectionItemMeta):
     def __init__(self, name, item, address):
         self.name = name
         self.item_id = (address * 328) + item.value["id"]
-        self.classification = ItemClassification.useful
+        self.classification = ItemClassification.filler
         self.weapon = item
 
     def to_item(self, player: int) -> InfectionItem:
