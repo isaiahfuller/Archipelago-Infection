@@ -160,6 +160,7 @@ class GoldenGoblins(Toggle):
     Default: Enabled
     """
     display_name = "Include golden goblin challenges"
+    default = 1
 
 
 class OptionalPartyMembers(Toggle):
@@ -168,6 +169,7 @@ class OptionalPartyMembers(Toggle):
     Default: Enabled
     """
     display_name = "Include optional party member quests"
+    default = 1
 
 
 infection_option_groups: dict[str, list] = {
