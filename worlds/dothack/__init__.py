@@ -151,6 +151,7 @@ class DotHackWorld(World):
     def create_regions(self):
         main_region = Region("Menu", self.player, self.multiworld)
         self.multiworld.regions.append(main_region)
+        self.excluded_locations: set[int] = set()
 
         excluded_events: set[InfectionEventBase] = set()
         excluded_wordlist_locs: set[WordListBase] = set()
@@ -189,12 +190,14 @@ class DotHackWorld(World):
         for loc_meta in v_data.event_locations:
             if loc_meta.event in excluded_events:
                 self.logger.debug(f"Excluding Event Location: {loc_meta.name}")
+                self.excluded_locations.add(loc_meta.location_id)
                 continue
             loc = loc_meta.to_location(self.player, main_region)
             main_region.locations.append(loc)
         for loc_meta in v_data.wordlist_locations:
             if loc_meta.wordlist in excluded_wordlist_locs:
                 self.logger.debug(f"Excluding Wordlist Location: {loc_meta.name}")
+                self.excluded_locations.add(loc_meta.location_id)
                 continue
             loc = loc_meta.to_location(self.player, main_region)
             main_region.locations.append(loc)
@@ -304,6 +307,7 @@ class DotHackWorld(World):
     def fill_slot_data(self):
         slot_data: dict = self.options.as_dict(*slot_data_options())
         slot_data[APHelper.version.value] = APConsole.Info.world_ver.value
+        slot_data[APHelper.excluded_locations.value] = self.excluded_locations
         return slot_data
 
     def generate_output(self, directory: str):

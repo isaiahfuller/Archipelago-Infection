@@ -46,6 +46,8 @@ class APHelper(Enum):
     version = "version"
     volume = "volume"
 
+    excluded_locations = "excluded_locations"
+
     # AP Options
     include_side_quests = "include_side_quests"
     automatically_read_emails = "automatically_read_emails"

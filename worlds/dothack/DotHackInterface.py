@@ -183,7 +183,9 @@ class DotHackInterface:
 
         def get_location_id(name: str) -> int | None:
             loc_id = ctx.locations_name_to_id.get(name)
-            if loc_id is None or loc_id in checked or loc_id in ctx.checked_locations:
+            if loc_id is None or loc_id in checked \
+                    or loc_id in ctx.checked_locations \
+                    or loc_id in ctx.excluded_locations:
                 return None
             return loc_id
 
@@ -239,24 +241,26 @@ class DotHackInterface:
             addr_check(addr, bitflags, loc_id)
 
         # Golden Goblins
-        for goblin in GoldenGoblins:
-            name: str = EventNames[goblin.name].value
-            addr: int = self.addresses.Events[goblin.name]
-            bitflags: int = goblin.value["bits"]
-            loc_id = get_location_id(name)
-            if loc_id is None:
-                continue
-            addr_check(addr, bitflags, loc_id)
+        if ctx.golden_goblins:
+            for goblin in GoldenGoblins:
+                name: str = EventNames[goblin.name].value
+                addr: int = self.addresses.Events[goblin.name]
+                bitflags: int = goblin.value["bits"]
+                loc_id = get_location_id(name)
+                if loc_id is None:
+                    continue
+                addr_check(addr, bitflags, loc_id)
 
         # Optional Party Members
-        for member in OptionalPartyMembers:
-            name: str = EventNames[member.name].value
-            addr: int = self.addresses.Events[member.name]
-            bitflags: int = member.value["bits"]
-            loc_id = get_location_id(name)
-            if loc_id is None:
-                continue
-            addr_check(addr, bitflags, loc_id)
+        if ctx.optional_party_members:
+            for member in OptionalPartyMembers:
+                name: str = EventNames[member.name].value
+                addr: int = self.addresses.Events[member.name]
+                bitflags: int = member.value["bits"]
+                loc_id = get_location_id(name)
+                if loc_id is None:
+                    continue
+                addr_check(addr, bitflags, loc_id)
 
         # Ryu Book stats
         for stat in PlayStats:
@@ -408,7 +412,6 @@ class DotHackInterface:
     def add_reset_rate(self, addr) -> None:
         amt = self.pine.read_int8(addr)
         self.pine.write_int8(0xA4613E, amt - 100)
-
 
     async def scan_server(self, ctx) -> None:
         addr: int = self.addresses.Servers
