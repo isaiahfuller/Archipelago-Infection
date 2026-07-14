@@ -3,7 +3,9 @@ import math
 from enum import IntEnum
 from logging import Logger
 from typing import Optional, List, Set
+import pkgutil
 
+from BaseClasses import ItemClassification
 from NetUtils import NetworkItem
 from worlds.dothack import PlayStatNames
 from worlds.dothack.data.locations.Events import CompletionConditions
@@ -32,6 +34,35 @@ from .pcsx2_interface.pine import Pine
 # latest item idx can seemingly be written to 0xA44EC8 safely.
 # game doesn't seem to use it for anything.
 
+class MessageType(IntEnum):
+    RAW = 0
+    RECEIVED_ITEM = 1
+
+class MessageColor(IntEnum):
+    WHITE = 7
+    BLACK = 15
+    RED = 24
+    GREEN = 25
+    YELLOW = 26
+    BLUE = 27
+    MAGENTA = 28
+    CYAN = 29
+    SLATEBLUE = 30
+    PLUM = 31
+    SALMON = 32
+    ORANGE = 34
+
+def classification_to_color(classification: ItemClassification) -> int:
+    if classification == ItemClassification.filler:
+        return MessageColor.CYAN
+    elif classification & ItemClassification.progression:  # advancement
+        return MessageColor.PLUM
+    elif classification & ItemClassification.useful:  # useful
+        return MessageColor.SLATEBLUE
+    elif classification & ItemClassification.trap:  # trap
+        return MessageColor.SALMON
+    else:
+        return MessageColor.CYAN
 
 class ConnectionStatus(IntEnum):
     WRONG_GAME = -1
@@ -118,6 +149,47 @@ class DotHackInterface:
 
     def set_last_item_index(self, index: int) -> None:
         self.pine.write_int32(self.addresses.LastItemIdx, index)
+
+    def infection_apply_patch(self):
+        current_overlay = self.pine.read_int8(0x00400804)
+
+        if current_overlay == 1:
+            # gcmn.prg is loaded
+
+            if self.pine.read_int32(0x0051d12c) == 0x8f849174:
+                # Patch has not been written
+
+                patch_data = pkgutil.get_data(__name__, "data/infection.patch")
+                self.pine.write_bytes(0x006f9e50, patch_data)
+
+                # Hook
+                self.pine.write_bytes(0x0051d12c, bytes([0x2d, 0x20, 0x00, 0x02, 0x94, 0xE7, 0x1B, 0x0C]))
+
+    def infection_show_message(self, message_type: int, color: int, message: str) -> int:
+        address = 0x6FA660
+        size = 0x46
+        current_overlay = self.pine.read_int8(0x00400804)
+
+        if current_overlay != 1 or self.pine.read_int8(address) == 0x83:
+            return 1
+
+        message_bytes = bytes([*message.encode("shift-jis"), 0])
+        if len(message_bytes) > 64:
+            print(f"Message too long ({len(message_bytes)} bytes)")
+            return 2
+
+        for i in range(4):
+            status = self.pine.read_int8(address + i*size)
+            if status == 0:
+                self.pine.write_int8(address + i*size + 1, 0) # Queue position
+                self.pine.write_int8(address + i*size + 2, color) # Color
+                self.pine.write_int8(address + i*size + 3, message_type) # Type
+                self.pine.write_int16(address + i*size + 4, 120) # Frames
+                self.pine.write_bytes(address + i*size + 6, message_bytes) # Text
+                self.pine.write_int8(address + i*size + 0, 1) # Status
+                return 0
+
+        return 3
 
     def infection_initial_state(self, ctx) -> None:
         self.pine.write_int8(0xa44ed7, self.pine.read_int8(0xa44ed7) |
@@ -310,6 +382,7 @@ class DotHackInterface:
         for server_item in received:
             item = Items.from_id(server_item.item)
             if item:
+                ctx.queued_messages.append((MessageType.RECEIVED_ITEM, classification_to_color(item.classification), f"{item.name}"))
                 self.logger.debug(f"Applying item [{ctx.next_item_slot}]: {item.name}")
                 if isinstance(item, ConsumableItem):
                     """Add item to storage"""
