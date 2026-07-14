@@ -166,15 +166,15 @@ class DotHackInterface:
                 self.pine.write_bytes(0x0051d12c, bytes([0x2d, 0x20, 0x00, 0x02, 0x94, 0xE7, 0x1B, 0x0C]))
 
     def infection_show_message(self, message_type: int, color: int, message: str) -> int:
-        address = 0x6FA5B0
-        size = 0x6A
+        address = 0x6FA660
+        size = 0x46
         current_overlay = self.pine.read_int8(0x00400804)
 
         if current_overlay != 1 or self.pine.read_int8(address) == 0x83:
             return 1
 
         message_bytes = bytes([*message.encode("shift-jis"), 0])
-        if len(message_bytes) > 100:
+        if len(message_bytes) > 64:
             print(f"Message too long ({len(message_bytes)} bytes)")
             return 2
 
