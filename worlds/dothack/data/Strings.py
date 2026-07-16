@@ -46,6 +46,8 @@ class APHelper(Enum):
     version = "version"
     volume = "volume"
 
+    excluded_locations = "excluded_locations"
+
     # AP Options
     include_side_quests = "include_side_quests"
     automatically_read_emails = "automatically_read_emails"
@@ -62,6 +64,8 @@ class APHelper(Enum):
     kite_levels = "kite_levels"
     kite_class = "kite_class"
     monster_hunt = "monster_hunt"
+    golden_goblins = "golden_goblins"
+    optional_party_members = "optional_party_members"
 
     # Item Groups
     area_words = "Area Words"
@@ -176,7 +180,7 @@ class EventNames(Enum):
 
 
 class ItemNames(Enum):
-    ##Consumables
+    # Consumables
     HealthDrink = "Health Drink"
     HealthPotion = "Health Potion"
     HealingElixer = "Healing Elixer"
@@ -204,7 +208,7 @@ class ItemNames(Enum):
     FortuneWire = "Fortune Wire"
     SpriteOcarina = "Sprite Ocarina"
     FairysOrb = "Fairy's Orb"
-    ## Twin Blades - Infection
+    # Twin Blades - Infection
     AmateurBlades = "Amateur Blades"
     SteelBlades = "Steel Blades"
     Phantom = "Phantom"
@@ -225,7 +229,7 @@ class ItemNames(Enum):
     MasterBlades = "Master Blades"
     HellsGate = "Hell's Gate"
     DantesBlades = "Dante's Blades"
-    ## Blades - Infection
+    # Blades - Infection
     BasicSword = "Basic Sword"
     BraveSword = "Brave Sword"
     Rondo = "Rondo"
@@ -246,7 +250,7 @@ class ItemNames(Enum):
     Steelblade = "Steelblade"
     Glitter = "Glitter"
     SealSword = "Seal Sword"
-    ## Heavy Blades - Infection
+    # Heavy Blades - Infection
     Adventurer = "Adventurer"
     Kikuichimonji = "Kikuichimonji"
     EarthSword = "Earth Sword"
@@ -273,7 +277,7 @@ class ItemNames(Enum):
     LifeSword = "Life Sword"
     FlameSword = "Flame Sword"
     DryadsSword = "Dryad's Sword"
-    ## Heavy Axes - Infection
+    # Heavy Axes - Infection
     Hatchet = "Hatchet"
     ShortSwing = "Short Swing"
     BattleAxe = "Battle Axe"
@@ -294,7 +298,7 @@ class ItemNames(Enum):
     MastersAxe = "Master's Axe"
     PapillonAxe = "Papillon Axe"
     DevilsAxe = "Devil's Axe"
-    ## Spears - Infection
+    # Spears - Infection
     BronzeSpear = "Bronze Spear"
     IronSpear = "Iron Spear"
     ReliefLance = "Relief Lance"
@@ -315,7 +319,7 @@ class ItemNames(Enum):
     Sleipner = "Sleipner"
     FairySpear = "Fairy Spear"
     FiendSpear = "Fiend Spear"
-    ## Wands
+    # Wands
     CypressWand = "Cypress Wand"
     IronRod = "Iron Rod"
     EarthWand = "Earth Wand"
@@ -336,7 +340,7 @@ class ItemNames(Enum):
     AlmightyWand = "Almighty Wand"
     GroovyStick = "Groovy Stick"
     StarStormWand = "Star Storm Wand"
-    ##Key Items
+    # Key Items
     VirusCoreA = "Virus Core A"
     VirusCoreB = "Virus Core B"
     VirusCoreC = "Virus Core C"
@@ -364,8 +368,9 @@ class ItemNames(Enum):
     BearCatEgg = "Bear Cat Egg"
     InvisibleEgg = "Invisible Egg"
     BloodyEgg = "Bloody Egg"
-    ##Boons?
+    # Boons?
     InfectionLevel = "Infection Level 0%"
+
 
 class AreaWordNames(Enum):
     _value_: str
@@ -674,6 +679,7 @@ class AreaWordNames(Enum):
     Laws = "Laws"
     Talisman = "Talisman"
     Orange = "Orange"
+
 
 class MonsterNamesInfection(Enum):
     Razine1 = "Razine"
