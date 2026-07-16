@@ -2,7 +2,7 @@ from worlds.generic.Rules import add_rule
 from .data.Strings import EventNames as Ev, PlayStatNames, ServerNames, CharacterNames, ItemNames
 from .data.locations.WordList import InfectionDeltaWordList as DeltaWordList, InfectionThetaWordList as ThetaWordList, get_wordlist_name
 from .data.items.RyuBooks import RyuBooks
-
+from .data.locations.Events import MonsterHunt1, MonsterHunt2
 
 def set_list_rules(world, event_location, wordlist):
     add_rule(world.multiworld.get_location(event_location, world.player),
@@ -14,6 +14,9 @@ def set_list_rules(world, event_location, wordlist):
         add_rule(world.multiworld.get_location(get_wordlist_name(wordlist), world.player),
                  lambda state: state.has(ServerNames.Theta.value, world.player))
 
+
+    if lambda state: state.has(ServerNames.Theta.value, world.player):
+        add_rule(world.multiworld.get_location(MonsterHunt2), world.player)
 
 def set_stats_rules(world, stats):
     for i in range(len(stats)):

@@ -25,7 +25,7 @@ from .data.items.PartyMembers import PartyMembers
 from .data.items.RyuBooks import RyuBooks
 from .data.items.Servers import Servers
 from .data.locations.Events import InfectionStoryEvents as StoryEvents, InfectionGoldenGoblins as GoldenGoblins, \
-    InfectionOptionalPartyMembers as OptionalPartyMembers, MonsterHunt1
+    InfectionOptionalPartyMembers as OptionalPartyMembers, MonsterHunt1, MonsterHunt2
 from .data.locations.WordList import InfectionDeltaWordList as DeltaWordList, InfectionThetaWordList as ThetaWordList, \
     WordListBase, get_wordlist_name
 from .pcsx2_interface.pine import Pine
@@ -330,7 +330,7 @@ class DotHackInterface:
                 continue
             addr_check(addr, bitflags, loc_id)
 
-            # Monster Hunt
+            # Monster Hunt Delta Server
         for monster_hunt in MonsterHunt1:
             name: str = MonsterNamesInfection[monster_hunt.name].value
             addr: int = self.addresses.MonsterNames[monster_hunt.name]
@@ -338,6 +338,16 @@ class DotHackInterface:
             loc_id = get_location_id(name)
             if loc_id is None:
               continue
+            addr_check(addr, bitflags, loc_id)
+
+            # Monster Hunt Theta Server
+        for monster_hunt in MonsterHunt2:
+            name: str = MonsterNamesInfection[monster_hunt.name].value
+            addr: int = self.addresses.MonsterNames[monster_hunt.name]
+            bitflags: int = monster_hunt.value["bits"]
+            loc_id = get_location_id(name)
+            if loc_id is None:
+                continue
             addr_check(addr, bitflags, loc_id)
 
         # Ryu Book stats
@@ -507,7 +517,7 @@ class DotHackInterface:
 
     def add_reset_rate(self, addr) -> None:
         amt = self.pine.read_int8(addr)
-        self.pine.write_int8(0xA4613E, amt - 100)
+        self.pine.write_int8(0xA4613E, max(0, amt-100))
 
 
     async def scan_server(self, ctx) -> None:

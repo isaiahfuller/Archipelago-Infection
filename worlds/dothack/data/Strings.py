@@ -930,6 +930,7 @@ class MonsterNamesInfection(Enum):
     MummyRipper15 = "Mummy Ripper"
     CadetValkyrie20 = "Cadet Valkyrie"
     FreshValkyrie21 = "Fresh Valkyrie"
+    LongLived23 = "Long Lived"
     GrandMage24 = "Grand Mage"
     Flamer36 = "Flamer"
     FireWitch37 = "Fire Witch"
