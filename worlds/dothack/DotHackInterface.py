@@ -160,10 +160,11 @@ class DotHackInterface:
                 # Patch has not been written
 
                 patch_data = pkgutil.get_data(__name__, "data/infection.patch")
-                self.pine.write_bytes(0x006f9e50, patch_data)
+                if patch_data:
+                    self.pine.write_bytes(0x006f9e50, patch_data)
 
-                # Hook
-                self.pine.write_bytes(0x0051d12c, bytes([0x2d, 0x20, 0x00, 0x02, 0x94, 0xE7, 0x1B, 0x0C]))
+                    # Hook
+                    self.pine.write_bytes(0x0051d12c, bytes([0x2d, 0x20, 0x00, 0x02, 0x94, 0xE7, 0x1B, 0x0C]))
 
     def infection_show_message(self, message_type: int, color: int, message: str) -> int:
         address = 0x6FA660
