@@ -39,6 +39,7 @@ class CompletionCondition(Choice):
     option_defeat_parasite_dragon = 1
     default = 0
 
+
 class MonsterHunt(Toggle):
     """
     Gain a check for each new monster you defeat. NONFUNCTIONAL
@@ -196,7 +197,7 @@ class DotHackOptions(PerGameCommonOptions):
     death_link: DeathLink
     volume: Volume
     kite_class: KiteClass
-    monster_hunt: MonsterHunt
+    # monster_hunt: MonsterHunt
 
 
 def create_option_groups() -> list[OptionGroup]:
@@ -222,5 +223,5 @@ def slot_data_options() -> list[str]:
         APHelper.death_link.value,
         APHelper.volume.value,
         APHelper.kite_class.value,
-        APHelper.monster_hunt.value,
+        # APHelper.monster_hunt.value,
     ]
