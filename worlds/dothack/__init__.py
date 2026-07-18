@@ -141,6 +141,7 @@ class DotHackWorld(World):
         stats[PlayStatNames.AllDungeonPortalsOpened.name] = self.options.cleared_portals.value
         stats[PlayStatNames.AllFieldPortalsOpened.name] = self.options.cleared_portals.value
         stats[PlayStatNames.PortalsOpened.name] = self.options.opened_portals.value
+        stats[PlayStatNames.InfectionMonsterHunt.name] = self.options.monster_hunt.value
         self.playstat_locations = Locations.playstat_gen(stats)
 
     def create_regions(self):
