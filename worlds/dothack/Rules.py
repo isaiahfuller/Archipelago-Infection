@@ -1,6 +1,5 @@
-from rule_builder.rules import HasAll
 from collections import defaultdict
-from rule_builder.rules import Has, CanReachLocation, Rule, True_
+from rule_builder.rules import Has, HasAll, CanReachLocation, Rule, True_
 from .data.Strings import EventNames as Ev, PlayStatNames, ServerNames, CharacterNames, ItemNames
 from .data.locations.WordList import InfectionDeltaWordList as DeltaWordList, InfectionThetaWordList as ThetaWordList, get_wordlist_name
 from .data.items.RyuBooks import RyuBooks
