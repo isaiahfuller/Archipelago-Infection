@@ -136,7 +136,7 @@ class PlayStatNames(Enum):
     KiteLevel = "Kite Level - "
     SymbolsActivated = "Symbols Activated - "
     GottOpened = "Gott's Treasures Obtained - "
-    MonsterHuntInfection = "A check for each new monster killed"
+    InfectionMonsterHunt = "A check for each new monster killed"
 
 
 class EventNames(Enum):

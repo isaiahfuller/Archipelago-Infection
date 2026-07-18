@@ -217,8 +217,8 @@ EventLocations: list[InfectionEventLocation] = []
 StoryEvents: list[InfectionEventLocation] = []
 GoldenGoblins: list[InfectionEventLocation] = []
 OptionalPartyMembers: list[InfectionEventLocation] = []
-MonsterHuntInfection: list[InfectionEventLocation] = []
-MonsterHunt2Infection: list[InfectionEventLocation] = []
+InfectionMonsterHunt: list[InfectionEventLocation] = []
+InfectionMonsterHunt2: list[InfectionEventLocation] = []
 CompletionEvents: list[InfectionEventLocation] = []
 
 for v_data in VOLUME_DATA.values():
@@ -235,9 +235,9 @@ for v_data in VOLUME_DATA.values():
             elif isinstance(loc.event, InfectionOptionalPartyMembers):
                 OptionalPartyMembers.append(loc)
             elif isinstance(loc.event, MonsterHunt1):
-                MonsterHuntInfection.append(loc)
+                InfectionMonsterHunt.append(loc)
             elif isinstance(loc.event, MonsterHunt2):
-                MonsterHunt2Infection.append(loc)
+                InfectionMonsterHunt2.append(loc)
             elif isinstance(loc.event, CompletionConditions):
                 CompletionEvents.append(loc)
 
