@@ -46,6 +46,11 @@ class MonsterHunt(Toggle):
     """
     display_name = "Monster Hunt"
 
+class EqualStart(Toggle):
+    """
+    All PCs start at base level with base equipment. Adds a Progressive version to all PCs that will reward them their unique weapon.  NONFUNCTIONAL
+    """
+    display_name = "Equal Start"
 
 class AutomaticallyReadEmails(Toggle):
     """
@@ -159,7 +164,8 @@ infection_option_groups: dict[str, list] = {
         Volume,
         KiteClass,
         CompletionCondition,
-        MonsterHunt
+        MonsterHunt,
+        EqualStart
     ],
     "Quality of Life Options": [
         AutomaticallyReadEmails,
@@ -198,6 +204,7 @@ class DotHackOptions(PerGameCommonOptions):
     volume: Volume
     kite_class: KiteClass
     # monster_hunt: MonsterHunt
+    equal_start:EqualStart
 
 
 def create_option_groups() -> list[OptionGroup]:
@@ -224,4 +231,5 @@ def slot_data_options() -> list[str]:
         APHelper.volume.value,
         APHelper.kite_class.value,
         # APHelper.monster_hunt.value,
+        APHelper.equal_start.value
     ]

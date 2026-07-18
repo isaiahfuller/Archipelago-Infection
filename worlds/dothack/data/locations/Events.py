@@ -186,7 +186,7 @@ class MonsterHunt2(InfectionMonsterBase):
     DarkRider8 = {"address": 0xa4628E, "bits": 0b00000001, "volumes": [1]}
     TetraArmor11 = {"address": 0xa46291, "bits": 0b00000001, "volumes": [1]}
     FreshValkyrie21 = {"address": 0xa4629B, "bits": 0b00000001, "volumes": [1]}
-    LongLived23 = {"address": 0xa4629D, "bits": 0b00000001, "volumes": [1]}
+    #LongLived23 = {"address": 0xa4629D, "bits": 0b00000001, "volumes": [1]}
     GrandMage24 = {"address": 0xa4629E, "bits": 0b00000001, "volumes": [1]}
     MuGuardian57 = {"address": 0xa462BF, "bits": 0b00000001, "volumes": [1]}
     PhoenixQueen72 = {"address": 0xa462CE, "bits": 0b00000001, "volumes": [1]}
