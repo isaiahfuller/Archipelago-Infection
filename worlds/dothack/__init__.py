@@ -1,3 +1,4 @@
+from worlds.dothack.data.items.Servers import Servers
 from worlds.dothack.data.items.RyuBooks import RyuBooks
 from rule_builder.rules import Has
 from BaseClasses import ItemClassification
@@ -230,20 +231,29 @@ class DotHackWorld(World):
                 self.logger.debug(f"Excluding Event Location: {loc_meta.name}")
                 self.excluded_locations.add(loc_meta.location_id)
                 continue
-            loc = loc_meta.to_location(self.player, main_region)
-            main_region.locations.append(loc)
+            if loc_meta.event.value["server"] == Servers.Delta:
+                self.logger.debug(f"Adding Event Location: {loc_meta.name} to region {loc_meta.event.value['server']} (DELTA)")
+                delta_region.locations.append(loc_meta.to_location(self.player, delta_region))
+            elif loc_meta.event.value["server"] == Servers.Theta:
+                self.logger.debug(f"Adding Event Location: {loc_meta.name} to region {loc_meta.event.value['server']} (THETA)")
+                theta_region.locations.append(loc_meta.to_location(self.player, theta_region))
+            else:
+                self.logger.debug(f"Adding Event Location: {loc_meta.name} to region {loc_meta.event.value['server']} (MAIN)")
+                main_region.locations.append(loc_meta.to_location(self.player, main_region))
         for loc_meta in v_data.wordlist_locations:
             if loc_meta.wordlist in excluded_wordlist_locs:
                 self.logger.debug(f"Excluding Wordlist Location: {loc_meta.name}")
                 self.excluded_locations.add(loc_meta.location_id)
                 continue
-            loc = loc_meta.to_location(self.player, main_region)
-            if isinstance(loc_meta, DeltaWordList):
-                delta_region.locations.append(loc)
-            elif isinstance(loc_meta, ThetaWordList):
-                theta_region.locations.append(loc)
+            if loc_meta.wordlist in DeltaWordList:
+                self.logger.debug(f"Adding Wordlist Location: {loc_meta.name} to region {loc_meta.wordlist} (DELTA)")
+                delta_region.locations.append(loc_meta.to_location(self.player, delta_region))
+            elif loc_meta.wordlist in ThetaWordList:
+                self.logger.debug(f"Adding Wordlist Location: {loc_meta.name} to region {loc_meta.wordlist} (THETA)")
+                theta_region.locations.append(loc_meta.to_location(self.player, theta_region))
             else:
-                main_region.locations.append(loc)
+                self.logger.debug(f"Adding Wordlist Location: {loc_meta.name} to region {loc_meta.wordlist} (MAIN)")
+                main_region.locations.append(loc_meta.to_location(self.player, main_region))
 
         main_region.add_event("Victory")
 

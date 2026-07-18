@@ -1,3 +1,4 @@
+from rule_builder.rules import HasAny
 from rule_builder.rules import CanReachRegion
 from collections import defaultdict
 from rule_builder.rules import Has, HasAll, CanReachLocation, Rule, True_
@@ -9,6 +10,10 @@ from .data.items.RyuBooks import RyuBooks
 def set_list_rules(location_rules, event_location, wordlist):
     location_rules[event_location] &= Has(get_wordlist_name(wordlist))
 
+    if wordlist in DeltaWordList:
+        location_rules[event_location] &= CanReachRegion(ServerNames.Delta.value)
+        location_rules[get_wordlist_name(wordlist)] &= CanReachRegion(ServerNames.Delta.value)
+
     if wordlist in ThetaWordList:
         location_rules[event_location] &= CanReachRegion(ServerNames.Theta.value)
         location_rules[get_wordlist_name(wordlist)] &= CanReachRegion(ServerNames.Theta.value)
@@ -16,6 +21,7 @@ def set_list_rules(location_rules, event_location, wordlist):
 
 def set_stats_rules(location_rules, stats):
     for i in range(len(stats)):
+        location_rules[stats[i].name] &= HasAny(ServerNames.Delta.value,ServerNames.Theta.value)
         book = RyuBooks.get_by_stat(stats[i].stat)
         if book:
             location_rules[stats[i].name] &= CanReachRegion(ItemNames[book.name].value)
