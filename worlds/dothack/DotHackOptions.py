@@ -203,7 +203,7 @@ class DotHackOptions(PerGameCommonOptions):
     death_link: DeathLink
     volume: Volume
     kite_class: KiteClass
-    # monster_hunt: MonsterHunt
+    monster_hunt: MonsterHunt
     equal_start:EqualStart
 
 
@@ -230,6 +230,6 @@ def slot_data_options() -> list[str]:
         APHelper.death_link.value,
         APHelper.volume.value,
         APHelper.kite_class.value,
-        # APHelper.monster_hunt.value,
+        APHelper.monster_hunt.value,
         APHelper.equal_start.value
     ]
