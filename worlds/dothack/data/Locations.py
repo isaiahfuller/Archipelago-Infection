@@ -68,21 +68,21 @@ class InfectionPlayStatLocation(InfectionLocationMeta):
         self.stat = stat
         self.progress_type = progress_type
 
-class MonsterHuntInfection(InfectionLocationMeta):
+class InfectionMonsterHunt(InfectionLocationMeta):
     stat: MonsterHunt1
 
     def __init__(self, name: str, stat: MonsterHunt1, progress: int, progress_type: LocationProgressType):
         self.name = name
-        self.location_id = (stat.value["addr"] * 400) + progress
+        self.location_id = (stat.value["address"] * 400) + progress
         self.stat = stat
         self.progress_type = progress_type
 
-class MonsterHunt2Infection(InfectionLocationMeta):
+class InfectionMonsterHunt2(InfectionLocationMeta):
     stat: MonsterHunt2
 
     def __init__(self, name: str, stat: MonsterHunt2, progress: int, progress_type: LocationProgressType):
         self.name = name
-        self.location_id = (stat.value["addr"] * 300) + progress
+        self.location_id = (stat.value["address"] * 300) + progress
         self.stat = stat
         self.progress_type = progress_type
 
