@@ -15,17 +15,17 @@ from .data.Addresses import VolumeAddresses, InfectionAddresses, MutationAddress
     QuarantineAddresses
 from .data.GameState import InfectionGameState as GameState
 from .data.Items import InfectionWordListItem as WordListItem, PartyMemberItem, ServerItem, ConsumableItem, \
-    VirusCoreItem, RyuBookItem, GruntyFoodItem, InfectionLevelItem, WeaponItem
+    VirusCoreItem, RyuBookItem, GruntyFoodItem, InfectionLevelItem, WeaponItem, ArmorItem
 from .data.Items import PartyMemberItems
 from .data.Items import ServerItems
 from .data.Items import WordListItems, RyuBookItems
-from .data.Strings import APConsole, Meta, GameStateNames, EventNames
+from .data.Strings import APConsole, Meta, GameStateNames, EventNames, MonsterNames
 from .data.items.AreaWords import AreaWords
 from .data.items.PartyMembers import PartyMembers
 from .data.items.RyuBooks import RyuBooks
 from .data.items.Servers import Servers
 from .data.locations.Events import InfectionStoryEvents as StoryEvents, InfectionGoldenGoblins as GoldenGoblins, \
-    InfectionOptionalPartyMembers as OptionalPartyMembers
+    InfectionOptionalPartyMembers as OptionalPartyMembers, MonsterHunt1, MonsterHunt2
 from .data.locations.WordList import InfectionDeltaWordList as DeltaWordList, InfectionThetaWordList as ThetaWordList, \
     WordListBase, get_wordlist_name
 from .pcsx2_interface.pine import Pine
@@ -202,14 +202,14 @@ class DotHackInterface:
 
         # Ryu Books have been changed to items
         # # Give Ryu Books
-        # self.pine.write_int8(0xA407DD, 1)
-        # self.pine.write_int8(0xA407DE, 1)
-        # self.pine.write_int8(0xA407DF, 1)
-        # self.pine.write_int8(0xA407E0, 1)
-        # self.pine.write_int8(0xA407E1, 1)
-        # self.pine.write_int8(0xA407E2, 1)
-        # self.pine.write_int8(0xA407E3, 1)
-        # self.pine.write_int8(0xA407E4, 1)
+        ##self.pine.write_int8(0xA407DD, 1)
+        ##self.pine.write_int8(0xA407DE, 1)
+        ##self.pine.write_int8(0xA407DF, 1)
+        ##self.pine.write_int8(0xA407E0, 1)
+        ##self.pine.write_int8(0xA407E1, 1)
+        ##self.pine.write_int8(0xA407E2, 1)
+        ##self.pine.write_int8(0xA407E3, 1)
+        ##self.pine.write_int8(0xA407E4, 1)
 
         # Add starting lists
         self.pine.write_int8(0xA44CC6, 0x0e)
@@ -250,6 +250,406 @@ class DotHackInterface:
             self.pine.write_int8(0xA46F30, 4)
         if ctx.kite_class == 5:
             self.pine.write_int8(0xA46F30, 5)
+
+        # Equal Start - Setting most PCs to base stats, early equipment and Level 1
+        if ctx.equal_start:
+            if self.pine.read_int8(0xA43C35) == 0:  # Check if return value is 0
+                return
+            self.pine.write_int8(0xA46F42, 1) # Mia's Level
+            self.pine.write_int8(0xA46F58, 70) #Mia's HP
+            self.pine.write_int8(0xA46F59, 0)
+            self.pine.write_int8(0xA46F5A, 13) #Mia's SP
+            self.pine.write_int8(0xA46F5B, 0)
+            self.pine.write_int8(0xA46F5C, 16) #Mia's base Attack
+            self.pine.write_int8(0xA46F5D, 0)
+            self.pine.write_int8(0xA46F5E, 16) #Mia's base Defense
+            self.pine.write_int8(0xA46F5F, 0)
+            self.pine.write_int8(0xA46F60, 31)  #Mia's base Accuracy
+            self.pine.write_int8(0xA46F61, 0)
+            self.pine.write_int8(0xA46F62, 31) #Mia's base Evasion
+            self.pine.write_int8(0xA46F63, 0)
+            self.pine.write_int8(0xA46F64, 13) #Mia's base Magic Attack
+            self.pine.write_int8(0xA46F65, 0)
+            self.pine.write_int8(0xA46F66, 13) #Mia's base Magic Defense
+            self.pine.write_int8(0xA46F67, 0)
+            self.pine.write_int8(0xA46F68, 26) #Mia's base Magic Accuracy
+            self.pine.write_int8(0xA46F69, 0)
+            self.pine.write_int8(0xA46F6a, 25)  #Mia's base Magic Evasion
+            self.pine.write_int8(0xA46F6b, 0)
+            self.pine.write_int8(0xA46F6e, 13)  #Mia's base Water Element
+            self.pine.write_int8(0xA46F6f, 0)
+            self.pine.write_int8(0xA46F78, 50) #Mia's base Body
+            self.pine.write_int8(0xA46F79, 0)
+            self.pine.write_int8(0xA46F7A, 50) #Mia's base Soul
+            self.pine.write_int8(0xA46F7B, 0)
+            self.pine.write_int8(0xA46FFC, 0) #Mia's Headgear
+            self.pine.write_int8(0xA46FFE, 40) #Mia's Body Armor
+            self.pine.write_int8(0xA47000, 40) #Mia's Armguards
+            self.pine.write_int8(0xA47002, 40) #Mia's Leg Armor
+            self.pine.write_int8(0xA47004, 0) #Mia's Weapon
+            self.pine.write_int8(0xA46F42, 1) # Mia's Level
+            self.pine.write_int8(0xA46F58, 70) #Mia's HP
+            self.pine.write_int8(0xA46F59, 0)
+            self.pine.write_int8(0xA46F5A, 13) #Mia's SP
+            self.pine.write_int8(0xA46F5B, 0)
+            self.pine.write_int8(0xA46F5C, 16) #Mia's base Attack
+            self.pine.write_int8(0xA46F5D, 0)
+            self.pine.write_int8(0xA46F5E, 16) #Mia's base Defense
+            self.pine.write_int8(0xA46F5F, 0)
+            self.pine.write_int8(0xA46F60, 31)  #Mia's base Accuracy
+            self.pine.write_int8(0xA46F61, 0)
+            self.pine.write_int8(0xA46F62, 31) #Mia's base Evasion
+            self.pine.write_int8(0xA46F63, 0)
+            self.pine.write_int8(0xA46F64, 13) #Mia's base Magic Attack
+            self.pine.write_int8(0xA46F65, 0)
+            self.pine.write_int8(0xA46F66, 13) #Mia's base Magic Defense
+            self.pine.write_int8(0xA46F67, 0)
+            self.pine.write_int8(0xA46F68, 26) #Mia's base Magic Accuracy
+            self.pine.write_int8(0xA46F69, 0)
+            self.pine.write_int8(0xA46F6a, 26)  #Mia's base Magic Evasion
+            self.pine.write_int8(0xA46F6b, 0)
+            self.pine.write_int8(0xA46F6e, 13)  #Mia's base Water Element
+            self.pine.write_int8(0xA46F6f, 0)
+            self.pine.write_int8(0xA46F78, 50) #Mia's base Body
+            self.pine.write_int8(0xA46F79, 0)
+            self.pine.write_int8(0xA46F7A, 50) #Mia's base Soul
+            self.pine.write_int8(0xA46F7B, 0)
+            self.pine.write_int8(0xA46FFC, 0) #Mia's Headgear
+            self.pine.write_int8(0xA46FFE, 40) #Mia's Body Armor
+            self.pine.write_int8(0xA47000, 40) #Mia's Armguards
+            self.pine.write_int8(0xA47002, 40) #Mia's Leg Armor
+            self.pine.write_int8(0xA4701E, 1) # Orca's Level
+            self.pine.write_int8(0xA47034, 70) #Orca's HP
+            self.pine.write_int8(0xA47035, 0)
+            self.pine.write_int8(0xA47036, 13) #Orca's SP
+            self.pine.write_int8(0xA47037, 0)
+            self.pine.write_int8(0xA47038, 16) #Orca's base Attack
+            self.pine.write_int8(0xA47039, 0)
+            self.pine.write_int8(0xA4703A, 16) #Orca's base Defense
+            self.pine.write_int8(0xA4703B, 0)
+            self.pine.write_int8(0xA4703C, 31)  #Orca's base Accuracy
+            self.pine.write_int8(0xA4703D, 0)
+            self.pine.write_int8(0xA4703E, 31) #Orca's base Evasion
+            self.pine.write_int8(0xA4703F, 0)
+            self.pine.write_int8(0xA47040, 13) #Orca's base Magic Attack
+            self.pine.write_int8(0xA47041, 0)
+            self.pine.write_int8(0xA47042, 13) #Orca's base Magic Defense
+            self.pine.write_int8(0xA47043, 0)
+            self.pine.write_int8(0xA47044, 26) #Orca's base Magic Accuracy
+            self.pine.write_int8(0xA47045, 0)
+            self.pine.write_int8(0xA47046, 26)  #Orca's base Magic Evasion
+            self.pine.write_int8(0xA47047, 0)
+            self.pine.write_int8(0xA47048, 13)  #Orca's base Earth Element
+            self.pine.write_int8(0xA47049, 0)
+            self.pine.write_int8(0xA47054, 1) #Orca's base Soul
+            self.pine.write_int8(0xA47055, 0)
+            self.pine.write_int8(0xA47056, 50) #Orca's base Body
+            self.pine.write_int8(0xA47057, 0)
+            self.pine.write_int8(0xA470D8, 0) #Orca's Headgear
+            self.pine.write_int8(0xA470DA, 40) #Orca's Body Armor
+            self.pine.write_int8(0xA470DC, 40) #Orca's Armguards
+            self.pine.write_int8(0xA470DE, 40) #Orca's Leg Armor
+            self.pine.write_int8(0xA470E0, 2) #Orca's Weapon
+            self.pine.write_int8(0xA470FA, 1) # Marlo's Level
+            self.pine.write_int8(0xA47110, 70) #Marlo's HP
+            self.pine.write_int8(0xA47111, 0)
+            self.pine.write_int8(0xA47112, 13) #Marlo's SP
+            self.pine.write_int8(0xA47113, 0)
+            self.pine.write_int8(0xA47114, 16) #Marlo's base Attack
+            self.pine.write_int8(0xA47115, 0)
+            self.pine.write_int8(0xA47116, 16) #Marlo's base Defense
+            self.pine.write_int8(0xA47117, 0)
+            self.pine.write_int8(0xA47118, 31)  #Marlo's base Accuracy
+            self.pine.write_int8(0xA47119, 0)
+            self.pine.write_int8(0xA4711A, 31) #Marlo's base Evasion
+            self.pine.write_int8(0xA4711B, 0)
+            self.pine.write_int8(0xA4711C, 13) #Marlo's base Magic Attack
+            self.pine.write_int8(0xA4711D, 0)
+            self.pine.write_int8(0xA4711E, 13) #Marlo's base Magic Defense
+            self.pine.write_int8(0xA4711F, 0)
+            self.pine.write_int8(0xA47120, 26) #Marlo's base Magic Accuracy
+            self.pine.write_int8(0xA47121, 0)
+            self.pine.write_int8(0xA47122, 26)  #Marlo's base Magic Evasion
+            self.pine.write_int8(0xA47123, 0)
+            self.pine.write_int8(0xA4712E, 13)  #Marlo's base Dark Element
+            self.pine.write_int8(0xA4712F, 0)
+            self.pine.write_int8(0xA47130, 1) #Marlo's base Soul
+            self.pine.write_int8(0xA47131, 0)
+            self.pine.write_int8(0xA47132, 50) #Marlo's base Body
+            self.pine.write_int8(0xA47133, 0)
+            self.pine.write_int8(0xA471B4, 0) #Marlo's Headgear
+            self.pine.write_int8(0xA471B6, 40) #Marlo's Body Armor
+            self.pine.write_int8(0xA471B8, 40) #Marlo's Armguards
+            self.pine.write_int8(0xA471BA, 40) #Marlo's Leg Armor
+            self.pine.write_int8(0xA471BC, 7) #Marlo's Weapon
+            self.pine.write_int8(0xA471D6, 1) # Sanjuro's Level
+            self.pine.write_int8(0xA471EC, 70) #Sanjuro's HP
+            self.pine.write_int8(0xA471ED, 0)
+            self.pine.write_int8(0xA471EE, 13) #Sanjuro's SP
+            self.pine.write_int8(0xA471EF, 0)
+            self.pine.write_int8(0xA471F0, 17) #Sanjuro's base Attack
+            self.pine.write_int8(0xA471F1, 0)
+            self.pine.write_int8(0xA471F2, 15) #Sanjuro's base Defense
+            self.pine.write_int8(0xA471F3, 0)
+            self.pine.write_int8(0xA471F4, 32)  #Sanjuro's base Accuracy
+            self.pine.write_int8(0xA471F5, 0)
+            self.pine.write_int8(0xA471F6, 30) #Sanjuro's base Evasion
+            self.pine.write_int8(0xA471F7, 0)
+            self.pine.write_int8(0xA471F8, 13) #Sanjuro's base Magic Attack
+            self.pine.write_int8(0xA471F9, 0)
+            self.pine.write_int8(0xA471FA, 13) #Sanjuro's base Magic Defense
+            self.pine.write_int8(0xA471FB, 0)
+            self.pine.write_int8(0xA471FC, 26) #Sanjuro's base Magic Accuracy
+            self.pine.write_int8(0xA471FD, 0)
+            self.pine.write_int8(0xA471FE, 26)  #Sanjuro's base Magic Evasion
+            self.pine.write_int8(0xA471FF, 0)
+            self.pine.write_int8(0xA47206, 13)  #Sanjuro's base Wood Element
+            self.pine.write_int8(0xA47207, 0)
+            self.pine.write_int8(0xA4720C, 1) #Sanjuro's base Soul
+            self.pine.write_int8(0xA4720D, 0)
+            self.pine.write_int8(0xA4720E, 50) #Sanjuro's base Body
+            self.pine.write_int8(0xA4720F, 0)
+            self.pine.write_int8(0xA471B4, 40) #Sanjuro's Headgear
+            self.pine.write_int8(0xA471B6, 40) #Sanjuro's Body Armor
+            self.pine.write_int8(0xA471B8, 40) #Sanjuro's Armguards
+            self.pine.write_int8(0xA471BA, 40) #Sanjuro's Leg Armor
+            self.pine.write_int8(0xA472B2, 1) # Nuke Usagimaru's Level
+            self.pine.write_int8(0xA472C8, 70) #Nuke Usagimaru's HP
+            self.pine.write_int8(0xA472C9, 0)
+            self.pine.write_int8(0xA472CA, 13) #Nuke Usagimaru's SP
+            self.pine.write_int8(0xA472CB, 0)
+            self.pine.write_int8(0xA472CC, 17) #Nuke Usagimaru's base Attack
+            self.pine.write_int8(0xA472CD, 0)
+            self.pine.write_int8(0xA472CE, 16) #Nuke Usagimaru's base Defense
+            self.pine.write_int8(0xA472CF, 0)
+            self.pine.write_int8(0xA472D0, 33)  #Nuke Usagimaru's base Accuracy
+            self.pine.write_int8(0xA472D1, 0)
+            self.pine.write_int8(0xA472D2, 32) #Nuke Usagimaru's base Evasion
+            self.pine.write_int8(0xA472D3, 0)
+            self.pine.write_int8(0xA472D4, 12) #Nuke Usagimaru's base Magic Attack
+            self.pine.write_int8(0xA472D5, 0)
+            self.pine.write_int8(0xA472D6, 14) #Nuke Usagimaru's base Magic Defense
+            self.pine.write_int8(0xA472D7, 0)
+            self.pine.write_int8(0xA472D8, 26) #Nuke Usagimaru's base Magic Accuracy
+            self.pine.write_int8(0xA472D9, 0)
+            self.pine.write_int8(0xA472DA, 26)  #Nuke Usagimaru's base Magic Evasion
+            self.pine.write_int8(0xA472DB, 0)
+            self.pine.write_int8(0xA472E4, 13)  #Nuke Usagimaru's base Light Element
+            self.pine.write_int8(0xA472E5, 0)
+            self.pine.write_int8(0xA472E8, 1) #Nuke Usagimaru's base Soul
+            self.pine.write_int8(0xA472E9, 0)
+            self.pine.write_int8(0xA472EA, 50) #Nuke Usagimaru's base Body
+            self.pine.write_int8(0xA472EB, 0)
+            self.pine.write_int8(0xA4736C, 20) #Nuke Usagimaru's Headgear
+            self.pine.write_int8(0xA4736E, 20) #Nuke Usagimaru's Body Armor
+            self.pine.write_int8(0xA47370, 20) #Nuke Usagimaru's Armguards
+            self.pine.write_int8(0xA47372, 20) #Nuke Usagimaru's Leg Armor
+            self.pine.write_int8(0xA47374, 0) #Nuke Usagimaru's Weapon
+            self.pine.write_int8(0xA4738E, 1) # Balmung's Level
+            self.pine.write_int8(0xA473A4, 70) #Balmung's HP
+            self.pine.write_int8(0xA473A5, 0)
+            self.pine.write_int8(0xA473A6, 13) #Balmung's SP
+            self.pine.write_int8(0xA473A7, 0)
+            self.pine.write_int8(0xA473A8, 16) #Balmung's base Attack
+            self.pine.write_int8(0xA473A9, 0)
+            self.pine.write_int8(0xA473AA, 16) #Balmung's base Defense
+            self.pine.write_int8(0xA473AB, 0)
+            self.pine.write_int8(0xA473AC, 31)  #Balmung's base Accuracy
+            self.pine.write_int8(0xA473AD, 0)
+            self.pine.write_int8(0xA473AE, 31) #Balmung's base Evasion
+            self.pine.write_int8(0xA473AF, 0)
+            self.pine.write_int8(0xA473B0, 13) #Balmung's base Magic Attack
+            self.pine.write_int8(0xA473B1, 0)
+            self.pine.write_int8(0xA473B2, 13) #Balmung's base Magic Defense
+            self.pine.write_int8(0xA473B3, 0)
+            self.pine.write_int8(0xA473B4, 26) #Balmung's base Magic Accuracy
+            self.pine.write_int8(0xA473B5, 0)
+            self.pine.write_int8(0xA473B6, 26)  #Balmung's base Magic Evasion
+            self.pine.write_int8(0xA473B7, 0)
+            self.pine.write_int8(0xA473BA, 13)  #Balmung's base Water Element
+            self.pine.write_int8(0xA473BB, 0)
+            self.pine.write_int8(0xA473C4, 1) #Balmung's base Soul
+            self.pine.write_int8(0xA473C5, 0)
+            self.pine.write_int8(0xA473C6, 50) #Balmung's base Body
+            self.pine.write_int8(0xA473C7, 0)
+            self.pine.write_int8(0xA47448, 0) #Balmung's Headgear
+            self.pine.write_int8(0xA4744A, 40) #Balmung's Body Armor
+            self.pine.write_int8(0xA4744C, 20) #Balmung's Armguards
+            self.pine.write_int8(0xA4744E, 20) #Balmung's Leg Armor
+            self.pine.write_int8(0xA47450, 3) #Balmung's Weapon
+            self.pine.write_int8(0xA4746A, 1) # Moonstone's Level
+            self.pine.write_int8(0xA47480, 63) #Moonstone's HP
+            self.pine.write_int8(0xA47481, 0)
+            self.pine.write_int8(0xA47482, 13) #Moonstone's SP
+            self.pine.write_int8(0xA47483, 0)
+            self.pine.write_int8(0xA47484, 15) #Moonstone's base Attack
+            self.pine.write_int8(0xA47485, 0)
+            self.pine.write_int8(0xA47486, 14) #Moonstone's base Defense
+            self.pine.write_int8(0xA47487, 0)
+            self.pine.write_int8(0xA47488, 33)  #Moonstone's base Accuracy
+            self.pine.write_int8(0xA47489, 0)
+            self.pine.write_int8(0xA4748A, 33) #Moonstone's base Evasion
+            self.pine.write_int8(0xA4748B, 0)
+            self.pine.write_int8(0xA4748C, 14) #Moonstone's base Magic Attack
+            self.pine.write_int8(0xA4748D, 0)
+            self.pine.write_int8(0xA4748E, 14) #Moonstone's base Magic Defense
+            self.pine.write_int8(0xA4748F, 0)
+            self.pine.write_int8(0xA47490, 26) #Moonstone's base Magic Accuracy
+            self.pine.write_int8(0xA47491, 0)
+            self.pine.write_int8(0xA47492, 26)  #Moonstone's base Magic Evasion
+            self.pine.write_int8(0xA47493, 0)
+            self.pine.write_int8(0xA47496, 13)  #Moonstone's base Water Element
+            self.pine.write_int8(0xA47497, 0)
+            self.pine.write_int8(0xA474A0, 38) #Moonstone's base Soul
+            self.pine.write_int8(0xA474A1, 0)
+            self.pine.write_int8(0xA474A2, 33) #Moonstone's base Body
+            self.pine.write_int8(0xA474A3, 0)
+            self.pine.write_int8(0xA47524, 20) #Moonstone's Headgear
+            self.pine.write_int8(0xA47526, 20) #Moonstone's Body Armor
+            self.pine.write_int8(0xA47528, 20) #Moonstone's Armguards
+            self.pine.write_int8(0xA4752A, 20) #Moonstone's Leg Armor
+            self.pine.write_int8(0xA4752C, 3) #Moonstone's Weapon
+            self.pine.write_int8(0xA47622, 1) # Wiseman's Level
+            self.pine.write_int8(0xA47638, 55) #Wiseman's HP
+            self.pine.write_int8(0xA47639, 0)
+            self.pine.write_int8(0xA4763A, 20) #Wiseman's SP
+            self.pine.write_int8(0xA4763B, 0)
+            self.pine.write_int8(0xA4763C, 10) #Wiseman's base Attack
+            self.pine.write_int8(0xA4763D, 0)
+            self.pine.write_int8(0xA4763E, 14) #Wiseman's base Defense
+            self.pine.write_int8(0xA4763F, 0)
+            self.pine.write_int8(0xA47640, 33)  #Wiseman's base Accuracy
+            self.pine.write_int8(0xA47641, 0)
+            self.pine.write_int8(0xA47642, 31) #Wiseman's base Evasion
+            self.pine.write_int8(0xA47643, 0)
+            self.pine.write_int8(0xA47644, 18) #Wiseman's base Magic Attack
+            self.pine.write_int8(0xA47645, 0)
+            self.pine.write_int8(0xA47646, 13) #Wiseman's base Magic Defense
+            self.pine.write_int8(0xA47647, 0)
+            self.pine.write_int8(0xA47648, 32) #Wiseman's base Magic Accuracy
+            self.pine.write_int8(0xA47649, 0)
+            self.pine.write_int8(0xA4764A, 28)  #Wiseman's base Magic Evasion
+            self.pine.write_int8(0xA4764B, 0)
+            self.pine.write_int8(0xA47652, 13)  #Wiseman's base Wood Element
+            self.pine.write_int8(0xA47653, 0)
+            self.pine.write_int8(0xA47658, 50) #Wiseman's base Soul
+            self.pine.write_int8(0xA47659, 0)
+            self.pine.write_int8(0xA4745A, 2) #Wiseman's base Body
+            self.pine.write_int8(0xA4745B, 0)
+            self.pine.write_int8(0xA476DC, 0) #Wiseman's Headgear
+            self.pine.write_int8(0xA476DE, 0) #Wiseman's Body Armor
+            self.pine.write_int8(0xA476E0, 0) #Wiseman's Armguards
+            self.pine.write_int8(0xA475E2, 0) #Wiseman's Leg Armor
+            self.pine.write_int8(0xA475E4, 9) #Wiseman's Weapon
+            self.pine.write_int8(0xA478B6, 1) # Rachel's Level
+            self.pine.write_int8(0xA478CC, 70) #Rachel's HP
+            self.pine.write_int8(0xA478CD, 0)
+            self.pine.write_int8(0xA478CE, 13) #Rachel's SP
+            self.pine.write_int8(0xA478CF, 0)
+            self.pine.write_int8(0xA478D0, 16) #Rachel's base Attack
+            self.pine.write_int8(0xA478D1, 0)
+            self.pine.write_int8(0xA478D2, 14) #Rachel's base Defense
+            self.pine.write_int8(0xA478D3, 0)
+            self.pine.write_int8(0xA478D4, 31)  #Rachel's base Accuracy
+            self.pine.write_int8(0xA478D5, 0)
+            self.pine.write_int8(0xA478D6, 31) #Rachel's base Evasion
+            self.pine.write_int8(0xA478D7, 0)
+            self.pine.write_int8(0xA478D8, 13) #Rachel's base Magic Attack
+            self.pine.write_int8(0xA478D9, 0)
+            self.pine.write_int8(0xA478DA, 13) #Rachel's base Magic Defense
+            self.pine.write_int8(0xA478DB, 0)
+            self.pine.write_int8(0xA478DC, 26) #Rachel's base Magic Accuracy
+            self.pine.write_int8(0xA478DD, 0)
+            self.pine.write_int8(0xA478DE, 26)  #Rachel's base Magic Evasion
+            self.pine.write_int8(0xA478DF, 0)
+            self.pine.write_int8(0xA478E2, 13)  #Rachel's base Water Element
+            self.pine.write_int8(0xA474E3, 0)
+            self.pine.write_int8(0xA474EC, 1) #Rachel's base Soul
+            self.pine.write_int8(0xA474ED, 0)
+            self.pine.write_int8(0xA474EE, 50) #Rachel's base Body
+            self.pine.write_int8(0xA474EF, 0)
+            self.pine.write_int8(0xA47970, 40) #Rachel's Headgear
+            self.pine.write_int8(0xA47972, 40) #Rachel's Body Armor
+            self.pine.write_int8(0xA47974, 40) #Rachel's Armguards
+            self.pine.write_int8(0xA47976, 40) #Rachel's Leg Armor
+            self.pine.write_int8(0xA47978, 5) #Rachel's Weapon
+            self.pine.write_int8(0xA47992, 1)  # Gardenia's Level
+            self.pine.write_int8(0xA479A8, 70)  # Gardenia's HP
+            self.pine.write_int8(0xA479A9, 0)
+            self.pine.write_int8(0xA479AA, 13)  # Gardenia's SP
+            self.pine.write_int8(0xA479AB, 0)
+            self.pine.write_int8(0xA479AC, 17)  # Gardenia's base Attack
+            self.pine.write_int8(0xA479AD, 0)
+            self.pine.write_int8(0xA479AE, 14)  # Gardenia's base Defense
+            self.pine.write_int8(0xA479AF, 0)
+            self.pine.write_int8(0xA479B0, 33)  # Gardenia's base Accuracy
+            self.pine.write_int8(0xA479B1, 0)
+            self.pine.write_int8(0xA479B2, 32)  # Gardenia's base Evasion
+            self.pine.write_int8(0xA479B3, 0)
+            self.pine.write_int8(0xA479B4, 12)  # Gardenia's base Magic Attack
+            self.pine.write_int8(0xA479B5, 0)
+            self.pine.write_int8(0xA479B6, 14)  # Gardenia's base Magic Defense
+            self.pine.write_int8(0xA479B7, 0)
+            self.pine.write_int8(0xA479B8, 26)  # Gardenia's base Magic Accuracy
+            self.pine.write_int8(0xA479B9, 0)
+            self.pine.write_int8(0xA479BA, 26)  # Gardenia's base Magic Evasion
+            self.pine.write_int8(0xA479BB, 0)
+            self.pine.write_int8(0xA479C6, 13)  # Gardenia's base Dark Element
+            self.pine.write_int8(0xA479C7, 0)
+            self.pine.write_int8(0xA479C8, 1)  # Gardenia's base Soul
+            self.pine.write_int8(0xA479C9, 0)
+            self.pine.write_int8(0xA479CA, 50)  # Gardenia's base Body
+            self.pine.write_int8(0xA479CB, 0)
+            self.pine.write_int8(0xA47A4C, 20)  # Gardenia's Headgear
+            self.pine.write_int8(0xA47A4E, 20)  # Gardenia's Body Armor
+            self.pine.write_int8(0xA47A50, 20)  # Gardenia's Armguards
+            self.pine.write_int8(0xA47A52, 20)  # Gardenia's Leg Armor
+            self.pine.write_int8(0xA47A54, 5)  # Gardenia's Weapon
+            self.pine.write_int8(0xA47D02, 1)  # Helba's Level
+            self.pine.write_int8(0xA47D18, 200)  # Helba's HP
+            self.pine.write_int8(0xA47D19, 0)
+            self.pine.write_int8(0xA47D1A, 40)  # Helba's SP
+            self.pine.write_int8(0xA47D1B, 0)
+            self.pine.write_int8(0xA47D1C, 10)  # Helba's base Attack
+            self.pine.write_int8(0xA47D1D, 0)
+            self.pine.write_int8(0xA47D1E, 10)  # Helba's base Defense
+            self.pine.write_int8(0xA47D1F, 0)
+            self.pine.write_int8(0xA47D20, 10)  # Helba's base Accuracy
+            self.pine.write_int8(0xA47D21, 0)
+            self.pine.write_int8(0xA47D22, 10)  # Helba's base Evasion
+            self.pine.write_int8(0xA47D23, 0)
+            self.pine.write_int8(0xA47D24, 10)  # Helba's base Magic Attack
+            self.pine.write_int8(0xA47D25, 0)
+            self.pine.write_int8(0xA47D26, 10)  # Helba's base Magic Defense
+            self.pine.write_int8(0xA47D27, 0)
+            self.pine.write_int8(0xA47D28, 10)  # Helba's base Magic Accuracy
+            self.pine.write_int8(0xA47D29, 0)
+            self.pine.write_int8(0xA47D2A, 10)  # Helba's base Magic Evasion
+            self.pine.write_int8(0xA47D2B, 0)
+            self.pine.write_int8(0xA47D2C, 10)  # Helba's base Earth Element
+            self.pine.write_int8(0xA47D2D, 0)
+            self.pine.write_int8(0xA47D2E, 10)  # Helba's base Water Element
+            self.pine.write_int8(0xA47D2F, 0)
+            self.pine.write_int8(0xA47D30, 10)  # Helba's base Fire Element
+            self.pine.write_int8(0xA47D31, 0)
+            self.pine.write_int8(0xA47D32, 10)  # Helba's base Wood Element
+            self.pine.write_int8(0xA47D33, 0)
+            self.pine.write_int8(0xA47D34, 10)  # Helba's base Light Element
+            self.pine.write_int8(0xA47D35, 0)
+            self.pine.write_int8(0xA47D36, 10)  # Helba's base Dark Element
+            self.pine.write_int8(0xA47D37, 0)
+            self.pine.write_int8(0xA47D38, 10)  # Helba's base Soul
+            self.pine.write_int8(0xA47D39, 0)
+            self.pine.write_int8(0xA47D3A, 10)  # Helba's base Body
+            self.pine.write_int8(0xA47D3B, 0)
+            self.pine.write_int8(0xA47DBC, 0)  # Helba's Headgear
+            self.pine.write_int8(0xA47DBE, 0)  # Helba's Body Armor
+            self.pine.write_int8(0xA47DC0, 0)  # Helba's Armguards
+            self.pine.write_int8(0xA47DC2, 0)  # Helba's Leg Armor
+            self.pine.write_int8(0xA47DC4, 0)  # Helba's Weapon
+
+            self.pine.write_int8(0xA43C35, 0) #Set this value to 0 to not run the initializing again.
+
 
     async def check_locations(self, ctx) -> None:
         checked: Set[int] = set()
@@ -335,6 +735,26 @@ class DotHackInterface:
                     continue
                 addr_check(addr, bitflags, loc_id)
 
+            # Monster Hunt Delta Server
+        for monster_hunt in MonsterHunt1:
+            name: str = MonsterNames[monster_hunt.name].value
+            addr: int = self.addresses.Monsters[monster_hunt.name]
+            bitflags: int = monster_hunt.value["bits"]
+            loc_id = get_location_id(name)
+            if loc_id is None:
+              continue
+            addr_check(addr, bitflags, loc_id)
+
+            # Monster Hunt Theta Server
+        for monster_hunt in MonsterHunt2:
+            name: str = MonsterNames[monster_hunt.name].value
+            addr: int = self.addresses.Monsters[monster_hunt.name]
+            bitflags: int = monster_hunt.value["bits"]
+            loc_id = get_location_id(name)
+            if loc_id is None:
+                continue
+            addr_check(addr, bitflags, loc_id)
+
         # Ryu Book stats
         for stat in PlayStats:
             stat_check(stat)
@@ -391,6 +811,9 @@ class DotHackInterface:
                 elif isinstance(item, WeaponItem):
                     """Add weapon to storage"""
                     self.add_weapon(item)
+                elif isinstance(item, ArmorItem):
+                    """Add armor to storage"""
+                    self.add_armor(item)
                 elif isinstance(item, VirusCoreItem):
                     """Add item to inventory"""
                     self.add_key(self.addresses.Items[item.virus_core.name])
@@ -479,13 +902,27 @@ class DotHackInterface:
                 self.pine.write_int8(i+3, 1)
                 break
 
+    def add_armor(self, item_obj: ArmorItem) -> None:
+        addr: int = self.addresses.Storage
+        item: int = item_obj.armor.value["id"]
+        for i in range(addr, addr + 396, 4):
+            curr: int = self.pine.read_int32(i)
+            amt: int = self.pine.read_int8(i+3)
+            if curr | 0xff000000 == item | 0xff000000:
+                self.pine.write_int8(i+3, amt + 1)
+                return
+            if curr == 0x00ffffff:
+                self.pine.write_int32(i, item)
+                self.pine.write_int8(i+3, 1)
+                break
+
     def add_key(self, addr) -> None:
         curr_amt = self.pine.read_int8(addr)
         self.pine.write_int8(addr, curr_amt + 1)
 
     def add_reset_rate(self, addr) -> None:
         amt = self.pine.read_int8(addr)
-        self.pine.write_int8(0xA4613E, amt - 100)
+        self.pine.write_int8(0xA4613E, max(0, amt-100))
 
     async def scan_server(self, ctx) -> None:
         addr: int = self.addresses.Servers

@@ -21,7 +21,7 @@ class PlayStats(Enum):
     TotalDataDrains = {"addr": 0xa4622e, "scale": "list", "values": [5, 10, 25, 50, 75, 100]}
     KiteLevel = {"addr": 0xa46e66, "scale": "range", "values": (1, 31)}
 
-class MonsterHuntInfection(Enum):
+class InfectionMonsterHunt(Enum):
     Razine1 = {"addr": 0xa46287, "values": [1]}
     Swordmanoid2 = {"addr": 0xa46288, "values": [1]}
     Gladiator3 = {"addr": 0xa46289, "values": [1]}
