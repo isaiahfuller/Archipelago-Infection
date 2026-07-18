@@ -693,7 +693,7 @@ class DotHackInterface:
             # Monster Hunt Delta Server
         for monster_hunt in MonsterHunt1:
             name: str = MonsterNames[monster_hunt.name].value
-            addr: int = self.addresses.MonsterNames[monster_hunt.name]
+            addr: int = self.addresses.Monsters[monster_hunt.name]
             bitflags: int = monster_hunt.value["bits"]
             loc_id = get_location_id(name)
             if loc_id is None:
@@ -703,7 +703,7 @@ class DotHackInterface:
             # Monster Hunt Theta Server
         for monster_hunt in MonsterHunt2:
             name: str = MonsterNames[monster_hunt.name].value
-            addr: int = self.addresses.MonsterNames[monster_hunt.name]
+            addr: int = self.addresses.Monsters[monster_hunt.name]
             bitflags: int = monster_hunt.value["bits"]
             loc_id = get_location_id(name)
             if loc_id is None:

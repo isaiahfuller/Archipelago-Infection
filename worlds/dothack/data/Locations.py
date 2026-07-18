@@ -135,20 +135,6 @@ def hunt_gen(enum, volume: int) -> list[InfectionEventLocation]:
             ))
     return res
 
-def hunt_gen2(enum, volume: int) -> list[InfectionEventLocation]:
-    res = []
-    for event in enum:
-        volumes = event.value.get("volumes", [])
-        if isinstance(volumes, list) and volume in volumes:
-            name = MonsterNames[event.name].value
-            res.append(InfectionEventLocation(
-                name=name,
-                location_id=event.value["address"],
-                event=event,
-                bitflags=event.value["bits"]
-            ))
-    return res
-
 PlayStatLocsList: list[InfectionPlayStatLocation]
 
 
@@ -205,7 +191,7 @@ def generate_volume_locations(volume: int):
         *event_gen(InfectionOptionalPartyMembers, volume),
         *event_gen(CompletionConditions, volume),
         *hunt_gen(MonsterHunt1, volume),
-        *hunt_gen2(MonsterHunt2, volume)
+        *hunt_gen(MonsterHunt2, volume)
     ]
 
 

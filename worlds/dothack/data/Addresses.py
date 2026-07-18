@@ -8,7 +8,7 @@ class VolumeAddresses(ABC):
     Items: Dict[str, int]
     Events: Dict[str, int]
     PlayStats: Dict[str, int]
-    MonsterNames: Dict[str, int]
+    Monsters: Dict[str, int]
     AreaWords: int
     WordLists: int
     Storage: int
@@ -87,7 +87,7 @@ class InfectionAddresses(VolumeAddresses):
         PlayStatNames.TotalDataDrains.name: 0xa4622e,
         PlayStatNames.KiteLevel.name: 0xa46e66,
     }
-    MonsterNames = {
+    Monsters = {
         MonsterNames.Razine1.name: 0xa46287,
         MonsterNames.Swordmanoid2.name: 0xa46288,
         MonsterNames.Gladiator3.name: 0xa46289,
