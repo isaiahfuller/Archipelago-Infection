@@ -12,7 +12,7 @@ from .data.Strings import APConsole, APHelper, Meta, PlayStatNames, ServerNames
 from .data import Locations, Items
 from .data.Items import InfectionItem, InfectionItemMeta, ITEMS_MASTER
 from .data.locations.WordList import InfectionDeltaWordList as DeltaWordList, InfectionThetaWordList as ThetaWordList, WordListBase, get_wordlist_name
-from .data.locations.Events import InfectionEventBase, InfectionGoldenGoblins, InfectionOptionalPartyMembers, MonsterHunt1, MonsterHunt2
+from .data.locations.Events import InfectionEventBase, InfectionGoldenGoblins, InfectionOptionalPartyMembers, InfectionMonsters
 from .DotHackOptions import DotHackOptions, slot_data_options, create_option_groups
 from .data.DataManager import VOLUME_DATA
 
@@ -175,8 +175,7 @@ class DotHackWorld(World):
             ])
 
         if not self.options.monster_hunt.value:
-            excluded_events.update(MonsterHunt1)
-            excluded_events.update(MonsterHunt2)
+            excluded_events.update(InfectionMonsters)
             
         if self.options.completion_condition == 0:
             excluded_wordlist_locs.add(DeltaWordList.HideousSomeonesGiant)
@@ -204,6 +203,9 @@ class DotHackWorld(World):
                 self.logger.debug(f"Excluding Wordlist Location: {loc_meta.name}")
                 self.excluded_locations.add(loc_meta.location_id)
                 continue
+            loc = loc_meta.to_location(self.player, main_region)
+            main_region.locations.append(loc)
+        for loc_meta in v_data.monster_locations:
             loc = loc_meta.to_location(self.player, main_region)
             main_region.locations.append(loc)
 

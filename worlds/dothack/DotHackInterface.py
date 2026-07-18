@@ -25,7 +25,7 @@ from .data.items.PartyMembers import PartyMembers
 from .data.items.RyuBooks import RyuBooks
 from .data.items.Servers import Servers
 from .data.locations.Events import InfectionStoryEvents as StoryEvents, InfectionGoldenGoblins as GoldenGoblins, \
-    InfectionOptionalPartyMembers as OptionalPartyMembers, MonsterHunt1, MonsterHunt2
+    InfectionOptionalPartyMembers as OptionalPartyMembers, InfectionMonsters
 from .data.locations.WordList import InfectionDeltaWordList as DeltaWordList, InfectionThetaWordList as ThetaWordList, \
     WordListBase, get_wordlist_name
 from .pcsx2_interface.pine import Pine
@@ -735,24 +735,14 @@ class DotHackInterface:
                     continue
                 addr_check(addr, bitflags, loc_id)
 
-            # Monster Hunt Delta Server
-        for monster_hunt in MonsterHunt1:
+        # Monster Hunt Delta Server
+        for monster_hunt in InfectionMonsters:
             name: str = MonsterNames[monster_hunt.name].value
             addr: int = self.addresses.Monsters[monster_hunt.name]
             bitflags: int = monster_hunt.value["bits"]
             loc_id = get_location_id(name)
             if loc_id is None:
               continue
-            addr_check(addr, bitflags, loc_id)
-
-            # Monster Hunt Theta Server
-        for monster_hunt in MonsterHunt2:
-            name: str = MonsterNames[monster_hunt.name].value
-            addr: int = self.addresses.Monsters[monster_hunt.name]
-            bitflags: int = monster_hunt.value["bits"]
-            loc_id = get_location_id(name)
-            if loc_id is None:
-                continue
             addr_check(addr, bitflags, loc_id)
 
         # Ryu Book stats
