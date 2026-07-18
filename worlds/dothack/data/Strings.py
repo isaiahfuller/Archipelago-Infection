@@ -918,7 +918,7 @@ class AreaWordNames(Enum):
     Talisman = "Talisman"
     Orange = "Orange"
 
-class MonsterNamesInfection(Enum):
+class MonsterNames(Enum):
     Razine1 = "Razine"
     Swordmanoid2 = "Swordmanoid"
     Gladiator3 = "Gladiator"

@@ -7,7 +7,7 @@ from .items.AreaWords import AreaWords
 from .locations.Events import InfectionStoryEvents, InfectionGoldenGoblins, InfectionOptionalPartyMembers, CompletionConditions, MonsterHunt1, MonsterHunt2
 from .locations.WordList import InfectionDeltaWordList as DeltaWordList, InfectionThetaWordList as ThetaWordList, WordListBase, get_wordlist_name
 from .locations.PlayStats import PlayStats
-from .Strings import Meta, AreaWordNames, EventNames, PlayStatNames, MonsterNamesInfection
+from .Strings import Meta, AreaWordNames, EventNames, PlayStatNames, MonsterNames
 from .Addresses import InfectionAddresses as Addresses
 from .DataManager import VOLUME_DATA
 
@@ -126,7 +126,7 @@ def hunt_gen(enum, volume: int) -> list[InfectionEventLocation]:
     for event in enum:
         volumes = event.value.get("volumes", [])
         if isinstance(volumes, list) and volume in volumes:
-            name = MonsterNamesInfection[event.name].value
+            name = MonsterNames[event.name].value
             res.append(InfectionEventLocation(
                 name=name,
                 location_id=event.value["address"],
@@ -140,7 +140,7 @@ def hunt_gen2(enum, volume: int) -> list[InfectionEventLocation]:
     for event in enum:
         volumes = event.value.get("volumes", [])
         if isinstance(volumes, list) and volume in volumes:
-            name = MonsterNamesInfection[event.name].value
+            name = MonsterNames[event.name].value
             res.append(InfectionEventLocation(
                 name=name,
                 location_id=event.value["address"],
