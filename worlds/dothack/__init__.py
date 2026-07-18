@@ -1,4 +1,5 @@
-from worlds.dothack.data.Strings import CharacterNames
+from worlds.dothack.data.items.RyuBooks import RyuBooks
+from rule_builder.rules import Has
 from BaseClasses import ItemClassification
 from typing import ClassVar, List, cast
 import logging
@@ -8,7 +9,7 @@ from BaseClasses import MultiWorld, Tutorial, Region
 from worlds.AutoWorld import World, WebWorld
 from worlds.LauncherComponents import Component, components, launch_subprocess, Type
 
-from .data.Strings import APConsole, APHelper, Meta, PlayStatNames, ServerNames
+from .data.Strings import APConsole, APHelper, Meta, PlayStatNames, ServerNames, ItemNames, CharacterNames
 from .data import Locations, Items
 from .data.Items import InfectionItem, InfectionItemMeta, ITEMS_MASTER
 from .data.locations.WordList import InfectionDeltaWordList as DeltaWordList, InfectionThetaWordList as ThetaWordList, WordListBase, get_wordlist_name
@@ -150,7 +151,32 @@ class DotHackWorld(World):
 
     def create_regions(self):
         main_region = Region("Menu", self.player, self.multiworld)
+        delta_region = Region(ServerNames.Delta.value, self.player, self.multiworld)
+        theta_region = Region(ServerNames.Theta.value, self.player, self.multiworld)
+
+        ryu_book_i_region = Region(ItemNames.RyuBookI.value, self.player, self.multiworld)
+        ryu_book_ii_region = Region(ItemNames.RyuBookII.value, self.player, self.multiworld)
+        ryu_book_iv_region = Region(ItemNames.RyuBookIV.value, self.player, self.multiworld)
+        ryu_book_vi_region = Region(ItemNames.RyuBookVI.value, self.player, self.multiworld)
+        ryu_book_vii_region = Region(ItemNames.RyuBookVII.value, self.player, self.multiworld)
+        
         self.multiworld.regions.append(main_region)
+        self.multiworld.regions.append(delta_region)
+        self.multiworld.regions.append(theta_region)
+        self.multiworld.regions.append(ryu_book_i_region)
+        self.multiworld.regions.append(ryu_book_ii_region)
+        self.multiworld.regions.append(ryu_book_iv_region)
+        self.multiworld.regions.append(ryu_book_vi_region)
+        self.multiworld.regions.append(ryu_book_vii_region)
+
+        main_region.connect(delta_region, ServerNames.Delta.value, rule=Has(ServerNames.Delta.value))
+        main_region.connect(theta_region, ServerNames.Theta.value, rule=Has(ServerNames.Theta.value))
+        main_region.connect(ryu_book_i_region, ItemNames.RyuBookI.value, rule=Has(ItemNames.RyuBookI.value))
+        main_region.connect(ryu_book_ii_region, ItemNames.RyuBookII.value, rule=Has(ItemNames.RyuBookII.value))
+        main_region.connect(ryu_book_iv_region, ItemNames.RyuBookIV.value, rule=Has(ItemNames.RyuBookIV.value))
+        main_region.connect(ryu_book_vi_region, ItemNames.RyuBookVI.value, rule=Has(ItemNames.RyuBookVI.value))
+        main_region.connect(ryu_book_vii_region, ItemNames.RyuBookVII.value, rule=Has(ItemNames.RyuBookVII.value))
+
         self.excluded_locations: set[int] = set()
 
         excluded_events: set[InfectionEventBase] = set()
@@ -186,7 +212,19 @@ class DotHackWorld(World):
         v_data = VOLUME_DATA[self.options.volume.value]
 
         for loc_meta in self.playstat_locations:
-            main_region.locations.append(loc_meta.to_location(self.player, main_region))
+            self.logger.debug(f"Adding Playstat Location: {loc_meta.stat}")
+            if loc_meta.stat in RyuBooks.RyuBookI.value:
+                ryu_book_i_region.locations.append(loc_meta.to_location(self.player, ryu_book_i_region))
+            elif loc_meta.stat in RyuBooks.RyuBookII.value:
+                ryu_book_ii_region.locations.append(loc_meta.to_location(self.player, ryu_book_ii_region))
+            elif loc_meta.stat in RyuBooks.RyuBookIV.value:
+                ryu_book_iv_region.locations.append(loc_meta.to_location(self.player, ryu_book_iv_region))
+            elif loc_meta.stat in RyuBooks.RyuBookVI.value:
+                ryu_book_vi_region.locations.append(loc_meta.to_location(self.player, ryu_book_vi_region))
+            elif loc_meta.stat in RyuBooks.RyuBookVII.value:
+                ryu_book_vii_region.locations.append(loc_meta.to_location(self.player, ryu_book_vii_region))
+            else:
+                main_region.locations.append(loc_meta.to_location(self.player, main_region))
         for loc_meta in v_data.event_locations:
             if loc_meta.event in excluded_events:
                 self.logger.debug(f"Excluding Event Location: {loc_meta.name}")
@@ -200,7 +238,12 @@ class DotHackWorld(World):
                 self.excluded_locations.add(loc_meta.location_id)
                 continue
             loc = loc_meta.to_location(self.player, main_region)
-            main_region.locations.append(loc)
+            if isinstance(loc_meta, DeltaWordList):
+                delta_region.locations.append(loc)
+            elif isinstance(loc_meta, ThetaWordList):
+                theta_region.locations.append(loc)
+            else:
+                main_region.locations.append(loc)
 
         main_region.add_event("Victory")
 
