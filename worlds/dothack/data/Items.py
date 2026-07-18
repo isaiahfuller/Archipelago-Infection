@@ -351,8 +351,10 @@ for v_data in VOLUME_DATA.values():
         if item not in ServerItems:
             ServerItems.append(item)
 
-ItemUnion = ConsumableItem | WeaponItem | InfectionWordListItem | PartyMemberItem | RyuBookItem \
+ItemUnion = (
+    ConsumableItem | WeaponItem | InfectionWordListItem | PartyMemberItem | RyuBookItem
     | ServerItem | VirusCoreItem | ArmorItem | InfectionLevelItem | GruntyFoodItem
+)
 
 ITEMS_MASTER: list[ItemUnion] = [
     *PartyMemberItems,
