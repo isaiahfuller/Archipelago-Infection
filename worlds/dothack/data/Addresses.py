@@ -100,6 +100,7 @@ class InfectionAddresses(VolumeAddresses):
         MonsterNamesInfection.MummyRipper15.name: 0xa46295,
         MonsterNamesInfection.CadetValkyrie20.name: 0xa4629E,
         MonsterNamesInfection.FreshValkyrie21.name: 0xa4629F,
+        MonsterNamesInfection.LongLived23.name: 0xa4629D,
         MonsterNamesInfection.GrandMage24.name: 0xa462A2,
         MonsterNamesInfection.Flamer36.name: 0xa462B0,
         MonsterNamesInfection.FireWitch37.name: 0xa462B1,

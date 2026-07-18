@@ -1,5 +1,7 @@
 from enum import Enum
 from typing import TypedDict
+from worlds.dothack.data.Addresses import MonsterNamesInfection
+
 
 
 class InfectionEventAttributes(TypedDict):
@@ -186,7 +188,7 @@ class MonsterHunt2(InfectionMonsterBase):
     DarkRider8 = {"address": 0xa4628E, "bits": 0b00000001, "volumes": [1]}
     TetraArmor11 = {"address": 0xa46291, "bits": 0b00000001, "volumes": [1]}
     FreshValkyrie21 = {"address": 0xa4629B, "bits": 0b00000001, "volumes": [1]}
-    #LongLived23 = {"address": 0xa4629D, "bits": 0b00000001, "volumes": [1]}
+    LongLived23 = {"address": 0xa4629D, "bits": 0b00000001, "volumes": [1]}
     GrandMage24 = {"address": 0xa4629E, "bits": 0b00000001, "volumes": [1]}
     MuGuardian57 = {"address": 0xa462BF, "bits": 0b00000001, "volumes": [1]}
     PhoenixQueen72 = {"address": 0xa462CE, "bits": 0b00000001, "volumes": [1]}
@@ -211,3 +213,66 @@ class MonsterHunt2(InfectionMonsterBase):
     BeeAssault273 = {"address": 0xa46397, "bits": 0b00000001, "volumes": [1]}
     BabyWorm275 = {"address": 0xa46399, "bits": 0b00000001, "volumes": [1]}
     Halloween283 = {"address": 0xa463A1, "bits": 0b00000001, "volumes": [1]}
+
+class MonsterHunt2List:
+    Gladiator3 = 1
+    DarkRider8 = 2
+    TetraArmor11 = 3
+    FreshValkyrie21 = 4
+    LongLived23 = 5
+    GrandMage24 = 6
+    MuGuardian57 = 7
+    PhoenixQueen72 = 8
+    RedScissors83 = 9
+    Mantis86 = 10
+    MysteryRock107 = 11
+    HammerShark124 = 12
+    MetalGoblin146 = 13
+    Cannibal159 = 14
+    Ogre161 = 15
+    IronBallFreak163 = 16
+    HellHound173 = 17
+    GoilMenhir181 = 18
+    CursedBlades189 = 19
+    ArmorShogun191 = 20
+    LeadSnakoid196 = 21
+    SnappyGrass222 = 22
+    WoodStock223 = 23
+    LamiaHunter232 = 24
+    HellBox242 = 25
+    LivingDead250 = 26
+    BeeAssault273 = 27
+    BabyWorm275 = 28
+    Halloween283 = 29
+
+MONSTER_ADDRESS_MAP = {
+    MonsterHunt2List.Gladiator3: MonsterNamesInfection.Gladiator3,
+    MonsterHunt2List.DarkRider8: MonsterNamesInfection.DarkRider8,
+    MonsterHunt2List.TetraArmor11: MonsterNamesInfection.TetraArmor11,
+    MonsterHunt2List.FreshValkyrie21: MonsterNamesInfection.FreshValkyrie21,
+    MonsterHunt2List.LongLived23: MonsterNamesInfection.LongLived23,
+    MonsterHunt2List.GrandMage24: MonsterNamesInfection.GrandMage24,
+    MonsterHunt2List.MuGuardian57: MonsterNamesInfection.MuGuardian57,
+    MonsterHunt2List.PhoenixQueen72: MonsterNamesInfection.PhoenixQueen72,
+    MonsterHunt2List.RedScissors83: MonsterNamesInfection.RedScissors83,
+    MonsterHunt2List.Mantis86: MonsterNamesInfection.Mantis86,
+    MonsterHunt2List.MysteryRock107: MonsterNamesInfection.MysteryRock107,
+    MonsterHunt2List.HammerShark124: MonsterNamesInfection.HammerShark124,
+    MonsterHunt2List.MetalGoblin146: MonsterNamesInfection.MetalGoblin146,
+    MonsterHunt2List.Cannibal159: MonsterNamesInfection.Cannibal159,
+    MonsterHunt2List.Ogre161: MonsterNamesInfection.Ogre161,
+    MonsterHunt2List.IronBallFreak163: MonsterNamesInfection.IronBallFreak163,
+    MonsterHunt2List.HellHound173: MonsterNamesInfection.HellHound173,
+    MonsterHunt2List.GoilMenhir181: MonsterNamesInfection.GoilMenhir181,
+    MonsterHunt2List.CursedBlades189: MonsterNamesInfection.CursedBlades189,
+    MonsterHunt2List.ArmorShogun191: MonsterNamesInfection.ArmorShogun191,
+    MonsterHunt2List.LeadSnakoid196: MonsterNamesInfection.LeadSnakoid196,
+    MonsterHunt2List.SnappyGrass222: MonsterNamesInfection.SnappyGrass222,
+    MonsterHunt2List.WoodStock223: MonsterNamesInfection.WoodStock223,
+    MonsterHunt2List.LamiaHunter232: MonsterNamesInfection.LamiaHunter232,
+    MonsterHunt2List.HellBox242: MonsterNamesInfection.HellBox242,
+    MonsterHunt2List.LivingDead250: MonsterNamesInfection.LivingDead250,
+    MonsterHunt2List.BeeAssault273: MonsterNamesInfection.BeeAssault273,
+    MonsterHunt2List.BabyWorm275: MonsterNamesInfection.BabyWorm275,
+    MonsterHunt2List.Halloween283: MonsterNamesInfection.Halloween283,
+}

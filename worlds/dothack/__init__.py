@@ -183,6 +183,7 @@ class DotHackWorld(World):
         items = []
         starting_items = [
             ServerNames.Delta.value,
+            ServerNames.Theta.value,
             # AreaWordNames.Bursting.value,
             # AreaWordNames.AquaField.value,
             # AreaWordNames.PassedOver.value,
