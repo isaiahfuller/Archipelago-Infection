@@ -46,6 +46,8 @@ class APHelper(Enum):
     version = "version"
     volume = "volume"
 
+    excluded_locations = "excluded_locations"
+
     # AP Options
     include_side_quests = "include_side_quests"
     automatically_read_emails = "automatically_read_emails"
@@ -62,6 +64,8 @@ class APHelper(Enum):
     kite_levels = "kite_levels"
     kite_class = "kite_class"
     monster_hunt = "monster_hunt"
+    golden_goblins = "golden_goblins"
+    optional_party_members = "optional_party_members"
     equal_start = "equal_start"
 
     # Item Groups
@@ -607,8 +611,9 @@ class ItemNames(Enum):
     BearCatEgg = "Bear Cat Egg"
     InvisibleEgg = "Invisible Egg"
     BloodyEgg = "Bloody Egg"
-    ##Boons?
+    # Boons?
     InfectionLevel = "Infection Level 0%"
+
 
 class AreaWordNames(Enum):
     _value_: str

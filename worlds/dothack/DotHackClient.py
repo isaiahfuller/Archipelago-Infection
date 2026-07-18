@@ -114,6 +114,8 @@ class InfectionContext(SuperContext):  # pyrefly: ignore
     are_item_status_synced: bool = False
     game_goaled: bool = False
 
+    excluded_locations: set[int] = set()
+
     # Local Session Save Properties
     last_item_processed_index = -1
 
@@ -134,6 +136,8 @@ class InfectionContext(SuperContext):  # pyrefly: ignore
     symbols_activated: int = 10
     data_drains: int = 30
     kite_levels: int = 25
+    golden_goblins: bool = True
+    optional_party_members: bool = True
 
     def __init__(self, address: str, password: str | None = None,):
         super().__init__(address, password)
@@ -153,6 +157,8 @@ class InfectionContext(SuperContext):  # pyrefly: ignore
         self.symbols_activated = self.settings.get("symbols_activated", 10)
         self.data_drains = self.settings.get("data_drains", 30)
         self.kite_levels = self.settings.get("kite_levels", 25)
+        self.golden_goblins = self.settings.get("golden_goblins", True)
+        self.optional_party_members = self.settings.get("optional_party_members", True)
 
         self.ipc = DotHackInterface(logger, self.volume)
 
@@ -181,6 +187,13 @@ class InfectionContext(SuperContext):  # pyrefly: ignore
             self.data_drains = data.get(APHelper.data_drains.value, self.data_drains)
             self.kite_levels = data.get(APHelper.kite_levels.value, self.kite_levels)
             self.kite_class = data.get(APHelper.kite_class.value, self.kite_class)
+            self.golden_goblins = data.get(APHelper.golden_goblins.value, self.golden_goblins)
+            self.optional_party_members = data.get(APHelper.optional_party_members.value, self.optional_party_members)
+
+            if APHelper.excluded_locations.value in data:
+                self.excluded_locations = set(data[APHelper.excluded_locations.value])
+            else:
+                self.excluded_locations = set()
             self.monster_hunt = data.get(APHelper.monster_hunt.value, self.monster_hunt)
             self.equal_start = data.get(APHelper.equal_start.value, self.monster_hunt)
 

@@ -159,11 +159,31 @@ class KiteLevels(Range):
     default = 25
 
 
+class GoldenGoblins(Toggle):
+    """
+    Include the golden goblin side quests in the randomizer.
+    Default: Enabled
+    """
+    display_name = "Include golden goblin challenges"
+    default = 1
+
+
+class OptionalPartyMembers(Toggle):
+    """
+    Include optional party members in the randomizer.
+    Default: Enabled
+    """
+    display_name = "Include optional party member quests"
+    default = 1
+
+
 infection_option_groups: dict[str, list] = {
     "Quest Options": [
         Volume,
         KiteClass,
         CompletionCondition,
+        GoldenGoblins,
+        OptionalPartyMembers,
         MonsterHunt,
         EqualStart
     ],
@@ -204,6 +224,8 @@ class DotHackOptions(PerGameCommonOptions):
     volume: Volume
     kite_class: KiteClass
     monster_hunt: MonsterHunt
+    golden_goblins: GoldenGoblins
+    optional_party_members: OptionalPartyMembers
     equal_start:EqualStart
 
 
@@ -231,5 +253,7 @@ def slot_data_options() -> list[str]:
         APHelper.volume.value,
         APHelper.kite_class.value,
         APHelper.monster_hunt.value,
+        APHelper.golden_goblins.value,
+        APHelper.optional_party_members.value,
         APHelper.equal_start.value
     ]
