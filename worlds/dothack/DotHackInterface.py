@@ -19,7 +19,7 @@ from .data.Items import InfectionWordListItem as WordListItem, PartyMemberItem, 
 from .data.Items import PartyMemberItems
 from .data.Items import ServerItems
 from .data.Items import WordListItems, RyuBookItems
-from .data.Strings import APConsole, Meta, GameStateNames, EventNames, MonsterNamesInfection
+from .data.Strings import APConsole, Meta, GameStateNames, EventNames, MonsterNames
 from .data.items.AreaWords import AreaWords
 from .data.items.PartyMembers import PartyMembers
 from .data.items.RyuBooks import RyuBooks
@@ -692,7 +692,7 @@ class DotHackInterface:
 
             # Monster Hunt Delta Server
         for monster_hunt in MonsterHunt1:
-            name: str = MonsterNamesInfection[monster_hunt.name].value
+            name: str = MonsterNames[monster_hunt.name].value
             addr: int = self.addresses.MonsterNames[monster_hunt.name]
             bitflags: int = monster_hunt.value["bits"]
             loc_id = get_location_id(name)
@@ -702,7 +702,7 @@ class DotHackInterface:
 
             # Monster Hunt Theta Server
         for monster_hunt in MonsterHunt2:
-            name: str = MonsterNamesInfection[monster_hunt.name].value
+            name: str = MonsterNames[monster_hunt.name].value
             addr: int = self.addresses.MonsterNames[monster_hunt.name]
             bitflags: int = monster_hunt.value["bits"]
             loc_id = get_location_id(name)
