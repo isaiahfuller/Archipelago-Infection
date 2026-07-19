@@ -187,8 +187,6 @@ class InfectionContext(SuperContext):  # pyrefly: ignore
             self.data_drains = data.get(APHelper.data_drains.value, self.data_drains)
             self.kite_levels = data.get(APHelper.kite_levels.value, self.kite_levels)
             self.kite_class = data.get(APHelper.kite_class.value, self.kite_class)
-            self.monster_hunt = data.get(APHelper.monster_hunt.value, self.monster_hunt)
-            self.equal_start = data.get(APHelper.equal_start.value, self.monster_hunt)
             self.golden_goblins = data.get(APHelper.golden_goblins.value, self.golden_goblins)
             self.optional_party_members = data.get(APHelper.optional_party_members.value, self.optional_party_members)
 
@@ -196,6 +194,8 @@ class InfectionContext(SuperContext):  # pyrefly: ignore
                 self.excluded_locations = set(data[APHelper.excluded_locations.value])
             else:
                 self.excluded_locations = set()
+            self.monster_hunt = data.get(APHelper.monster_hunt.value, self.monster_hunt)
+            self.equal_start = data.get(APHelper.equal_start.value, self.monster_hunt)
 
             if APHelper.version.value in data:
                 world_ver: str = data[APHelper.version.value]
@@ -303,11 +303,6 @@ async def check_game(ctx: InfectionContext):
 
         if ctx.volume == 1:
             ctx.ipc.infection_initial_state(ctx)
-            ctx.ipc.infection_apply_patch()
-
-
-        if ctx.queued_messages and ctx.ipc.infection_show_message(*ctx.queued_messages[0]) in [0, 2]:
-            ctx.queued_messages.pop(0)
 
         await ctx.ipc.check_locations(ctx)
         await ctx.ipc.receive_items(ctx)

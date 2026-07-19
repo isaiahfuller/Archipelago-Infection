@@ -42,7 +42,7 @@ class CompletionCondition(Choice):
 
 class MonsterHunt(Toggle):
     """
-    Gain a check for each new monster you fight. NONFUNCTIONAL
+    Gain a check for each new monster you defeat. NONFUNCTIONAL
     """
     display_name = "Monster Hunt"
 
@@ -159,15 +159,33 @@ class KiteLevels(Range):
     default = 25
 
 
+class GoldenGoblins(Toggle):
+    """
+    Include the golden goblin side quests in the randomizer.
+    Default: Enabled
+    """
+    display_name = "Include golden goblin challenges"
+    default = 1
+
+
+class OptionalPartyMembers(Toggle):
+    """
+    Include optional party members in the randomizer.
+    Default: Enabled
+    """
+    display_name = "Include optional party member quests"
+    default = 1
+
+
 infection_option_groups: dict[str, list] = {
     "Quest Options": [
         Volume,
         KiteClass,
         CompletionCondition,
-        EqualStart,
         GoldenGoblins,
         OptionalPartyMembers,
         MonsterHunt,
+        EqualStart
     ],
     "Quality of Life Options": [
         AutomaticallyReadEmails,

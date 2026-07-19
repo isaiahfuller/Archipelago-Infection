@@ -46,6 +46,8 @@ class APHelper(Enum):
     version = "version"
     volume = "volume"
 
+    excluded_locations = "excluded_locations"
+
     # AP Options
     include_side_quests = "include_side_quests"
     automatically_read_emails = "automatically_read_emails"
@@ -62,9 +64,9 @@ class APHelper(Enum):
     kite_levels = "kite_levels"
     kite_class = "kite_class"
     monster_hunt = "monster_hunt"
-    equal_start = "equal_start"
     golden_goblins = "golden_goblins"
     optional_party_members = "optional_party_members"
+    equal_start = "equal_start"
 
     # Item Groups
     area_words = "Area Words"
@@ -138,7 +140,7 @@ class PlayStatNames(Enum):
     KiteLevel = "Kite Level - "
     SymbolsActivated = "Symbols Activated - "
     GottOpened = "Gott's Treasures Obtained - "
-    MonsterHuntInfection = "A check for each new monster killed"
+    MonsterHunt = "A check for each new monster killed"
 
 
 class EventNames(Enum):
@@ -180,7 +182,7 @@ class EventNames(Enum):
 
 
 class ItemNames(Enum):
-    ##Consumables
+    ## Potions
     HealthDrink = "Health Drink"
     HealthPotion = "Health Potion"
     HealingElixer = "Healing Elixer"
@@ -609,7 +611,7 @@ class ItemNames(Enum):
     BearCatEgg = "Bear Cat Egg"
     InvisibleEgg = "Invisible Egg"
     BloodyEgg = "Bloody Egg"
-    ##Boons?
+    # Boons?
     InfectionLevel = "Infection Level 0%"
 
 
@@ -921,7 +923,7 @@ class AreaWordNames(Enum):
     Talisman = "Talisman"
     Orange = "Orange"
 
-class MonsterNamesInfection(Enum):
+class MonsterNames(Enum):
     Razine1 = "Razine"
     Swordmanoid2 = "Swordmanoid"
     Gladiator3 = "Gladiator"

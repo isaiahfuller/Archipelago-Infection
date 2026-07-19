@@ -4,10 +4,10 @@ from abc import ABC
 from BaseClasses import Location
 
 from .items.AreaWords import AreaWords
-from .locations.Events import InfectionStoryEvents, InfectionGoldenGoblins, InfectionOptionalPartyMembers, CompletionConditions, MonsterHunt1, MonsterHunt2
+from .locations.Events import InfectionStoryEvents, InfectionGoldenGoblins, InfectionOptionalPartyMembers, CompletionConditions, InfectionMonsters
 from .locations.WordList import InfectionDeltaWordList as DeltaWordList, InfectionThetaWordList as ThetaWordList, WordListBase, get_wordlist_name
 from .locations.PlayStats import PlayStats
-from .Strings import Meta, AreaWordNames, EventNames, PlayStatNames, MonsterNamesInfection
+from .Strings import Meta, AreaWordNames, EventNames, PlayStatNames, MonsterNames
 from .Addresses import InfectionAddresses as Addresses
 from .DataManager import VOLUME_DATA
 
@@ -68,23 +68,14 @@ class InfectionPlayStatLocation(InfectionLocationMeta):
         self.stat = stat
         self.progress_type = progress_type
 
-class MonsterHuntInfection(InfectionLocationMeta):
-    stat: MonsterHunt1
+class InfectionMonsterLocation(InfectionLocationMeta):
+    monster: InfectionMonsters
 
-    def __init__(self, name: str, stat: MonsterHunt1, progress: int, progress_type: LocationProgressType):
+    def __init__(self, name: str, monster: InfectionMonsters):
         self.name = name
-        self.location_id = (stat.value["addr"] * 400) + progress
-        self.stat = stat
-        self.progress_type = progress_type
-
-class MonsterHunt2Infection(InfectionLocationMeta):
-    stat: MonsterHunt2
-
-    def __init__(self, name: str, stat: MonsterHunt2, progress: int, progress_type: LocationProgressType):
-        self.name = name
-        self.location_id = (stat.value["addr"] * 300) + progress
-        self.stat = stat
-        self.progress_type = progress_type
+        self.location_id = (monster.value["address"] * 400)
+        self.monster = monster
+        self.progress_type = LocationProgressType.DEFAULT
 
 
 def area_word_gen(enum) -> list[InfectionAreaWordLocation]:
@@ -121,31 +112,15 @@ def event_gen(enum, volume: int) -> list[InfectionEventLocation]:
             ))
     return res
 
-def hunt_gen(enum, volume: int) -> list[InfectionEventLocation]:
+def hunt_gen(enum, volume: int) -> list[InfectionMonsterLocation]:
     res = []
-    for event in enum:
-        volumes = event.value.get("volumes", [])
+    for monster in enum:
+        volumes = monster.value.get("volumes", [])
         if isinstance(volumes, list) and volume in volumes:
-            name = MonsterNamesInfection[event.name].value
-            res.append(InfectionEventLocation(
+            name = MonsterNames[monster.name].value
+            res.append(InfectionMonsterLocation(
                 name=name,
-                location_id=event.value["address"],
-                event=event,
-                bitflags=event.value["bits"]
-            ))
-    return res
-
-def hunt_gen2(enum, volume: int) -> list[InfectionEventLocation]:
-    res = []
-    for event in enum:
-        volumes = event.value.get("volumes", [])
-        if isinstance(volumes, list) and volume in volumes:
-            name = MonsterNamesInfection[event.name].value
-            res.append(InfectionEventLocation(
-                name=name,
-                location_id=event.value["address"],
-                event=event,
-                bitflags=event.value["bits"]
+                monster=monster
             ))
     return res
 
@@ -204,8 +179,9 @@ def generate_volume_locations(volume: int):
         *event_gen(InfectionGoldenGoblins, volume),
         *event_gen(InfectionOptionalPartyMembers, volume),
         *event_gen(CompletionConditions, volume),
-        *hunt_gen(MonsterHunt1, volume),
-        *hunt_gen2(MonsterHunt2, volume)
+    ]
+    v_data.monster_locations = [
+        *hunt_gen(InfectionMonsters, volume)
     ]
 
 
@@ -217,8 +193,7 @@ EventLocations: list[InfectionEventLocation] = []
 StoryEvents: list[InfectionEventLocation] = []
 GoldenGoblins: list[InfectionEventLocation] = []
 OptionalPartyMembers: list[InfectionEventLocation] = []
-MonsterHuntInfection: list[InfectionEventLocation] = []
-MonsterHunt2Infection: list[InfectionEventLocation] = []
+Monsters: list[InfectionEventLocation] = []
 CompletionEvents: list[InfectionEventLocation] = []
 
 for v_data in VOLUME_DATA.values():
@@ -234,12 +209,11 @@ for v_data in VOLUME_DATA.values():
                 GoldenGoblins.append(loc)
             elif isinstance(loc.event, InfectionOptionalPartyMembers):
                 OptionalPartyMembers.append(loc)
-            elif isinstance(loc.event, MonsterHunt1):
-                MonsterHuntInfection.append(loc)
-            elif isinstance(loc.event, MonsterHunt2):
-                MonsterHunt2Infection.append(loc)
             elif isinstance(loc.event, CompletionConditions):
                 CompletionEvents.append(loc)
+    for loc in v_data.monster_locations:
+        if loc.name not in [l.name for l in Monsters]:
+            Monsters.append(loc)
 
 PlayStatLocations: list[InfectionPlayStatLocation] = [
     *PlayStatLocsList
@@ -273,7 +247,6 @@ def generate_location_groups() -> dict[str, set[str]]:
         "Play Stats": {el.name for el in PlayStatLocations},
         "Area Words": {el.name for el in AreaWordLocations},
         "Word Lists": {el.name for el in WordListLocations},
-        "Monster Hunt": {el.name for el in MonsterHunt1},
-        "Monster Hunt2": {el.name for el in MonsterHunt2}
+        "Monsters": {el.name for el in Monsters}
     })
     return groups
