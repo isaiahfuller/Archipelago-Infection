@@ -42,7 +42,7 @@ class CompletionCondition(Choice):
 
 class MonsterHunt(Toggle):
     """
-    Gain a check for each new monster you defeat. NONFUNCTIONAL
+    Gain a check for each new monster you fight. NONFUNCTIONAL
     """
     display_name = "Monster Hunt"
 
@@ -164,8 +164,10 @@ infection_option_groups: dict[str, list] = {
         Volume,
         KiteClass,
         CompletionCondition,
+        EqualStart,
+        GoldenGoblins,
+        OptionalPartyMembers,
         MonsterHunt,
-        EqualStart
     ],
     "Quality of Life Options": [
         AutomaticallyReadEmails,
@@ -203,7 +205,9 @@ class DotHackOptions(PerGameCommonOptions):
     death_link: DeathLink
     volume: Volume
     kite_class: KiteClass
-    # monster_hunt: MonsterHunt
+    monster_hunt: MonsterHunt
+    golden_goblins: GoldenGoblins
+    optional_party_members: OptionalPartyMembers
     equal_start:EqualStart
 
 
@@ -230,6 +234,8 @@ def slot_data_options() -> list[str]:
         APHelper.death_link.value,
         APHelper.volume.value,
         APHelper.kite_class.value,
-        # APHelper.monster_hunt.value,
+        APHelper.monster_hunt.value,
+        APHelper.golden_goblins.value,
+        APHelper.optional_party_members.value,
         APHelper.equal_start.value
     ]

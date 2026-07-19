@@ -63,6 +63,8 @@ class APHelper(Enum):
     kite_class = "kite_class"
     monster_hunt = "monster_hunt"
     equal_start = "equal_start"
+    golden_goblins = "golden_goblins"
+    optional_party_members = "optional_party_members"
 
     # Item Groups
     area_words = "Area Words"
@@ -178,7 +180,7 @@ class EventNames(Enum):
 
 
 class ItemNames(Enum):
-    ## Potions
+    ##Consumables
     HealthDrink = "Health Drink"
     HealthPotion = "Health Potion"
     HealingElixer = "Healing Elixer"
@@ -609,6 +611,7 @@ class ItemNames(Enum):
     BloodyEgg = "Bloody Egg"
     ##Boons?
     InfectionLevel = "Infection Level 0%"
+
 
 class AreaWordNames(Enum):
     _value_: str
