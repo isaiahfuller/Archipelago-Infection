@@ -4,7 +4,8 @@ from abc import ABC
 from BaseClasses import Location
 
 from .items.AreaWords import AreaWords
-from .locations.Events import InfectionStoryEvents, InfectionGoldenGoblins, InfectionOptionalPartyMembers, CompletionConditions, InfectionMonsters
+from .locations.Events import InfectionStoryEvents, InfectionGoldenGoblins, InfectionOptionalPartyMembers, CompletionConditions
+from .locations.Monsters import InfectionMonsters
 from .locations.WordList import InfectionDeltaWordList as DeltaWordList, InfectionThetaWordList as ThetaWordList, WordListBase, get_wordlist_name
 from .locations.PlayStats import PlayStats
 from .Strings import Meta, AreaWordNames, EventNames, PlayStatNames, MonsterNames
@@ -73,7 +74,7 @@ class InfectionMonsterLocation(InfectionLocationMeta):
 
     def __init__(self, name: str, monster: InfectionMonsters):
         self.name = name
-        self.location_id = (monster.value["address"] * 400)
+        self.location_id = (monster.value["address"] + monster.value["bits"]) * 400
         self.monster = monster
         self.progress_type = LocationProgressType.DEFAULT
 
@@ -223,6 +224,7 @@ PlayStatLocations: list[InfectionPlayStatLocation] = [
 def generate_event_name_to_id() -> dict[str, int]:
     name_to_id: dict[str, int] = {el.name: el.location_id for el in EventLocations}
     name_to_id.update({el.name: el.location_id for el in WordListLocations})
+    name_to_id.update({el.name: el.location_id for el in Monsters})
     return name_to_id
 
 

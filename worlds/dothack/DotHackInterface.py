@@ -25,7 +25,8 @@ from .data.items.PartyMembers import PartyMembers
 from .data.items.RyuBooks import RyuBooks
 from .data.items.Servers import Servers
 from .data.locations.Events import InfectionStoryEvents as StoryEvents, InfectionGoldenGoblins as GoldenGoblins, \
-    InfectionOptionalPartyMembers as OptionalPartyMembers, InfectionMonsters
+    InfectionOptionalPartyMembers as OptionalPartyMembers
+from .data.locations.Monsters import InfectionMonsters
 from .data.locations.WordList import InfectionDeltaWordList as DeltaWordList, InfectionThetaWordList as ThetaWordList, \
     WordListBase, get_wordlist_name
 from .pcsx2_interface.pine import Pine
@@ -735,15 +736,20 @@ class DotHackInterface:
                     continue
                 addr_check(addr, bitflags, loc_id)
 
-        # Monster Hunt Delta Server
+        # Monster Hunt
         for monster_hunt in InfectionMonsters:
             name: str = MonsterNames[monster_hunt.name].value
             addr: int = self.addresses.Monsters[monster_hunt.name]
-            bitflags: int = monster_hunt.value["bits"]
-            loc_id = get_location_id(name)
+            loc_id = ctx.locations_name_to_id.get(name)
             if loc_id is None:
               continue
-            addr_check(addr, bitflags, loc_id)
+            try:
+                val: int = self.pine.read_int8(addr)
+                if val > 0:
+                    checked.add(loc_id)
+            except ConnectionError:
+                pass
+            
 
         # Ryu Book stats
         for stat in PlayStats:
