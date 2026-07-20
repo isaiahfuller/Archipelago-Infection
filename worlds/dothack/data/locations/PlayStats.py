@@ -19,15 +19,24 @@ class PlayStats(Enum):
     GottOpened = {"addr": 0xa46e3e, "scale": "range", "values": (1, 31)}
     SymbolsActivated = {"addr": 0xa46e14, "scale": "list", "values": [1, 5, 10, 15, 20, 25, 30]}
     TotalDataDrains = {"addr": 0xa4622e, "scale": "list", "values": [5, 10, 25, 50, 75, 100]}
+    GoldenEgg = {"addr": 0xa46e16, "scale": "list", "values": [5, 10, 20]}
+    GruntMints = {"addr": 0xa46e18, "scale": "list", "values": [5, 10, 20]}
+    TwilightOnion = {"addr": 0xa46e1a, "scale": "list", "values": [5, 10, 20]}
+    SnakyCactus = {"addr": 0xa46e1c, "scale": "list", "values": [5, 10, 20]}
+    OhNoMelon = {"addr": 0xa46e1e, "scale": "list", "values": [5, 10, 20]}
+    Cordyceps = {"addr": 0xa46e20, "scale": "list", "values": [5, 10, 20]}
+    WhiteCherry = {"addr": 0xa46e22, "scale": "list", "values": [5, 10, 20]}
+    RootVegetable = {"addr": 0xa46e24, "scale": "list", "values": [5, 10, 20]}
+    LaPumpkin = {"addr": 0xa46e26, "scale": "list", "values": [5, 10, 20]}
+    Mushroom = {"addr": 0xa46e28, "scale": "list", "values": [5, 10, 20]}
+    Mandragora = {"addr": 0xa46e2a, "scale": "list", "values": [5, 10, 20]}
+    PineyApple = {"addr": 0xa46e2c, "scale": "list", "values": [5, 10, 20]}
+    ImmatureEgg = {"addr": 0xa46e2e, "scale": "list", "values": [5, 10, 20]}
+    BearCatEgg = {"addr": 0xa46e30, "scale": "list", "values": [5, 10, 20]}
+    InvisibleEgg = {"addr": 0xa46e32, "scale": "list", "values": [5, 10, 20]}
+    BloodyEgg = {"addr": 0xa46e34, "scale": "list", "values": [5, 10, 20]}
     KiteLevel = {"addr": 0xa46e66, "scale": "range", "values": (1, 31)}
 
-class InfectionMonsterHunt(Enum):
-    Razine1 = {"addr": 0xa46287, "values": [1]}
-    Swordmanoid2 = {"addr": 0xa46288, "values": [1]}
-    Gladiator3 = {"addr": 0xa46289, "values": [1]}
-    Ochimusha4 = {"addr": 0xa4628a, "values": [1]}
-    HeavyMetal6 = {"addr": 0xa4628c, "values": [1]}
-    DarkRider8 = {"addr": 0xa46288, "values": [1]}
 
 
 # 16 bit

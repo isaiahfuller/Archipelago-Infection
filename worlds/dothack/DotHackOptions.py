@@ -42,13 +42,13 @@ class CompletionCondition(Choice):
 
 class MonsterHunt(Toggle):
     """
-    Gain a check for each new monster you defeat. NONFUNCTIONAL
+    Gain a check for each new monster you defeat.
     """
     display_name = "Monster Hunt"
 
 class EqualStart(Toggle):
     """
-    All PCs start at base level with base equipment. Adds a Progressive version to all PCs that will reward them their unique weapon.  NONFUNCTIONAL
+    Most PCs start at base level with basic equipment.
     """
     display_name = "Equal Start"
 
@@ -200,6 +200,7 @@ infection_option_groups: dict[str, list] = {
         SymbolsActivated,
         DataDrains,
         KiteLevels,
+
     ],
     "Sync Options": [
         DeathLink,

@@ -8,7 +8,7 @@ from .items.PartyMembers import PartyMembers
 from .items.Servers import Servers
 from .items.Equipment import Weapons, Armors
 from .locations.WordList import WordListBase, InfectionDeltaWordList, InfectionThetaWordList, get_wordlist_name
-from .items.FillerItems import Consumables, VirusCores, GruntyFood, InfectionLevel
+from .items.FillerItems import Consumables, VirusCores, GruntyFood, InfectionLevel, ExtraItems
 from .items.RyuBooks import RyuBooks
 from .DataManager import VOLUME_DATA
 
@@ -74,7 +74,7 @@ class PartyMemberItem(InfectionItemMeta):
             name=self.name,
             code=self.item_id,
             player=player,
-            classification=self.classification
+            classification=self.classification,
         )
 
 
@@ -121,13 +121,15 @@ class WeaponItem(InfectionItemMeta):
         self.item_id = (address * 328) + item.value["id"]
         self.classification = ItemClassification.filler
         self.weapon = item
+        self.weight = item.value["weight"]
 
     def to_item(self, player: int) -> InfectionItem:
         return InfectionItem(
             name=self.name,
             code=self.item_id,
             player=player,
-            classification=self.classification
+            classification=self.classification,
+            weight=self.weight
         )
 
 class ArmorItem(InfectionItemMeta):
@@ -138,13 +140,15 @@ class ArmorItem(InfectionItemMeta):
         self.item_id = (address * 328) + item.value["id"]
         self.classification = ItemClassification.filler
         self.armor = item
+        self.weight = item.value["weight"]
 
     def to_item(self, player: int) -> InfectionItem:
         return InfectionItem(
             name=self.name,
             code=self.item_id,
             player=player,
-            classification=self.classification
+            classification=self.classification,
+            weight = self.weight
         )
 
 class VirusCoreItem(InfectionItemMeta):
@@ -198,7 +202,7 @@ class RyuBookItem(InfectionItemMeta):
             name=self.name,
             code=self.item_id,
             player=player,
-            classification=self.classification
+            classification=self.classification,
         )
 
 class InfectionLevelItem(InfectionItemMeta):
@@ -209,6 +213,7 @@ class InfectionLevelItem(InfectionItemMeta):
             self.item_id = (address * 16)
             self.classification = ItemClassification.filler
             self.infection_level = item
+            self.weight = item.value["weight"]
 
         def to_item(self, player: int) -> InfectionItem:
             return InfectionItem(
@@ -218,10 +223,31 @@ class InfectionLevelItem(InfectionItemMeta):
                 classification=self.classification
 
             )
+
+
+class XtraItem(InfectionItemMeta):
+    extra_item: ExtraItems
+
+    def __init__(self, name, item, address):
+        self.name = name
+        self.item_id = (address * 16)
+        self.classification = ItemClassification.filler
+        self.extra_item = item
+
+    def to_item(self, player: int) -> InfectionItem:
+        return InfectionItem(
+            name=self.name,
+            code=self.item_id,
+            player=player,
+            classification=self.classification
+        )
+
+
 ConsumableItems: list[ConsumableItem] = []
 WeaponItems: list[WeaponItem] = []
 ArmorItems: list[ArmorItem] = []
 VirusCoreItems: list[VirusCoreItem] = []
+XtraItems: list[XtraItem] = []
 RyuBookItems: list[RyuBookItem] = []
 GruntyFoodItems: list[GruntyFoodItem] = []
 InfectionLevelItems: list[InfectionLevelItem] = []
@@ -269,6 +295,12 @@ for infection_level in InfectionLevel:
         name=ItemNames[infection_level.name].value,
         item=infection_level,
         address=Addresses.Items[infection_level.name]
+    ))
+for extra_item in ExtraItems:
+    XtraItems.append(XtraItem(
+        name=ItemNames[extra_item.name].value,
+        item=extra_item,
+        address=Addresses.Items[extra_item.name]
     ))
 def generate_volume_items(volume: int):
     v_data = VOLUME_DATA[volume]
@@ -325,6 +357,7 @@ def generate_volume_items(volume: int):
         *ArmorItems,
         *VirusCoreItems,
         *GruntyFoodItems,
+        *XtraItems,
         *RyuBookItems,
         *InfectionLevelItems
     ]
@@ -353,7 +386,7 @@ for v_data in VOLUME_DATA.values():
 
 ItemUnion = (
     ConsumableItem | WeaponItem | InfectionWordListItem | PartyMemberItem | RyuBookItem
-    | ServerItem | VirusCoreItem | ArmorItem | InfectionLevelItem | GruntyFoodItem
+    | ServerItem | VirusCoreItem | ArmorItem | InfectionLevelItem | GruntyFoodItem | XtraItem
 )
 
 ITEMS_MASTER: list[ItemUnion] = [
@@ -365,6 +398,7 @@ ITEMS_MASTER: list[ItemUnion] = [
     *ArmorItems,
     *VirusCoreItems,
     *GruntyFoodItems,
+    *XtraItems,
     *RyuBookItems,
     *InfectionLevelItems
 ]
@@ -379,6 +413,7 @@ ITEMS_INDEX: list[Sequence[ItemUnion]] = [
     ArmorItems,
     VirusCoreItems,
     GruntyFoodItems,
+    XtraItems,
     RyuBookItems,
     InfectionLevelItems
 ]
@@ -413,6 +448,8 @@ def generate_item_groups() -> dict[str, set[str]]:
         groups.setdefault(APHelper.armors.value, set()).add(i.name)
     for i in VirusCoreItems:
         groups.setdefault(APHelper.virus_cores.value, set()).add(i.name)
+    for i in XtraItems:
+        groups.setdefault(APHelper.extra_items.value, set()).add(i.name)
     for i in RyuBookItems:
         groups.setdefault(APHelper.ryu_books.value, set()).add(i.name)
     return groups

@@ -141,6 +141,24 @@ def playstat_gen(stats: dict[str, int] | None = None) -> list[InfectionPlayStatL
             PlayStatNames.BreakablesBroken.name: 400,
             PlayStatNames.SymbolsActivated.name: 30,
             PlayStatNames.TotalDataDrains.name: 100,
+            PlayStatNames.GoldenEgg.name: 20,
+            PlayStatNames.GruntMints.name: 20,
+            PlayStatNames.TwilightOnion.name: 20,
+            PlayStatNames.SnakyCactus.name: 20,
+            PlayStatNames.OhNoMelon.name: 20,
+            PlayStatNames.Cordyceps.name: 20,
+            PlayStatNames.WhiteCherry.name: 20,
+            PlayStatNames.RootVegetable.name: 20,
+            PlayStatNames.LaPumpkin.name: 20,
+            PlayStatNames.Mushroom.name: 20,
+            PlayStatNames.Mandragora.name: 20,
+            PlayStatNames.PineyApple.name: 20,
+            PlayStatNames.ImmatureEgg.name: 20,
+            PlayStatNames.BearCatEgg.name: 20,
+            PlayStatNames.InvisibleEgg.name: 20,
+            PlayStatNames.BloodyEgg.name: 20
+
+
         }
 
     def append_stat(name: str, stat: PlayStats, progress: int, max_progress: int):

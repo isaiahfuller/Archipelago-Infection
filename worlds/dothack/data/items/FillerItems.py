@@ -1,11 +1,21 @@
 from enum import Enum
 from typing import TypedDict
+import pkgutil
+
+from BaseClasses import ItemClassification
+from NetUtils import NetworkItem
+
+
 
 
 class ItemDict(TypedDict):
     id: int
     weight: int
 
+class ExtraItemDict(TypedDict):
+    address: int
+    bits: int
+    weight: int
 
 class Consumables(Enum):
     _value_: ItemDict
@@ -35,7 +45,7 @@ class Consumables(Enum):
     RecoveryDrink = {"id": 0x000a0017, "weight": 85}
     ##Spell Scrolls
     RainingRocks = {"id": 0x000B000, "weight": 35}
-    RagingEarth = {"id": 0x000B001, "weight": 35}
+    RagingEarth = {"id": 0x000B0001, "weight": 35}
     StoneStorm = {"id": 0x000B0002, "weight": 45}
     GaiasSpell = {"id": 0x000B0003, "weight": 45}
     MeteorStrike = {"id": 0x000B0004, "weight": 65}
@@ -150,6 +160,109 @@ class Consumables(Enum):
     SilverGrunty = {"id": 0x000C001F, "weight": 98}
     EnergySutras = {"id": 0x000C0020, "weight": 96}
     SpiritSutras = {"id": 0x000C0021, "weight": 96}
+
+
+class ExtraItems(Enum):
+
+    Image01 = {"address": 0xa41C08, "bits": 0b00000001, "weight": 66},
+    Image02 = {"address": 0xa41C08, "bits": 0b00000010, "weight": 66},
+    Image03 = {"address": 0xa41C08, "bits": 0b00000100, "weight": 66},
+    Image04 = {"address": 0xa41C08, "bits": 0b00001000, "weight": 66},
+    Image05 = {"address": 0xa41C08, "bits": 0b00010000, "weight": 66},
+    Image06 = {"address": 0xa41C08, "bits": 0b00100000, "weight": 66},
+    Image07 = {"address": 0xa41C08, "bits": 0b01000000, "weight": 66},
+    Image08 = {"address": 0xa41C08, "bits": 0b10000000, "weight": 66},
+    Image09 = {"address": 0xa41C09, "bits": 0b00000001, "weight": 66},
+    Image10 = {"address": 0xa41C09, "bits": 0b00000010, "weight": 66},
+    Image11 = {"address": 0xa41C09, "bits": 0b00000100, "weight": 66},
+    Image12 = {"address": 0xa41C09, "bits": 0b00001000, "weight": 66},
+    Image13 = {"address": 0xa41C09, "bits": 0b00010000, "weight": 66},
+    Image14 = {"address": 0xa41C09, "bits": 0b00100000, "weight": 66},
+    Image15 = {"address": 0xa41C09, "bits": 0b01000000, "weight": 66},
+    Image16 = {"address": 0xa41C09, "bits": 0b10000000, "weight": 66},
+    Image17 = {"address": 0xa41C0A, "bits": 0b00000001, "weight": 66},
+    Image18 = {"address": 0xa41C0A, "bits": 0b00000010, "weight": 66},
+    Image19 = {"address": 0xa41C0A, "bits": 0b00000100, "weight": 66},
+    Image20 = {"address": 0xa41C0A, "bits": 0b00001000, "weight": 66},
+    Image21 = {"address": 0xa41C0A, "bits": 0b00010000, "weight": 66},
+    Image22 = {"address": 0xa41C0A, "bits": 0b00100000, "weight": 66},
+    Image23 = {"address": 0xa41C0A, "bits": 0b01000000, "weight": 66},
+    Image24 = {"address": 0xa41C0A, "bits": 0b10000000, "weight": 66},
+    Image25 = {"address": 0xa41C0B, "bits": 0b00000001, "weight": 66},
+    Image26 = {"address": 0xa41C0B, "bits": 0b00000010, "weight": 66},
+    Image27 = {"address": 0xa41C0B, "bits": 0b00000100, "weight": 66},
+    Image28 = {"address": 0xa41C0B, "bits": 0b00001000, "weight": 66},
+    Image29 = {"address": 0xa41C0B, "bits": 0b00010000, "weight": 66},
+    Image30 = {"address": 0xa41C0B, "bits": 0b00100000, "weight": 66},
+    Image31 = {"address": 0xa41C0B, "bits": 0b01000000, "weight": 66},
+    Image32 = {"address": 0xa41C0B, "bits": 0b10000000, "weight": 66},
+    Image33 = {"address": 0xa41C0C, "bits": 0b00000001, "weight": 66},
+    Image34 = {"address": 0xa41C0C, "bits": 0b00000010, "weight": 66},
+    Image35 = {"address": 0xa41C0C, "bits": 0b00000100, "weight": 66},
+    Image36 = {"address": 0xa41C0C, "bits": 0b00001000, "weight": 66},
+    Image37 = {"address": 0xa41C0C, "bits": 0b00010000, "weight": 66},
+    Image38 = {"address": 0xa41C0C, "bits": 0b00100000, "weight": 66},
+    Image39 = {"address": 0xa41C0C, "bits": 0b01000000, "weight": 66},
+    Image40 = {"address": 0xa41C0C, "bits": 0b10000000, "weight": 66},
+    Image41 = {"address": 0xa41C0D, "bits": 0b00000001, "weight": 66},
+    Image42 = {"address": 0xa41C0D, "bits": 0b00000010, "weight": 66},
+    Image43 = {"address": 0xa41C0D, "bits": 0b00000100, "weight": 66},
+    Image44 = {"address": 0xa41C0D, "bits": 0b00001000, "weight": 66},
+    Image45 = {"address": 0xa41C0D, "bits": 0b00010000, "weight": 66},
+    Image46 = {"address": 0xa41C0D, "bits": 0b00100000, "weight": 66},
+    Image47 = {"address": 0xa41C0D, "bits": 0b01000000, "weight": 66},
+    Image48 = {"address": 0xa41C0D, "bits": 0b10000000, "weight": 66},
+    Image49 = {"address": 0xa41C0E, "bits": 0b00000001, "weight": 66},
+    BGM01 = {"address": 0xa41C14, "bits": 0b00000001, "weight": 66},
+    BGM02 = {"address": 0xa41C14, "bits": 0b00000010, "weight": 66},
+    BGM03 = {"address": 0xa41C14, "bits": 0b00000100, "weight": 66},
+    BGM04 = {"address": 0xa41C14, "bits": 0b00001000, "weight": 66},
+    BGM05 = {"address": 0xa41C14, "bits": 0b00010000, "weight": 66},
+    BGM06 = {"address": 0xa41C14, "bits": 0b00100000, "weight": 66},
+    BGM07 = {"address": 0xa41C14, "bits": 0b01000000, "weight": 66},
+    BGM08 = {"address": 0xa41C14, "bits": 0b10000000, "weight": 66},
+    BGM09 = {"address": 0xa41C15, "bits": 0b00000001, "weight": 66},
+    BGM10 = {"address": 0xa41C15, "bits": 0b00000010, "weight": 66},
+    BGM11 = {"address": 0xa41C15, "bits": 0b00000100, "weight": 66},
+    BGM12 = {"address": 0xa41C15, "bits": 0b00001000, "weight": 66},
+    BGM13 = {"address": 0xa41C15, "bits": 0b00010000, "weight": 66},
+    BGM14 = {"address": 0xa41C15, "bits": 0b00100000, "weight": 66},
+    BGM15 = {"address": 0xa41C15, "bits": 0b01000000, "weight": 66},
+    BGM16 = {"address": 0xa41C15, "bits": 0b10000000, "weight": 66},
+    BGM17 = {"address": 0xa41C16, "bits": 0b00000001, "weight": 66},
+    BGM18 = {"address": 0xa41C16, "bits": 0b00000010, "weight": 66},
+    BGM19 = {"address": 0xa41C16, "bits": 0b00000100, "weight": 66},
+    BGM20 = {"address": 0xa41C16, "bits": 0b00001000, "weight": 66},
+    BGM21 = {"address": 0xa41C16, "bits": 0b00010000, "weight": 66},
+    BGM22 = {"address": 0xa41C16, "bits": 0b00100000, "weight": 66},
+    BGM23 = {"address": 0xa41C16, "bits": 0b01000000, "weight": 66},
+    BGM24 = {"address": 0xa41C16, "bits": 0b10000000, "weight": 66},
+    BGM25 = {"address": 0xa41C17, "bits": 0b00000001, "weight": 66},
+    BGM26 = {"address": 0xa41C17, "bits": 0b00000010, "weight": 66},
+    BGM27 = {"address": 0xa41C17, "bits": 0b00000100, "weight": 66},
+    BGM28 = {"address": 0xa41C17, "bits": 0b00001000, "weight": 66},
+    BGM29 = {"address": 0xa41C17, "bits": 0b00010000, "weight": 66},
+    BGM30 = {"address": 0xa41C17, "bits": 0b00100000, "weight": 66},
+    BGM31 = {"address": 0xa41C17, "bits": 0b01000000, "weight": 66},
+    BGM32 = {"address": 0xa41C17, "bits": 0b10000000, "weight": 66},
+    BGM33 = {"address": 0xa41C18, "bits": 0b00000001, "weight": 66},
+    BGM34 = {"address": 0xa41C18, "bits": 0b00000010, "weight": 66},
+    BGM35 = {"address": 0xa41C18, "bits": 0b00000100, "weight": 66},
+    BGM36 = {"address": 0xa41C18, "bits": 0b00001000, "weight": 66},
+    BGM37 = {"address": 0xa41C18, "bits": 0b00010000, "weight": 66},
+    BGM38 = {"address": 0xa41C18, "bits": 0b00100000, "weight": 66},
+    BGM39 = {"address": 0xa41C18, "bits": 0b01000000, "weight": 66},
+    BGM40 = {"address": 0xa41C18, "bits": 0b10000000, "weight": 66},
+    BGM41 = {"address": 0xa41C19, "bits": 0b00000001, "weight": 66},
+    BGM42 = {"address": 0xa41C19, "bits": 0b00000010, "weight": 66},
+    BGM43 = {"address": 0xa41C19, "bits": 0b00000100, "weight": 66},
+    BGM44 = {"address": 0xa41C19, "bits": 0b00001000, "weight": 66},
+    BGM45 = {"address": 0xa41C19, "bits": 0b00010000, "weight": 66},
+    BGM46 = {"address": 0xa41C19, "bits": 0b00100000, "weight": 66},
+    BGM47 = {"address": 0xa41C19, "bits": 0b01000000, "weight": 66},
+    BGM48 = {"address": 0xa41C19, "bits": 0b10000000, "weight": 66},
+    BGM49 = {"address": 0xa41C1A, "bits": 0b00000001, "weight": 66},
+    BGM50 = {"address": 0xa41C1A, "bits": 0b00000010, "weight": 66}
 
 class VirusCores(Enum):
     _value_: ItemDict

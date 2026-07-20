@@ -146,6 +146,22 @@ class DotHackWorld(World):
         stats[PlayStatNames.AllDungeonPortalsOpened.name] = self.options.cleared_portals.value
         stats[PlayStatNames.AllFieldPortalsOpened.name] = self.options.cleared_portals.value
         stats[PlayStatNames.PortalsOpened.name] = self.options.opened_portals.value
+        stats[PlayStatNames.GoldenEgg.name] = 20
+        stats[PlayStatNames.GruntMints.name] = 20
+        stats[PlayStatNames.TwilightOnion.name] = 20
+        stats[PlayStatNames.SnakyCactus.name] = 20
+        stats[PlayStatNames.OhNoMelon.name] = 20
+        stats[PlayStatNames.Cordyceps.name] = 20
+        stats[PlayStatNames.WhiteCherry.name] = 20
+        stats[PlayStatNames.RootVegetable.name] = 20
+        stats[PlayStatNames.LaPumpkin.name] = 20
+        stats[PlayStatNames.Mushroom.name] = 20
+        stats[PlayStatNames.Mandragora.name] = 20
+        stats[PlayStatNames.PineyApple.name] = 20
+        stats[PlayStatNames.ImmatureEgg.name] = 20
+        stats[PlayStatNames.BearCatEgg.name] = 20
+        stats[PlayStatNames.InvisibleEgg.name] = 20
+        stats[PlayStatNames.BloodyEgg.name] = 20
         self.playstat_locations = Locations.playstat_gen(stats)
 
     def create_regions(self):
