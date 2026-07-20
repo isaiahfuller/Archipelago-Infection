@@ -58,7 +58,7 @@ class InfectionMonsters(MonsterBase):
     RockHead106 = {"address": 0xa462F0, "bits": 0b00000001, "volumes": [1], "server": Servers.Delta}
 
     StoneTuttle114 = {"address": 0xa462F8, "bits": 0b00000001, "volumes": [1], "server": Servers.Delta}
-    StoneTuttleDataBug116 = {"address": 0xa462FA, "bits": 0b00000001, "volumes": [1], "server": Servers.Delta}
+    # StoneTuttleDataBug116 = {"address": 0xa462FA, "bits": 0b00000001, "volumes": [1], "server": Servers.Delta}
     Minnow117 = {"address": 0xa462FB, "bits": 0b00000001, "volumes": [1], "server": Servers.Delta}
     SkyFish118 = {"address": 0xa462FC, "bits": 0b00000001, "volumes": [1], "server": Servers.Delta}
     ArrowFish119 = {"address": 0xa462FD, "bits": 0b00000001, "volumes": [1], "server": Servers.Delta}
@@ -97,21 +97,21 @@ class InfectionMonsters(MonsterBase):
     Snakoid195 = {"address": 0xa46349, "bits": 0b00000001, "volumes": [1], "server": Servers.Delta}
 
     RedWyrm200 = {"address": 0xa4634E, "bits": 0b00000001, "volumes": [1], "server": Servers.Delta}
-    RedWyrmDataBug202 = {"address": 0xa46350, "bits": 0b00000001, "volumes": [1], "server": Servers.Delta}
+    # RedWyrmDataBug202 = {"address": 0xa46350, "bits": 0b00000001, "volumes": [1], "server": Servers.Delta}
     ParasiteDragon215 = {"address": 0xa4635D, "bits": 0b00000001, "volumes": [1], "server": Servers.Delta}
     TwinkleGrass219 = {"address": 0xa46361, "bits": 0b00000001, "volumes": [1], "server": Servers.Delta}
     MadGrass220 = {"address": 0xa46362, "bits": 0b00000001, "volumes": [1], "server": Servers.Delta}
     HungryGrass221 = {"address": 0xa46363, "bits": 0b00000001, "volumes": [1], "server": Servers.Delta}
 
     ThousandTrees224 = {"address": 0xa46366, "bits": 0b00000001, "volumes": [1], "server": Servers.Delta}
-    WoodStockDataBug225 = {"address": 0xa46367, "bits": 0b00000001, "volumes": [1], "server": Servers.Delta}
+    # WoodStockDataBug225 = {"address": 0xa46367, "bits": 0b00000001, "volumes": [1], "server": Servers.Delta}
     ScarletKing227 = {"address": 0xa46369, "bits": 0b00000001, "volumes": [1], "server": Servers.Delta}
     MushroomKing229 = {"address": 0xa4636A, "bits": 0b00000001, "volumes": [1], "server": Servers.Delta}
     Charmer230 = {"address": 0xa4636C, "bits": 0b00000001, "volumes": [1], "server": Servers.Delta}
     LamiaFighter231 = {"address": 0xa4636D, "bits": 0b00000001, "volumes": [1], "server": Servers.Delta}
 
     KillerSnaker234 = {"address": 0xa46370, "bits": 0b00000001, "volumes": [1], "server": Servers.Delta}
-    KillerSnakerDataBug236 = {"address": 0xa46372, "bits": 0b00000001, "volumes": [1], "server": Servers.Delta}
+    # KillerSnakerDataBug236 = {"address": 0xa46372, "bits": 0b00000001, "volumes": [1], "server": Servers.Delta}
     FakeMoney240 = {"address": 0xa46377, "bits": 0b00000001, "volumes": [1], "server": Servers.Delta}
     Mimic241 = {"address": 0xa46378, "bits": 0b00000001, "volumes": [1], "server": Servers.Delta}
 
@@ -119,7 +119,7 @@ class InfectionMonsters(MonsterBase):
     NomadicBones247 = {"address": 0xa4637D, "bits": 0b00000001, "volumes": [1], "server": Servers.Delta}
 
     Headhunter253 = {"address": 0xa46383, "bits": 0b00000001, "volumes": [1], "server": Servers.Delta}
-    HeadhunterDataBug256 = {"address": 0xa46386, "bits": 0b00000001, "volumes": [1], "server": Servers.Delta}
+    # HeadhunterDataBug256 = {"address": 0xa46386, "bits": 0b00000001, "volumes": [1], "server": Servers.Delta}
     Wiggly268 = {"address": 0xa46392, "bits": 0b00000001, "volumes": [1], "server": Servers.Delta}
     DeadlyMoth269 = {"address": 0xa46393, "bits": 0b00000001, "volumes": [1], "server": Servers.Delta}
     PhantomWing270 = {"address": 0xa46394, "bits": 0b00000001, "volumes": [1], "server": Servers.Delta}
