@@ -52,7 +52,7 @@ class InfectionMonsters(MonsterBase):
     CrabTurtle82 = {"address": 0xa462D8, "bits": 0b00000001, "volumes": [1], "server": Servers.Delta}
 
     SquillaDemon84 = {"address": 0xa462DA, "bits": 0b00000001, "volumes": [1], "server": Servers.Delta}
-
+    Bat90 = {"address": 0xa462E0, "bits": 0b00000001, "volumes": [1], "server": Servers.Delta}
     ShieldMan91 = {"address": 0xa462E1, "bits": 0b00000001, "volumes": [1], "server": Servers.Delta}
     Moai105 = {"address": 0xa462EF, "bits": 0b00000001, "volumes": [1], "server": Servers.Delta}
     RockHead106 = {"address": 0xa462F0, "bits": 0b00000001, "volumes": [1], "server": Servers.Delta}
