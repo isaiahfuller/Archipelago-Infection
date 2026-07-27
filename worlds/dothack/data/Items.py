@@ -38,14 +38,6 @@ class InfectionItemMeta(ABC):
             classification=ItemClassification.filler
         )
 
-    def to_item(self, player: int) -> InfectionItem:
-        return InfectionItem(
-            name=self.name,
-            code=self.item_id,
-            player=player,
-            classification=ItemClassification.filler
-        )
-
 
 class InfectionWordListItem(InfectionItemMeta):
     def __init__(self, name, wordlist: WordListBase, volume: int):
