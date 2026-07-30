@@ -1,3 +1,4 @@
+from worlds.dothack.data.Strings import MonsterNames
 from .data.locations.Monsters import InfectionMonsters
 from collections import defaultdict
 from rule_builder.rules import Has, HasAll, CanReachLocation, Rule, True_
@@ -142,21 +143,25 @@ def infection_rules(world):
         location_rules[get_wordlist_name(DeltaWordList.DetestableGoldenMessenger)] &= CanReachLocation(Ev.Stehony.value)
         location_rules[Ev.Jonue.value] &= CanReachLocation(Ev.Stehony.value)
         location_rules[Ev.Jonue.value] &= CanReachLocation(Ev.BoardProtected.value)
+        location_rules[MonsterNames.Jonue133.value] &= CanReachLocation(Ev.Jonue.value)
 
         set_list_rules(location_rules, Ev.Zyan.value, DeltaWordList.DetestableGoldenScent)
         location_rules[get_wordlist_name(DeltaWordList.DetestableGoldenScent)] &= CanReachLocation(Ev.Jonue.value)
         location_rules[Ev.Zyan.value] &= CanReachLocation(Ev.Jonue.value)
         location_rules[Ev.Zyan.value] &= CanReachLocation(Ev.ElkMiaFavorite.value)
+        location_rules[MonsterNames.Zyan141.value] &= CanReachLocation(Ev.Zyan.value)
 
         set_list_rules(location_rules, Ev.Albert.value, DeltaWordList.DetestableGoldenNewTruth)
         location_rules[get_wordlist_name(DeltaWordList.DetestableGoldenNewTruth)] &= CanReachLocation(Ev.Zyan.value)
         location_rules[Ev.Albert.value] &= CanReachLocation(Ev.Zyan.value)
         location_rules[Ev.Albert.value] &= CanReachLocation(Ev.MistralMeetUp.value)
+        location_rules[MonsterNames.Albert148.value] &= CanReachLocation(Ev.Albert.value)
 
         set_list_rules(location_rules, Ev.Martina.value, DeltaWordList.DetestableGoldenGate)
         location_rules[get_wordlist_name(DeltaWordList.DetestableGoldenGate)] &= CanReachLocation(Ev.Albert.value)
         location_rules[Ev.Martina.value] &= CanReachLocation(Ev.Albert.value)
         location_rules[Ev.Martina.value] &= CanReachLocation(Ev.SkeithDefeated.value)
+        location_rules[MonsterNames.Martina155.value] &= CanReachLocation(Ev.Martina.value)
 
     for name, rule in location_rules.items():
         try:
