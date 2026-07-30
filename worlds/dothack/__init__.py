@@ -146,6 +146,7 @@ class DotHackWorld(World):
         stats[PlayStatNames.AllDungeonPortalsOpened.name] = self.options.cleared_portals.value
         stats[PlayStatNames.AllFieldPortalsOpened.name] = self.options.cleared_portals.value
         stats[PlayStatNames.PortalsOpened.name] = self.options.opened_portals.value
+        stats[PlayStatNames.InfectionMonsterHunt.name] = self.options.monster_hunt.value
         self.playstat_locations = Locations.playstat_gen(stats)
 
     def create_regions(self):
@@ -221,6 +222,7 @@ class DotHackWorld(World):
         items = []
         starting_items = [
             ServerNames.Delta.value,
+            ServerNames.Theta.value,
             # AreaWordNames.Bursting.value,
             # AreaWordNames.AquaField.value,
             # AreaWordNames.PassedOver.value,
@@ -300,7 +302,7 @@ class DotHackWorld(World):
             stats[PlayStatNames.AllDungeonPortalsOpened.name] = self.options.cleared_portals.value
             stats[PlayStatNames.AllFieldPortalsOpened.name] = self.options.cleared_portals.value
             stats[PlayStatNames.PortalsOpened.name] = self.options.opened_portals.value
-            stats[PlayStatNames.MonsterHuntInfection.name] = self.options.monster_hunt.value
+            stats[PlayStatNames.InfectionMonsterHunt.name] = self.options.monster_hunt.value
             self.playstat_locations = Locations.playstat_gen(stats)
         return is_in_ut
 
