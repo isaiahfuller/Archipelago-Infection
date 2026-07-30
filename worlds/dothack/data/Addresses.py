@@ -1,13 +1,14 @@
 from abc import ABC
 from typing import Dict
 
-from .Strings import ItemNames, EventNames, PlayStatNames
+from .Strings import ItemNames, EventNames, PlayStatNames, SetTreasureNames
 
 
 class VolumeAddresses(ABC):
     Items: Dict[str, int]
     Events: Dict[str, int]
     PlayStats: Dict[str, int]
+    InfectionSetTreasures: Dict[str, int]
     AreaWords: int
     WordLists: int
     Storage: int
@@ -85,6 +86,38 @@ class InfectionAddresses(VolumeAddresses):
         PlayStatNames.SymbolsActivated.name: 0xa46e14,
         PlayStatNames.TotalDataDrains.name: 0xa4622e,
         PlayStatNames.KiteLevel.name: 0xa46e66,
+    }
+    InfectionSetTreasures = {
+        SetTreasureNames.SpeedCharmT.name: 0xA43BEC,
+        SetTreasureNames.ResurrectTB1.name: 0xA43BEC,
+        SetTreasureNames.ResurrectTB2.name: 0xA43BEC,
+        SetTreasureNames.HealingPotionT.name: 0xA43BEC,
+        SetTreasureNames.GottTreasure1.name: 0xA43BEC,
+        SetTreasureNames.GottTreasure2.name: 0xA43C34,
+        SetTreasureNames.GottTreasure3.name: 0xA43C4C,
+        SetTreasureNames.GottTreasure4.name: 0xA43C64,
+        SetTreasureNames.GottTreasure5.name: 0xA43C94,
+        SetTreasureNames.GottTreasure6.name: 0xA43CAC,
+        SetTreasureNames.GottTreasure7.name: 0xA43CDC,
+        SetTreasureNames.GottTreasure8.name: 0xA43D0C,
+        SetTreasureNames.SpriteOcarinaT.name: 0xA43D54,
+        SetTreasureNames.GottTreasure9.name: 0xA43D54,
+        SetTreasureNames.GottTreasure10.name: 0xA43D6C,
+        SetTreasureNames.FirstRemedy.name: 0xA43D84,
+        SetTreasureNames.Remedy.name: 0xA43D84,
+        SetTreasureNames.CustomRemedy.name: 0xA43D84,
+        SetTreasureNames.TrueRemedy.name: 0xA43D85,
+        SetTreasureNames.GottTreasure11.name: 0xA43D85,
+        SetTreasureNames.KotetsuSwordT.name: 0xA43D9C,
+        SetTreasureNames.GottTreasure12.name: 0xA43DB4,
+        SetTreasureNames.GracefulBookT.name: 0xA43DCC,
+        SetTreasureNames.SpiralEdgeT.name: 0xA43DE4,
+        SetTreasureNames.AmateurBladesT.name: 0xA43DFC,
+        SetTreasureNames.RustyNailsT.name: 0xA43DFC,
+        SetTreasureNames.KagayuzenT.name: 0xA43DFC,
+        SetTreasureNames.IceBarT.name: 0xA43E14,
+        SetTreasureNames.SoulBladesT.name: 0xA43E2C,
+        SetTreasureNames.GottTreasure13.name: 0xA43E2C,
     }
 
 

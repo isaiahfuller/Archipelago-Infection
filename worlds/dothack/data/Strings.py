@@ -179,6 +179,74 @@ class EventNames(Enum):
     Martina = "Beat Golden Goblin 5: Martina"
 
 
+class SetTreasureNames(Enum):
+    _value_: str
+    # Bursting Passed Over Aqua Field
+    SpeedCharmT = "Bursting Passed Over Aqua Field - Speed Charm"
+    ResurrectTB1 = "Bursting Passed Over Aqua Field - Resurrect at Entrance"
+    ResurrectTB2 = "Bursting Passed Over Aqua Field - Resurrect in B2"
+    HealingPotionT = "Bursting Passed Over Aqua Field - Healing Potion"
+    GottTreasure1 = "Bursting Passed Over Aqua Field - Steel Blades"
+
+    # Expansive Haunted Sea of Sand
+    GottTreasure2 = "Expansive Haunted Sea of Sand - Gott Treasure"
+
+    # Boundless Corrupted Fort Walls
+    GottTreasure3 = "Boundless Corrupted Fort Walls - Gott Treasure"
+
+    # Closed Oblivious Twin Hills
+    GottTreasure4 = "Closed Oblivious Twin Hills - Gott Treasure"
+
+    # Plenteous Smiling Hypha
+    GottTreasure5 = "Plenteous Smiling Hypha - Gott Treasure"
+
+    # Collapsed Momentary Spiral
+    GottTreasure6 = "Collapsed Momentary Spiral - Gott Treasure"
+
+    # Buried Pagan Fiery Sands
+    GottTreasure7 = "Buried Pagan Fiery Sands - Gott Treasure"
+
+    # Great Distant Fertile Land
+    GottTreasure8 = "Great Distant Fertile Land - Gott Treasure"
+
+    # Discovered Primitive Touchstone
+    SpriteOcarinaT = "Discovered Primitive Touchstone - Sprite Ocarina"
+    GottTreasure9 = "Discovered Primitive Touchstone - Gott Treasure"
+
+    # Indiscreet Gluttonous Pilgrimage
+    GottTreasure10 = "Indiscreet Gluttonous Pilgrimage - Gott Treasure"
+
+    # Putrid Hot-Blooded Scaffold
+    FirstRemedy = "Putrid Hot-Blooded Scaffold - First Remedy"
+    Remedy = "Putrid Hot-Blooded Scaffold - Remedy"
+    CustomRemedy = "Putrid Hot-Blooded Scaffold - Custom Remedy"
+    TrueRemedy = "Putrid Hot-Blooded Scaffold - True Remedy"
+    GottTreasure11 = "Putrid Hot-Blooded Scaffold - Gott Treasure"
+
+    # Hideous Destroyer's Far Thunder
+    KotetsuSwordT = "Hideous Destroyer's Far Thunder - Kotetsu Sword"
+
+    # Soft Solitary Tri-Pansy
+    GottTreasure12 = "Soft Solitary Tri-Pansy - Gott Treasure"
+
+    # Beautiful Someone's Treasure Gem
+    GracefulBookT = "Beautiful Someone's Treasure Gem - Graceful Book"
+
+    # Raging Passionate Melody
+    SpiralEdgeT = "Raging Passionate Melody - Spiral Edge"
+
+    # Voluptuous Her Remnant
+    AmateurBladesT = "Voluptuous Her Remnant - Amateur Blades"
+    RustyNailsT = "Voluptuous Her Remnant - Rusty Nails"
+    KagayuzenT = "Voluptuous Her Remnant - Kagayuzen"
+
+    # Hideous Organ Market Scaffold
+    IceBarT = "Hideous Organ Market Scaffold - Ice Bar"
+
+    # Dog Dancing Passionate Tri-Pansy
+    SoulBladesT = "Dog Dancing Passionate Tri-Pansy - Soul Blades"
+    GottTreasure13 = "Dog Dancing Passionate Tri-Pansy - Gott Treasure"
+
 class ItemNames(Enum):
     # Consumables
     HealthDrink = "Health Drink"
