@@ -28,7 +28,6 @@ class KiteClass(Choice):
     option_wavemaster = 5
     default = 0
 
-
 class CompletionCondition(Choice):
     """
     Choose the completion condition for the game.
@@ -42,7 +41,7 @@ class CompletionCondition(Choice):
 
 class MonsterHunt(Toggle):
     """
-    Gain a check for each new monster you fight. NONFUNCTIONAL
+    Gain a check for each new monster you fight.
     """
     display_name = "Monster Hunt"
 
@@ -171,6 +170,23 @@ class OptionalPartyMembers(Toggle):
     display_name = "Include optional party member quests"
     default = 1
 
+class Shopsanity(Toggle):
+    """
+    If activated, each shop in the first two servers will have 5 separately priced AP Items for a total of 30 new checks.
+    """
+    display_name = "Shopsanity" #Failed to make a working toggle, despite trying.
+    option_no = 0
+    option_yes = 1
+    default = 0
+
+class APItemPrice(Range):
+    """
+    If Shopsanity or Tradesanity is enabled, these options will randomize the prices between these ranges.
+    """
+    display_name = "AP Item Price Ranges"
+    range_start = 1000
+    range_end = 100000
+    default = 5000
 
 infection_option_groups: dict[str, list] = {
     "Quest Options": [
@@ -180,6 +196,12 @@ infection_option_groups: dict[str, list] = {
         GoldenGoblins,
         OptionalPartyMembers,
         MonsterHunt,
+    ],
+
+    "Sanity Options": [
+        Shopsanity,
+        APItemPrice
+
     ],
     "Quality of Life Options": [
         AutomaticallyReadEmails,
@@ -220,6 +242,8 @@ class DotHackOptions(PerGameCommonOptions):
     monster_hunt: MonsterHunt
     golden_goblins: GoldenGoblins
     optional_party_members: OptionalPartyMembers
+    shopsanity: Shopsanity
+    apitemprice: APItemPrice
 
 
 def create_option_groups() -> list[OptionGroup]:
@@ -248,4 +272,6 @@ def slot_data_options() -> list[str]:
         APHelper.monster_hunt.value,
         APHelper.golden_goblins.value,
         APHelper.optional_party_members.value,
+        APHelper.shopsanity.value,
+        APHelper.apitemprice.value,
     ]

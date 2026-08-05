@@ -1,13 +1,15 @@
 from abc import ABC
 from typing import Dict
 
-from .Strings import ItemNames, EventNames, PlayStatNames
+
+from .Strings import ItemNames, EventNames, PlayStatNames, ShopsanityNames
 
 
 class VolumeAddresses(ABC):
     Items: Dict[str, int]
     Events: Dict[str, int]
     PlayStats: Dict[str, int]
+    Shopsanity: Dict[str, int]
     AreaWords: int
     WordLists: int
     Storage: int
@@ -85,6 +87,41 @@ class InfectionAddresses(VolumeAddresses):
         PlayStatNames.SymbolsActivated.name: 0xa46e14,
         PlayStatNames.TotalDataDrains.name: 0xa4622e,
         PlayStatNames.KiteLevel.name: 0xa46e66,
+    }
+    Shopsanity = {
+        #Mac Anu - AP Items
+        ShopsanityNames.MAWS1.name: 0xa47E05,
+        ShopsanityNames.MAWS2.name: 0xa47E05,
+        ShopsanityNames.MAWS3.name: 0xa47E05,
+        ShopsanityNames.MAWS4.name: 0xa47E05,
+        ShopsanityNames.MAWS5.name: 0xa47E05,
+        ShopsanityNames.MAIS1.name: 0xa47E05,
+        ShopsanityNames.MAIS2.name: 0xa47E05,
+        ShopsanityNames.MAIS3.name: 0xa47E05,
+        ShopsanityNames.MAIS4.name: 0xa47E06,
+        ShopsanityNames.MAIS5.name: 0xa47E06,
+        ShopsanityNames.MAMS1.name: 0xa47E06,
+        ShopsanityNames.MAMS2.name: 0xa47E06,
+        ShopsanityNames.MAMS3.name: 0xa47E06,
+        ShopsanityNames.MAMS4.name: 0xa47E06,
+        ShopsanityNames.MAMS5.name: 0xa47E06,
+        #Dun Loireag AP Items
+        ShopsanityNames.DLWS1.name: 0xa47E07,
+        ShopsanityNames.DLWS2.name: 0xa47E07,
+        ShopsanityNames.DLWS3.name: 0xa47E07,
+        ShopsanityNames.DLWS4.name: 0xa47E07,
+        ShopsanityNames.DLWS5.name: 0xa47E07,
+        ShopsanityNames.DLIS1.name: 0xa47E07,
+        ShopsanityNames.DLIS2.name: 0xa47E07,
+        ShopsanityNames.DLIS3.name: 0xa47E07,
+        ShopsanityNames.DLIS4.name: 0xa47E08,
+        ShopsanityNames.DLIS5.name: 0xa47E08,
+        ShopsanityNames.DLMS1.name: 0xa47E08,
+        ShopsanityNames.DLMS2.name: 0xa47E08,
+        ShopsanityNames.DLMS3.name: 0xa47E08,
+        ShopsanityNames.DLMS4.name: 0xa47E08,
+        ShopsanityNames.DLMS5.name: 0xa47E08,
+
     }
 
 

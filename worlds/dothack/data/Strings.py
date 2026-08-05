@@ -66,6 +66,8 @@ class APHelper(Enum):
     monster_hunt = "monster_hunt"
     golden_goblins = "golden_goblins"
     optional_party_members = "optional_party_members"
+    shopsanity = "shopsanity"
+    apitemprice = "apitemprice"
 
     # Item Groups
     area_words = "Area Words"
@@ -178,6 +180,38 @@ class EventNames(Enum):
     Albert = "Beat Golden Goblin 4: Albert"
     Martina = "Beat Golden Goblin 5: Martina"
 
+class ShopsanityNames(Enum):
+    _value_: str
+    MAWS1 = "Mac Anu Weapon Shop - AP Item 1"
+    MAWS2 = "Mac Anu Weapon Shop - AP Item 2"
+    MAWS3 = "Mac Anu Weapon Shop - AP Item 3"
+    MAWS4 = "Mac Anu Weapon Shop - AP Item 4"
+    MAWS5 = "Mac Anu Weapon Shop - AP Item 5"
+    MAIS1 = "Mac Anu Item Shop - AP Item 1"
+    MAIS2 = "Mac Anu Item Shop - AP Item 2"
+    MAIS3 = "Mac Anu Item Shop - AP Item 3"
+    MAIS4 = "Mac Anu Item Shop - AP Item 4"
+    MAIS5 = "Mac Anu Item Shop - AP Item 5"
+    MAMS1 = "Mac Anu Magic Shop - AP Item 1"
+    MAMS2 = "Mac Anu Magic Shop - AP Item 2"
+    MAMS3 = "Mac Anu Magic Shop - AP Item 3"
+    MAMS4 = "Mac Anu Magic Shop - AP Item 4"
+    MAMS5 = "Mac Anu Magic Shop - AP Item 5"
+    DLWS1 = "Dun Loireag Weapon Shop - AP Item 1"
+    DLWS2 = "Dun Loireag Weapon Shop - AP Item 2"
+    DLWS3 = "Dun Loireag Weapon Shop - AP Item 3"
+    DLWS4 = "Dun Loireag Weapon Shop - AP Item 4"
+    DLWS5 = "Dun Loireag Weapon Shop - AP Item 5"
+    DLIS1 = "Dun Loireag Item Shop - AP Item 1"
+    DLIS2 = "Dun Loireag Item Shop - AP Item 2"
+    DLIS3 = "Dun Loireag Item Shop - AP Item 3"
+    DLIS4 = "Dun Loireag Item Shop - AP Item 4"
+    DLIS5 = "Dun Loireag Item Shop - AP Item 5"
+    DLMS1 = "Dun Loireag Magic Shop - AP Item 1"
+    DLMS2 = "Dun Loireag Magic Shop - AP Item 2"
+    DLMS3 = "Dun Loireag Magic Shop - AP Item 3"
+    DLMS4 = "Dun Loireag Magic Shop - AP Item 4"
+    DLMS5 = "Dun Loireag Magic Shop - AP Item 5"
 
 class ItemNames(Enum):
     # Consumables

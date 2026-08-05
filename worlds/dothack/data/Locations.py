@@ -7,7 +7,8 @@ from .items.AreaWords import AreaWords
 from .locations.Events import InfectionStoryEvents, InfectionGoldenGoblins, InfectionOptionalPartyMembers, CompletionConditions
 from .locations.WordList import InfectionDeltaWordList as DeltaWordList, InfectionThetaWordList as ThetaWordList, WordListBase, get_wordlist_name
 from .locations.PlayStats import PlayStats
-from .Strings import Meta, AreaWordNames, EventNames, PlayStatNames
+from .locations.Sanity import InfectionShopsanity
+from .Strings import Meta, AreaWordNames, EventNames, PlayStatNames, ShopsanityNames
 from .Addresses import InfectionAddresses as Addresses
 from .DataManager import VOLUME_DATA
 
@@ -68,6 +69,17 @@ class InfectionPlayStatLocation(InfectionLocationMeta):
         self.stat = stat
         self.progress_type = progress_type
 
+class InfectionShopsanityLocation(InfectionLocationMeta):
+    event: InfectionShopsanity
+    bitflags: int
+    progress_type: LocationProgressType
+
+    def __init__(self, name: str, location_id: int, event: InfectionShopsanity, bitflags: int):
+        self.name = name
+        self.location_id = location_id
+        self.event = event
+        self.bitflags = bitflags
+        self.progress_type = LocationProgressType.DEFAULT
 
 def area_word_gen(enum) -> list[InfectionAreaWordLocation]:
     res = []
@@ -103,6 +115,21 @@ def event_gen(enum, volume: int) -> list[InfectionEventLocation]:
             ))
     return res
 
+
+def sanity_gen(volume: int):
+    res = []
+    # enumerate() provides a tuple of (index, member)
+    # We wrap in list() only to satisfy the IDE's Iterable requirement
+    for idx, member in enumerate(list(InfectionShopsanity)):
+        if volume in member.value["volumes"]:
+            # idx is now our stable, unique location_id
+            res.append(InfectionShopsanityLocation(
+                name=ShopsanityNames[member.name].value,
+                location_id=idx,
+                event=member,
+                bitflags=member.value["bits"]
+            ))
+    return res
 
 PlayStatLocsList: list[InfectionPlayStatLocation]
 
@@ -158,7 +185,8 @@ def generate_volume_locations(volume: int):
         *event_gen(InfectionStoryEvents, volume),
         *event_gen(InfectionGoldenGoblins, volume),
         *event_gen(InfectionOptionalPartyMembers, volume),
-        *event_gen(CompletionConditions, volume)
+        *event_gen(CompletionConditions, volume),
+        *sanity_gen(volume)
     ]
 
 
@@ -171,6 +199,7 @@ StoryEvents: list[InfectionEventLocation] = []
 GoldenGoblins: list[InfectionEventLocation] = []
 OptionalPartyMembers: list[InfectionEventLocation] = []
 CompletionEvents: list[InfectionEventLocation] = []
+ShopsanityLocations: list[InfectionShopsanityLocation] = []
 
 for v_data in VOLUME_DATA.values():
     for loc in v_data.wordlist_locations:
@@ -187,6 +216,8 @@ for v_data in VOLUME_DATA.values():
                 OptionalPartyMembers.append(loc)
             elif isinstance(loc.event, CompletionConditions):
                 CompletionEvents.append(loc)
+            elif isinstance(loc, InfectionShopsanityLocation):
+                ShopsanityLocations.append(loc)
 
 PlayStatLocations: list[InfectionPlayStatLocation] = [
     *PlayStatLocsList
@@ -219,6 +250,7 @@ def generate_location_groups() -> dict[str, set[str]]:
         "Optional Party Members": {el.name for el in OptionalPartyMembers},
         "Play Stats": {el.name for el in PlayStatLocations},
         "Area Words": {el.name for el in AreaWordLocations},
-        "Word Lists": {el.name for el in WordListLocations}
+        "Word Lists": {el.name for el in WordListLocations},
+        "Shopsanity": {el.name for el in ShopsanityLocations}
     })
     return groups

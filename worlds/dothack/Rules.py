@@ -1,9 +1,11 @@
 from collections import defaultdict
+from enum import member
+
 from rule_builder.rules import Has, HasAll, CanReachLocation, Rule, True_
 from .data.Strings import EventNames as Ev, PlayStatNames, ServerNames, CharacterNames, ItemNames
 from .data.locations.WordList import InfectionDeltaWordList as DeltaWordList, InfectionThetaWordList as ThetaWordList, get_wordlist_name
 from .data.items.RyuBooks import RyuBooks
-
+from .data.locations.Sanity import InfectionShopsanity
 
 def set_list_rules(location_rules, event_location, wordlist):
     location_rules[event_location] &= Has(get_wordlist_name(wordlist))
@@ -148,6 +150,11 @@ def infection_rules(world):
         location_rules[get_wordlist_name(DeltaWordList.DetestableGoldenGate)] &= CanReachLocation(Ev.Albert.value)
         location_rules[Ev.Martina.value] &= CanReachLocation(Ev.Albert.value)
         location_rules[Ev.Martina.value] &= CanReachLocation(Ev.SkeithDefeated.value)
+
+        # ShopSanity Server Requirement Logic - Something here doesn't work, and I'm not sure what.
+        for member_name in [m.name for m in InfectionShopsanity]:
+            if member_name.startswith("DL"):
+                location_rules[member_name] &= Has(ServerNames.Theta.value)
 
     for name, rule in location_rules.items():
         try:

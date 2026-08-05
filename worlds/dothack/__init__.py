@@ -3,7 +3,6 @@ from BaseClasses import ItemClassification
 from typing import ClassVar, List, cast
 import logging
 import settings
-
 from BaseClasses import MultiWorld, Tutorial, Region
 from worlds.AutoWorld import World, WebWorld
 from worlds.LauncherComponents import Component, components, launch_subprocess, Type
@@ -15,6 +14,7 @@ from .data.locations.WordList import InfectionDeltaWordList as DeltaWordList, In
 from .data.locations.Events import InfectionEventBase, InfectionGoldenGoblins, InfectionOptionalPartyMembers
 from .DotHackOptions import DotHackOptions, slot_data_options, create_option_groups
 from .data.DataManager import VOLUME_DATA
+from .data.locations.Sanity import InfectionShopsanity
 
 # Identifier for Archipelago to recognize and run the client
 
@@ -253,6 +253,9 @@ class DotHackWorld(World):
                 CharacterNames.Gardenia.value,
                 CharacterNames.Natsume.value,
             ])
+        if not self.options.shopsanity.value:
+            shop_item_names = {member.name for member in InfectionShopsanity}
+            excluded_items.update(shop_item_names)
 
         for item_name in starting_items:
             item = self.create_item(item_name)
@@ -264,6 +267,7 @@ class DotHackWorld(World):
             if item.name in excluded_items:
                 self.logger.debug(f"Excluding Item: {item.name}")
                 continue
+
             elif item.classification == ItemClassification.filler:
                 self.filler_items.append(item.to_item(self.player))
             else:

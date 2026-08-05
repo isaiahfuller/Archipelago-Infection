@@ -136,6 +136,8 @@ class InfectionContext(SuperContext):  # pyrefly: ignore
     kite_levels: int = 25
     golden_goblins: bool = True
     optional_party_members: bool = True
+    shopsanity: bool = False
+    apitemprice: int = 5000
 
     def __init__(self, address: str, password: str | None = None,):
         super().__init__(address, password)
@@ -155,7 +157,8 @@ class InfectionContext(SuperContext):  # pyrefly: ignore
         self.kite_levels = self.settings.get("kite_levels", 25)
         self.golden_goblins = self.settings.get("golden_goblins", True)
         self.optional_party_members = self.settings.get("optional_party_members", True)
-
+        self.shopsanity = self.settings.get("shopsanity", False)
+        self.apitemprice = self.settings.get("apitemprice", 5000)
         self.ipc = DotHackInterface(logger, self.volume)
 
     # Archipelago Server Authentication
@@ -185,6 +188,8 @@ class InfectionContext(SuperContext):  # pyrefly: ignore
             self.kite_class = data.get(APHelper.kite_class.value, self.kite_class)
             self.golden_goblins = data.get(APHelper.golden_goblins.value, self.golden_goblins)
             self.optional_party_members = data.get(APHelper.optional_party_members.value, self.optional_party_members)
+            self.shopsanity = data.get(APHelper.shopsanity.value, self.shopsanity)
+            self.apitemprice = data.get(APHelper.apitemprice.value, self.apitemprice)
 
             if APHelper.excluded_locations.value in data:
                 self.excluded_locations = set(data[APHelper.excluded_locations.value])
@@ -311,6 +316,8 @@ async def check_game(ctx: InfectionContext):
         await ctx.ipc.scan_word_list(ctx)
         await ctx.ipc.scan_ryu_books(ctx)
         await ctx.ipc.scan_kite_class(ctx)
+        await ctx.ipc.monitor_decrease()
+
 
         if ctx.automatically_read_emails:
             await ctx.ipc.scan_emails()
