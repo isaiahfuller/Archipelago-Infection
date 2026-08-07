@@ -260,9 +260,20 @@ class DotHackWorld(World):
                 self.logger.debug(f"Adding Wordlist Location: {loc_meta.name} to region {loc_meta.wordlist} (MAIN)")
                 main_region.locations.append(loc_meta.to_location(self.player, main_region))
         for loc_meta in v_data.monster_locations:
-            loc = loc_meta.to_location(self.player, main_region)
-            self.logger.debug(f"Created Monster Location: {loc_meta.monster.name} -> {loc_meta.name} -> {loc_meta.location_id}")
-            main_region.locations.append(loc)
+            if loc_meta.monster in excluded_events:
+                self.logger.debug(f"Excluding Monster Location: {loc_meta.name}")
+                self.excluded_locations.add(loc_meta.location_id)
+                continue
+
+            if loc_meta.monster.value["server"] == Servers.Delta:
+                self.logger.debug(f"Adding Monster Location: {loc_meta.name} to region {loc_meta.monster} (DELTA)")
+                delta_region.locations.append(loc_meta.to_location(self.player, delta_region))
+            elif loc_meta.monster.value["server"] == Servers.Theta:
+                self.logger.debug(f"Adding Monster Location: {loc_meta.name} to region {loc_meta.monster} (THETA)")
+                theta_region.locations.append(loc_meta.to_location(self.player, theta_region))
+            else:
+                self.logger.debug(f"Adding Monster Location: {loc_meta.name} to region {loc_meta.monster} (MAIN)")
+                main_region.locations.append(loc_meta.to_location(self.player, main_region))
 
         main_region.add_event("Victory")
 
