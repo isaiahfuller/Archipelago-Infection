@@ -42,10 +42,15 @@ class CompletionCondition(Choice):
 
 class MonsterHunt(Toggle):
     """
-    Gain a check for each new monster you fight. NONFUNCTIONAL
+    Gain a check for each new monster you defeat. NONFUNCTIONAL
     """
     display_name = "Monster Hunt"
 
+class EqualStart(Toggle):
+    """
+    All PCs start at base level with base equipment. Adds a Progressive version to all PCs that will reward them their unique weapon.  NONFUNCTIONAL
+    """
+    display_name = "Equal Start"
 
 class AutomaticallyReadEmails(Toggle):
     """
@@ -180,6 +185,7 @@ infection_option_groups: dict[str, list] = {
         GoldenGoblins,
         OptionalPartyMembers,
         MonsterHunt,
+        EqualStart
     ],
     "Quality of Life Options": [
         AutomaticallyReadEmails,
@@ -220,6 +226,7 @@ class DotHackOptions(PerGameCommonOptions):
     monster_hunt: MonsterHunt
     golden_goblins: GoldenGoblins
     optional_party_members: OptionalPartyMembers
+    equal_start:EqualStart
 
 
 def create_option_groups() -> list[OptionGroup]:
@@ -248,4 +255,5 @@ def slot_data_options() -> list[str]:
         APHelper.monster_hunt.value,
         APHelper.golden_goblins.value,
         APHelper.optional_party_members.value,
+        APHelper.equal_start.value
     ]

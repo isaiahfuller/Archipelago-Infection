@@ -15,6 +15,7 @@ from .data import Locations, Items
 from .data.Items import InfectionItem, InfectionItemMeta, ITEMS_MASTER
 from .data.locations.WordList import InfectionDeltaWordList as DeltaWordList, InfectionThetaWordList as ThetaWordList, WordListBase, get_wordlist_name
 from .data.locations.Events import InfectionEventBase, InfectionGoldenGoblins, InfectionOptionalPartyMembers
+from .data.locations.Monsters import InfectionMonsters, MonsterBase
 from .DotHackOptions import DotHackOptions, slot_data_options, create_option_groups
 from .data.DataManager import VOLUME_DATA
 
@@ -180,7 +181,7 @@ class DotHackWorld(World):
 
         self.excluded_locations: set[int] = set()
 
-        excluded_events: set[InfectionEventBase] = set()
+        excluded_events: set[InfectionEventBase | MonsterBase] = set()
         excluded_wordlist_locs: set[WordListBase] = set()
 
         if not self.options.golden_goblins.value:
@@ -200,6 +201,10 @@ class DotHackWorld(World):
                 DeltaWordList.HideousDestroyersFarThunder,
                 ThetaWordList.BeautifulSomeonesTreasureGem
             ])
+
+        if not self.options.monster_hunt.value:
+            excluded_events.update(InfectionMonsters)
+            
         if self.options.completion_condition == 0:
             excluded_wordlist_locs.add(DeltaWordList.HideousSomeonesGiant)
             excluded_events.add(Locations.CompletionConditions.ParasiteDragonDefeated)
@@ -254,6 +259,10 @@ class DotHackWorld(World):
             else:
                 self.logger.debug(f"Adding Wordlist Location: {loc_meta.name} to region {loc_meta.wordlist} (MAIN)")
                 main_region.locations.append(loc_meta.to_location(self.player, main_region))
+        for loc_meta in v_data.monster_locations:
+            loc = loc_meta.to_location(self.player, main_region)
+            self.logger.debug(f"Created Monster Location: {loc_meta.monster.name} -> {loc_meta.name} -> {loc_meta.location_id}")
+            main_region.locations.append(loc)
 
         main_region.add_event("Victory")
 
@@ -274,6 +283,7 @@ class DotHackWorld(World):
         items = []
         starting_items = [
             ServerNames.Delta.value,
+            # ServerNames.Theta.value,
             # AreaWordNames.Bursting.value,
             # AreaWordNames.AquaField.value,
             # AreaWordNames.PassedOver.value,
@@ -353,7 +363,6 @@ class DotHackWorld(World):
             stats[PlayStatNames.AllDungeonPortalsOpened.name] = self.options.cleared_portals.value
             stats[PlayStatNames.AllFieldPortalsOpened.name] = self.options.cleared_portals.value
             stats[PlayStatNames.PortalsOpened.name] = self.options.opened_portals.value
-            stats[PlayStatNames.MonsterHuntInfection.name] = self.options.monster_hunt.value
             self.playstat_locations = Locations.playstat_gen(stats)
         return is_in_ut
 
