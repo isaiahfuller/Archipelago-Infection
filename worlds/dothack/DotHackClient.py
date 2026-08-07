@@ -300,6 +300,13 @@ async def check_game(ctx: InfectionContext):
             return
         if ctx.last_item_processed_index < 0:
             ctx.last_item_processed_index = ctx.ipc.get_last_item_index()
+            
+        if ctx.has_just_connected or ctx.pending_resync:
+            await ctx.ipc.resync_items(ctx)
+            ctx.has_just_connected = False
+            if ctx.pending_resync:
+                logger.info("Resyncing complete")
+                ctx.pending_resync = False
 
         if ctx.volume == 1:
             ctx.ipc.infection_initial_state(ctx)
@@ -316,12 +323,6 @@ async def check_game(ctx: InfectionContext):
         if ctx.automatically_read_emails:
             await ctx.ipc.scan_emails()
 
-        if ctx.has_just_connected or ctx.pending_resync:
-            await ctx.ipc.resync_items(ctx)
-            ctx.has_just_connected = False
-            if ctx.pending_resync:
-                logger.info("Resyncing complete")
-                ctx.pending_resync = False
     else:
         message: str = APConsole.Info.p_init_g_sre.value
         if ctx.last_message is not message:
