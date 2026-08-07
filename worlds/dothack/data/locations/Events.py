@@ -2,11 +2,11 @@ from enum import Enum
 from typing import TypedDict
 
 
+
 class InfectionEventAttributes(TypedDict):
     address: int
     bits: int
     volumes: list[int]
-
 
 class InfectionEventBase(Enum):
     _value_: InfectionEventAttributes
