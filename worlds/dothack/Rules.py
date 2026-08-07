@@ -1,3 +1,5 @@
+from rule_builder.rules import HasAny
+from rule_builder.rules import CanReachRegion
 from worlds.dothack.data.Strings import MonsterNames
 from .data.locations.Monsters import InfectionMonsters
 from collections import defaultdict
@@ -10,16 +12,21 @@ from .data.items.RyuBooks import RyuBooks
 def set_list_rules(location_rules, event_location, wordlist):
     location_rules[event_location] &= Has(get_wordlist_name(wordlist))
 
+    if wordlist in DeltaWordList:
+        location_rules[event_location] &= CanReachRegion(ServerNames.Delta.value)
+        location_rules[get_wordlist_name(wordlist)] &= CanReachRegion(ServerNames.Delta.value)
+
     if wordlist in ThetaWordList:
-        location_rules[event_location] &= Has(ServerNames.Theta.value)
-        location_rules[get_wordlist_name(wordlist)] &= Has(ServerNames.Theta.value)
+        location_rules[event_location] &= CanReachRegion(ServerNames.Theta.value)
+        location_rules[get_wordlist_name(wordlist)] &= CanReachRegion(ServerNames.Theta.value)
 
 
 def set_stats_rules(location_rules, stats):
     for i in range(len(stats)):
+        location_rules[stats[i].name] &= HasAny(ServerNames.Delta.value,ServerNames.Theta.value)
         book = RyuBooks.get_by_stat(stats[i].stat)
         if book:
-            location_rules[stats[i].name] &= Has(ItemNames[book.name].value)
+            location_rules[stats[i].name] &= CanReachRegion(ItemNames[book.name].value)
 
         if i < len(stats) - 1:
             if stats[i].name.split('-')[0] != stats[i+1].name.split('-')[0]:
@@ -73,6 +80,7 @@ def infection_rules(world):
     set_list_rules(location_rules, Ev.BlackRoseDungeon.value, ThetaWordList.QuietEternalWhiteDevil)
     location_rules[get_wordlist_name(ThetaWordList.QuietEternalWhiteDevil)] &= CanReachLocation(Ev.BoardProtected.value)
     location_rules[Ev.BlackRoseDungeon.value] &= HasAll(CharacterNames.BlackRose.value, ServerNames.Theta.value)
+    location_rules[Ev.BlackRoseDungeon.value] &= CanReachRegion(ServerNames.Theta.value)
     location_rules[Ev.BlackRoseDungeon.value] &= CanReachLocation(Ev.BoardProtected.value)
     location_rules[Ev.BlackRoseDungeon.value] &= CanReachLocation(PlayStatNames.KiteLevel.value + "15")
 
@@ -89,7 +97,8 @@ def infection_rules(world):
     set_list_rules(location_rules, Ev.MistralMeetUp.value, ThetaWordList.CollapsedMomentarySpiral)
     set_list_rules(location_rules, Ev.MistralMeetUp.value, DeltaWordList.BurstingPassedOverAquaField)
     location_rules[get_wordlist_name(ThetaWordList.CollapsedMomentarySpiral)] &= CanReachLocation(Ev.PirosDiary.value)
-    location_rules[Ev.MistralMeetUp.value] &= HasAll(CharacterNames.Mistral.value, ServerNames.Theta.value)
+    location_rules[Ev.MistralMeetUp.value] &= Has(CharacterNames.Mistral.value)
+    location_rules[Ev.MistralMeetUp.value] &= CanReachRegion(ServerNames.Theta.value)
     location_rules[Ev.MistralMeetUp.value] &= CanReachLocation(Ev.PirosDiary.value)
 
     set_list_rules(location_rules, Ev.Epitaph00.value, ThetaWordList.CursedDespairedParadise)
