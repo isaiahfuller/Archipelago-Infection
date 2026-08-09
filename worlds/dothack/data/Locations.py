@@ -1,14 +1,14 @@
 from BaseClasses import LocationProgressType
 from abc import ABC
-
+from dataclasses import dataclass
 from BaseClasses import Location
 
 from .items.AreaWords import AreaWords
 from .locations.Events import InfectionStoryEvents, InfectionGoldenGoblins, InfectionOptionalPartyMembers, CompletionConditions
 from .locations.WordList import InfectionDeltaWordList as DeltaWordList, InfectionThetaWordList as ThetaWordList, WordListBase, get_wordlist_name
 from .locations.PlayStats import PlayStats
-from .locations.Sanity import InfectionShopsanity
-from .Strings import Meta, AreaWordNames, EventNames, PlayStatNames, ShopsanityNames
+from .locations.Sanity import InfectionShopsanity, InfectionTradesanity
+from .Strings import Meta, AreaWordNames, EventNames, PlayStatNames, ShopsanityNames, TradesanityNames
 from .Addresses import InfectionAddresses as Addresses
 from .DataManager import VOLUME_DATA
 
@@ -81,6 +81,21 @@ class InfectionShopsanityLocation(InfectionLocationMeta):
         self.bitflags = bitflags
         self.progress_type = LocationProgressType.DEFAULT
 
+# Update your data class to look like this
+
+@dataclass
+class InfectionTradesanityLocation(InfectionLocationMeta):
+    name: str
+    location_id: int
+    event: InfectionTradesanity # The enum member
+
+    def __init__(self, name: str, location_id: int, event: InfectionTradesanity):
+        self.name = name
+        self.location_id = location_id
+        self.event = event
+        self.progress_type = LocationProgressType.DEFAULT
+
+
 def area_word_gen(enum) -> list[InfectionAreaWordLocation]:
     res = []
     for word in enum:
@@ -116,7 +131,7 @@ def event_gen(enum, volume: int) -> list[InfectionEventLocation]:
     return res
 
 
-def sanity_gen(volume: int):
+def shopsanity_gen(volume: int):
     res = []
     # enumerate() provides a tuple of (index, member)
     # We wrap in list() only to satisfy the IDE's Iterable requirement
@@ -131,6 +146,22 @@ def sanity_gen(volume: int):
             ))
     return res
 
+
+def tradesanity_gen(volume: int) -> list[InfectionTradesanityLocation]:
+    res = []
+    for member in InfectionTradesanity:
+        volumes = member.value.get("volumes", [])
+        if isinstance(volumes, list) and volume in volumes:
+            name = TradesanityNames[member.name].value
+
+            corrected_location_id = member.value["address"] + 3
+
+            res.append(InfectionTradesanityLocation(
+                name=name,
+                location_id=corrected_location_id,
+                event=member
+            ))
+    return res
 PlayStatLocsList: list[InfectionPlayStatLocation]
 
 
@@ -186,7 +217,8 @@ def generate_volume_locations(volume: int):
         *event_gen(InfectionGoldenGoblins, volume),
         *event_gen(InfectionOptionalPartyMembers, volume),
         *event_gen(CompletionConditions, volume),
-        *sanity_gen(volume)
+        *shopsanity_gen(volume),
+        *tradesanity_gen(volume)
     ]
 
 
@@ -200,6 +232,7 @@ GoldenGoblins: list[InfectionEventLocation] = []
 OptionalPartyMembers: list[InfectionEventLocation] = []
 CompletionEvents: list[InfectionEventLocation] = []
 ShopsanityLocations: list[InfectionShopsanityLocation] = []
+TradesanityLocations: list[InfectionTradesanityLocation] = []
 
 for v_data in VOLUME_DATA.values():
     for loc in v_data.wordlist_locations:
@@ -218,6 +251,8 @@ for v_data in VOLUME_DATA.values():
                 CompletionEvents.append(loc)
             elif isinstance(loc, InfectionShopsanityLocation):
                 ShopsanityLocations.append(loc)
+            elif isinstance(loc, InfectionTradesanityLocation):
+                TradesanityLocations.append(loc)
 
 PlayStatLocations: list[InfectionPlayStatLocation] = [
     *PlayStatLocsList
@@ -251,6 +286,7 @@ def generate_location_groups() -> dict[str, set[str]]:
         "Play Stats": {el.name for el in PlayStatLocations},
         "Area Words": {el.name for el in AreaWordLocations},
         "Word Lists": {el.name for el in WordListLocations},
-        "Shopsanity": {el.name for el in ShopsanityLocations}
+        "Shopsanity": {el.name for el in ShopsanityLocations},
+        "Tradesanity": {el.name for el in TradesanityLocations}
     })
     return groups

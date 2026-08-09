@@ -137,6 +137,7 @@ class InfectionContext(SuperContext):  # pyrefly: ignore
     golden_goblins: bool = True
     optional_party_members: bool = True
     shopsanity: bool = False
+    tradesanity: bool = False
     apitemprice: int = 5000
 
     def __init__(self, address: str, password: str | None = None,):
@@ -158,8 +159,11 @@ class InfectionContext(SuperContext):  # pyrefly: ignore
         self.golden_goblins = self.settings.get("golden_goblins", True)
         self.optional_party_members = self.settings.get("optional_party_members", True)
         self.shopsanity = self.settings.get("shopsanity", False)
+        self.tradesanity = self.settings.get("tradesanity", False)
         self.apitemprice = self.settings.get("apitemprice", 5000)
         self.ipc = DotHackInterface(logger, self.volume)
+        self.trade_locations = []  # Stores the TradeSanity location objects
+        self.completed_trades = set()  # Tracks items already sent to the server
 
     # Archipelago Server Authentication
     async def server_auth(self, password_requested: bool = False) -> None:
@@ -189,7 +193,9 @@ class InfectionContext(SuperContext):  # pyrefly: ignore
             self.golden_goblins = data.get(APHelper.golden_goblins.value, self.golden_goblins)
             self.optional_party_members = data.get(APHelper.optional_party_members.value, self.optional_party_members)
             self.shopsanity = data.get(APHelper.shopsanity.value, self.shopsanity)
+            self.tradesanity = data.get(APHelper.tradesanity.value, self.tradesanity)
             self.apitemprice = data.get(APHelper.apitemprice.value, self.apitemprice)
+
 
             if APHelper.excluded_locations.value in data:
                 self.excluded_locations = set(data[APHelper.excluded_locations.value])

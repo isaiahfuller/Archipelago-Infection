@@ -2,10 +2,10 @@ from collections import defaultdict
 from enum import member
 
 from rule_builder.rules import Has, HasAll, CanReachLocation, Rule, True_
-from .data.Strings import EventNames as Ev, PlayStatNames, ServerNames, CharacterNames, ItemNames
+from .data.Strings import EventNames as Ev, PlayStatNames, ServerNames, CharacterNames, ItemNames, TradesanityNames, ShopsanityNames
 from .data.locations.WordList import InfectionDeltaWordList as DeltaWordList, InfectionThetaWordList as ThetaWordList, get_wordlist_name
 from .data.items.RyuBooks import RyuBooks
-from .data.locations.Sanity import InfectionShopsanity
+from .data.locations.Sanity import InfectionShopsanity, InfectionTradesanity
 
 def set_list_rules(location_rules, event_location, wordlist):
     location_rules[event_location] &= Has(get_wordlist_name(wordlist))
@@ -151,10 +151,185 @@ def infection_rules(world):
         location_rules[Ev.Martina.value] &= CanReachLocation(Ev.Albert.value)
         location_rules[Ev.Martina.value] &= CanReachLocation(Ev.SkeithDefeated.value)
 
-        # ShopSanity Server Requirement Logic - Something here doesn't work, and I'm not sure what.
-        for member_name in [m.name for m in InfectionShopsanity]:
-            if member_name.startswith("DL"):
-                location_rules[member_name] &= Has(ServerNames.Theta.value)
+        # Shopsanity Server Requirement Logic - Something here doesn't work, and I'm not sure what.
+    if world.options.shopsanity:
+        set_list_rules(location_rules, ShopsanityNames.DLWS1.value, DeltaWordList.ExpansiveHauntedSeaOfSand)
+        location_rules[TradesanityNames.Mia1.value] &= Has(ServerNames.Theta.value)
+        set_list_rules(location_rules, ShopsanityNames.DLIS1.value, DeltaWordList.ExpansiveHauntedSeaOfSand)
+        location_rules[TradesanityNames.Mia1.value] &= Has(ServerNames.Theta.value)
+        set_list_rules(location_rules, ShopsanityNames.DLMS1.value, DeltaWordList.ExpansiveHauntedSeaOfSand)
+        location_rules[TradesanityNames.Mia1.value] &= Has(ServerNames.Theta.value)
+        set_list_rules(location_rules, ShopsanityNames.DLWS2.value, DeltaWordList.ExpansiveHauntedSeaOfSand)
+        location_rules[TradesanityNames.Mia1.value] &= Has(ServerNames.Theta.value)
+        set_list_rules(location_rules, ShopsanityNames.DLIS2.value, DeltaWordList.ExpansiveHauntedSeaOfSand)
+        location_rules[TradesanityNames.Mia1.value] &= Has(ServerNames.Theta.value)
+        set_list_rules(location_rules, ShopsanityNames.DLMS2.value, DeltaWordList.ExpansiveHauntedSeaOfSand)
+        location_rules[TradesanityNames.Mia1.value] &= Has(ServerNames.Theta.value)
+        set_list_rules(location_rules, ShopsanityNames.DLWS3.value, DeltaWordList.ExpansiveHauntedSeaOfSand)
+        location_rules[TradesanityNames.Mia1.value] &= Has(ServerNames.Theta.value)
+        set_list_rules(location_rules, ShopsanityNames.DLIS3.value, DeltaWordList.ExpansiveHauntedSeaOfSand)
+        location_rules[TradesanityNames.Mia1.value] &= Has(ServerNames.Theta.value)
+        set_list_rules(location_rules, ShopsanityNames.DLMS3.value, DeltaWordList.ExpansiveHauntedSeaOfSand)
+        location_rules[TradesanityNames.Mia1.value] &= Has(ServerNames.Theta.value)
+        set_list_rules(location_rules, ShopsanityNames.DLWS4.value, DeltaWordList.ExpansiveHauntedSeaOfSand)
+        location_rules[TradesanityNames.Mia1.value] &= Has(ServerNames.Theta.value)
+        set_list_rules(location_rules, ShopsanityNames.DLIS4.value, DeltaWordList.ExpansiveHauntedSeaOfSand)
+        location_rules[TradesanityNames.Mia1.value] &= Has(ServerNames.Theta.value)
+        set_list_rules(location_rules, ShopsanityNames.DLMS4.value, DeltaWordList.ExpansiveHauntedSeaOfSand)
+        location_rules[TradesanityNames.Mia1.value] &= Has(ServerNames.Theta.value)
+        set_list_rules(location_rules, ShopsanityNames.DLWS5.value, DeltaWordList.ExpansiveHauntedSeaOfSand)
+        location_rules[TradesanityNames.Mia1.value] &= Has(ServerNames.Theta.value)
+        set_list_rules(location_rules, ShopsanityNames.DLIS5.value, DeltaWordList.ExpansiveHauntedSeaOfSand)
+        location_rules[TradesanityNames.Mia1.value] &= Has(ServerNames.Theta.value)
+        set_list_rules(location_rules, ShopsanityNames.DLMS5.value, DeltaWordList.ExpansiveHauntedSeaOfSand)
+        location_rules[TradesanityNames.Mia1.value] &= Has(ServerNames.Theta.value)
+
+        #Tradesanity Party Member Requirement Logic
+    if world.options.tradesanity:
+        # Mia
+        set_list_rules(location_rules, TradesanityNames.Mia1.value, DeltaWordList.ExpansiveHauntedSeaOfSand)
+        location_rules[TradesanityNames.Mia1.value] &= Has(CharacterNames.Mia.value)
+        set_list_rules(location_rules, TradesanityNames.Mia2.value, DeltaWordList.ExpansiveHauntedSeaOfSand)
+        location_rules[TradesanityNames.Mia2.value] &= Has(CharacterNames.Mia.value)
+        set_list_rules(location_rules, TradesanityNames.Mia3.value, DeltaWordList.ExpansiveHauntedSeaOfSand)
+        location_rules[TradesanityNames.Mia3.value] &= Has(CharacterNames.Mia.value)
+
+        # Orca
+        set_list_rules(location_rules, TradesanityNames.Orca1.value, DeltaWordList.ExpansiveHauntedSeaOfSand)
+        location_rules[TradesanityNames.Orca1.value] &= Has(CharacterNames.Orca.value)
+        set_list_rules(location_rules, TradesanityNames.Orca2.value, DeltaWordList.ExpansiveHauntedSeaOfSand)
+        location_rules[TradesanityNames.Orca2.value] &= Has(CharacterNames.Orca.value)
+        set_list_rules(location_rules, TradesanityNames.Orca3.value, DeltaWordList.ExpansiveHauntedSeaOfSand)
+        location_rules[TradesanityNames.Orca3.value] &= Has(CharacterNames.Orca.value)
+
+        # Marlo
+        set_list_rules(location_rules, TradesanityNames.Marlo1.value, DeltaWordList.ExpansiveHauntedSeaOfSand)
+        location_rules[TradesanityNames.Marlo1.value] &= Has(CharacterNames.Marlo.value)
+        set_list_rules(location_rules, TradesanityNames.Marlo2.value, DeltaWordList.ExpansiveHauntedSeaOfSand)
+        location_rules[TradesanityNames.Marlo2.value] &= Has(CharacterNames.Marlo.value)
+        set_list_rules(location_rules, TradesanityNames.Marlo3.value, DeltaWordList.ExpansiveHauntedSeaOfSand)
+        location_rules[TradesanityNames.Marlo3.value] &= Has(CharacterNames.Marlo.value)
+
+        # Sanjuro
+        set_list_rules(location_rules, TradesanityNames.Sanjuro1.value, DeltaWordList.ExpansiveHauntedSeaOfSand)
+        location_rules[TradesanityNames.Sanjuro1.value] &= Has(CharacterNames.Sanjuro.value)
+        set_list_rules(location_rules, TradesanityNames.Sanjuro2.value, DeltaWordList.ExpansiveHauntedSeaOfSand)
+        location_rules[TradesanityNames.Sanjuro2.value] &= Has(CharacterNames.Sanjuro.value)
+        set_list_rules(location_rules, TradesanityNames.Sanjuro3.value, DeltaWordList.ExpansiveHauntedSeaOfSand)
+        location_rules[TradesanityNames.Sanjuro3.value] &= Has(CharacterNames.Sanjuro.value)
+
+        # NukeUsagimaru
+        set_list_rules(location_rules, TradesanityNames.NukeUsagimaru1.value, DeltaWordList.ExpansiveHauntedSeaOfSand)
+        location_rules[TradesanityNames.NukeUsagimaru1.value] &= Has(CharacterNames.NukeUsagimaru.value)
+        set_list_rules(location_rules, TradesanityNames.NukeUsagimaru2.value, DeltaWordList.ExpansiveHauntedSeaOfSand)
+        location_rules[TradesanityNames.NukeUsagimaru2.value] &= Has(CharacterNames.NukeUsagimaru.value)
+        set_list_rules(location_rules, TradesanityNames.NukeUsagimaru3.value, DeltaWordList.ExpansiveHauntedSeaOfSand)
+        location_rules[TradesanityNames.NukeUsagimaru3.value] &= Has(CharacterNames.NukeUsagimaru.value)
+
+        # Balmung
+        set_list_rules(location_rules, TradesanityNames.Balmung1.value, DeltaWordList.ExpansiveHauntedSeaOfSand)
+        location_rules[TradesanityNames.Balmung1.value] &= Has(CharacterNames.Balmung.value)
+        set_list_rules(location_rules, TradesanityNames.Balmung2.value, DeltaWordList.ExpansiveHauntedSeaOfSand)
+        location_rules[TradesanityNames.Balmung2.value] &= Has(CharacterNames.Balmung.value)
+        set_list_rules(location_rules, TradesanityNames.Balmung3.value, DeltaWordList.ExpansiveHauntedSeaOfSand)
+        location_rules[TradesanityNames.Balmung3.value] &= Has(CharacterNames.Balmung.value)
+
+        # Moonstone
+        set_list_rules(location_rules, TradesanityNames.Moonstone1.value, DeltaWordList.ExpansiveHauntedSeaOfSand)
+        location_rules[TradesanityNames.Moonstone1.value] &= Has(CharacterNames.Moonstone.value)
+        set_list_rules(location_rules, TradesanityNames.Moonstone2.value, DeltaWordList.ExpansiveHauntedSeaOfSand)
+        location_rules[TradesanityNames.Moonstone2.value] &= Has(CharacterNames.Moonstone.value)
+        set_list_rules(location_rules, TradesanityNames.Moonstone3.value, DeltaWordList.ExpansiveHauntedSeaOfSand)
+        location_rules[TradesanityNames.Moonstone3.value] &= Has(CharacterNames.Moonstone.value)
+
+        # Piros
+        set_list_rules(location_rules, TradesanityNames.Piros1.value, DeltaWordList.ExpansiveHauntedSeaOfSand)
+        location_rules[TradesanityNames.Piros1.value] &= Has(CharacterNames.Piros.value)
+        set_list_rules(location_rules, TradesanityNames.Piros2.value, DeltaWordList.ExpansiveHauntedSeaOfSand)
+        location_rules[TradesanityNames.Piros2.value] &= Has(CharacterNames.Piros.value)
+        set_list_rules(location_rules, TradesanityNames.Piros3.value, DeltaWordList.ExpansiveHauntedSeaOfSand)
+        location_rules[TradesanityNames.Piros3.value] &= Has(CharacterNames.Piros.value)
+
+        # Wiseman
+        set_list_rules(location_rules, TradesanityNames.Wiseman1.value, DeltaWordList.ExpansiveHauntedSeaOfSand)
+        location_rules[TradesanityNames.Wiseman1.value] &= Has(CharacterNames.Wiseman.value)
+        set_list_rules(location_rules, TradesanityNames.Wiseman2.value, DeltaWordList.ExpansiveHauntedSeaOfSand)
+        location_rules[TradesanityNames.Wiseman2.value] &= Has(CharacterNames.Wiseman.value)
+        set_list_rules(location_rules, TradesanityNames.Wiseman3.value, DeltaWordList.ExpansiveHauntedSeaOfSand)
+        location_rules[TradesanityNames.Wiseman3.value] &= Has(CharacterNames.Wiseman.value)
+
+        # Elk
+        set_list_rules(location_rules, TradesanityNames.Elk1.value, DeltaWordList.ExpansiveHauntedSeaOfSand)
+        location_rules[TradesanityNames.Elk1.value] &= Has(CharacterNames.Elk.value)
+        set_list_rules(location_rules, TradesanityNames.Elk2.value, DeltaWordList.ExpansiveHauntedSeaOfSand)
+        location_rules[TradesanityNames.Elk2.value] &= Has(CharacterNames.Elk.value)
+        set_list_rules(location_rules, TradesanityNames.Elk3.value, DeltaWordList.ExpansiveHauntedSeaOfSand)
+        location_rules[TradesanityNames.Elk3.value] &= Has(CharacterNames.Elk.value)
+
+        # Natsume
+        set_list_rules(location_rules, TradesanityNames.Natsume1.value, DeltaWordList.ExpansiveHauntedSeaOfSand)
+        location_rules[TradesanityNames.Natsume1.value] &= Has(CharacterNames.Natsume.value)
+        set_list_rules(location_rules, TradesanityNames.Natsume2.value, DeltaWordList.ExpansiveHauntedSeaOfSand)
+        location_rules[TradesanityNames.Natsume2.value] &= Has(CharacterNames.Natsume.value)
+        set_list_rules(location_rules, TradesanityNames.Natsume3.value, DeltaWordList.ExpansiveHauntedSeaOfSand)
+        location_rules[TradesanityNames.Natsume3.value] &= Has(CharacterNames.Natsume.value)
+
+        # Rachel
+        set_list_rules(location_rules, TradesanityNames.Rachel1.value, DeltaWordList.ExpansiveHauntedSeaOfSand)
+        location_rules[TradesanityNames.Rachel1.value] &= Has(CharacterNames.Rachel.value)
+        set_list_rules(location_rules, TradesanityNames.Rachel2.value, DeltaWordList.ExpansiveHauntedSeaOfSand)
+        location_rules[TradesanityNames.Rachel2.value] &= Has(CharacterNames.Rachel.value)
+        set_list_rules(location_rules, TradesanityNames.Rachel3.value, DeltaWordList.ExpansiveHauntedSeaOfSand)
+        location_rules[TradesanityNames.Rachel3.value] &= Has(CharacterNames.Rachel.value)
+
+        # Gardenia
+        set_list_rules(location_rules, TradesanityNames.Gardenia1.value, DeltaWordList.ExpansiveHauntedSeaOfSand)
+        location_rules[TradesanityNames.Gardenia1.value] &= Has(CharacterNames.Gardenia.value)
+        set_list_rules(location_rules, TradesanityNames.Gardenia2.value, DeltaWordList.ExpansiveHauntedSeaOfSand)
+        location_rules[TradesanityNames.Gardenia2.value] &= Has(CharacterNames.Gardenia.value)
+        set_list_rules(location_rules, TradesanityNames.Gardenia3.value, DeltaWordList.ExpansiveHauntedSeaOfSand)
+        location_rules[TradesanityNames.Gardenia3.value] &= Has(CharacterNames.Gardenia.value)
+
+        # TerajimaRyoko
+        set_list_rules(location_rules, TradesanityNames.TerajimaRyoko1.value, DeltaWordList.ExpansiveHauntedSeaOfSand)
+        location_rules[TradesanityNames.TerajimaRyoko1.value] &= Has(CharacterNames.TerajimaRyoko.value)
+        set_list_rules(location_rules, TradesanityNames.TerajimaRyoko2.value, DeltaWordList.ExpansiveHauntedSeaOfSand)
+        location_rules[TradesanityNames.TerajimaRyoko2.value] &= Has(CharacterNames.TerajimaRyoko.value)
+        set_list_rules(location_rules, TradesanityNames.TerajimaRyoko3.value, DeltaWordList.ExpansiveHauntedSeaOfSand)
+        location_rules[TradesanityNames.TerajimaRyoko3.value] &= Has(CharacterNames.TerajimaRyoko.value)
+
+        # BlackRose
+        set_list_rules(location_rules, TradesanityNames.BlackRose1.value, DeltaWordList.ExpansiveHauntedSeaOfSand)
+        location_rules[TradesanityNames.BlackRose1.value] &= Has(CharacterNames.BlackRose.value)
+        set_list_rules(location_rules, TradesanityNames.BlackRose2.value, DeltaWordList.ExpansiveHauntedSeaOfSand)
+        location_rules[TradesanityNames.BlackRose2.value] &= Has(CharacterNames.BlackRose.value)
+        set_list_rules(location_rules, TradesanityNames.BlackRose3.value, DeltaWordList.ExpansiveHauntedSeaOfSand)
+        location_rules[TradesanityNames.BlackRose3.value] &= Has(CharacterNames.BlackRose.value)
+
+        # Mistral
+        set_list_rules(location_rules, TradesanityNames.Mistral1.value, DeltaWordList.ExpansiveHauntedSeaOfSand)
+        location_rules[TradesanityNames.Mistral1.value] &= Has(CharacterNames.Mistral.value)
+        set_list_rules(location_rules, TradesanityNames.Mistral2.value, DeltaWordList.ExpansiveHauntedSeaOfSand)
+        location_rules[TradesanityNames.Mistral2.value] &= Has(CharacterNames.Mistral.value)
+        set_list_rules(location_rules, TradesanityNames.Mistral3.value, DeltaWordList.ExpansiveHauntedSeaOfSand)
+        location_rules[TradesanityNames.Mistral3.value] &= Has(CharacterNames.Mistral.value)
+
+        # Helba
+        set_list_rules(location_rules, TradesanityNames.Helba1.value, DeltaWordList.ExpansiveHauntedSeaOfSand)
+        location_rules[TradesanityNames.Helba1.value] &= Has(CharacterNames.Helba.value)
+        set_list_rules(location_rules, TradesanityNames.Helba2.value, DeltaWordList.ExpansiveHauntedSeaOfSand)
+        location_rules[TradesanityNames.Helba2.value] &= Has(CharacterNames.Helba.value)
+        set_list_rules(location_rules, TradesanityNames.Helba3.value, DeltaWordList.ExpansiveHauntedSeaOfSand)
+        location_rules[TradesanityNames.Helba3.value] &= Has(CharacterNames.Helba.value)
+
+        #Grunties
+        set_list_rules(location_rules, TradesanityNames.NobleGrunty.value, DeltaWordList.ExpansiveHauntedSeaOfSand)
+        location_rules[TradesanityNames.Mia1.value] &= Has(ServerNames.Theta.value)
+        set_list_rules(location_rules, TradesanityNames.IronGrunty.value, DeltaWordList.ExpansiveHauntedSeaOfSand)
+        location_rules[TradesanityNames.Mia1.value] &= Has(ServerNames.Theta.value)
+        set_list_rules(location_rules, TradesanityNames.PoisonGrunty.value, DeltaWordList.ExpansiveHauntedSeaOfSand)
+        location_rules[TradesanityNames.Mia1.value] &= Has(ServerNames.Theta.value)
+
 
     for name, rule in location_rules.items():
         try:

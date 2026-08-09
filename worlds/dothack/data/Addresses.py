@@ -2,7 +2,7 @@ from abc import ABC
 from typing import Dict
 
 
-from .Strings import ItemNames, EventNames, PlayStatNames, ShopsanityNames
+from .Strings import ItemNames, EventNames, PlayStatNames, ShopsanityNames, TradesanityNames
 
 
 class VolumeAddresses(ABC):
@@ -10,6 +10,7 @@ class VolumeAddresses(ABC):
     Events: Dict[str, int]
     PlayStats: Dict[str, int]
     Shopsanity: Dict[str, int]
+    Tradesanity: Dict[str, int]
     AreaWords: int
     WordLists: int
     Storage: int
@@ -121,9 +122,99 @@ class InfectionAddresses(VolumeAddresses):
         ShopsanityNames.DLMS3.name: 0xa47E08,
         ShopsanityNames.DLMS4.name: 0xa47E08,
         ShopsanityNames.DLMS5.name: 0xa47E08,
-
     }
-
+    Tradesanity = {
+        TradesanityNames.Mia1.name: 0xA40814,
+        TradesanityNames.Mia2.name: 0xA40818,
+        TradesanityNames.Mia3.name: 0xA4081C,
+        TradesanityNames.Orca1.name: 0xA40850,
+        TradesanityNames.Orca2.name: 0xA40854,
+        TradesanityNames.Orca3.name: 0xA40858,
+        TradesanityNames.Marlo1.name: 0xA40890,
+        TradesanityNames.Marlo2.name: 0xA40894,
+        TradesanityNames.Marlo3.name: 0xA40898,
+        TradesanityNames.Sanjuro1.name: 0xA408DC,
+        TradesanityNames.Sanjuro2.name: 0xA408E0,
+        TradesanityNames.Sanjuro3.name: 0xA408E4,
+        TradesanityNames.NukeUsagimaru1.name: 0xA40910,
+        TradesanityNames.NukeUsagimaru2.name: 0xA40914,
+        TradesanityNames.NukeUsagimaru3.name: 0xA40918,
+        TradesanityNames.Balmung1.name: 0xA40950,
+        TradesanityNames.Balmung2.name: 0xA40954,
+        TradesanityNames.Balmung3.name: 0xA40958,
+        TradesanityNames.Moonstone1.name: 0xA40990,
+        TradesanityNames.Moonstone2.name: 0xA40994,
+        TradesanityNames.Moonstone3.name: 0xA40998,
+        TradesanityNames.Piros1.name: 0xA409DC,
+        TradesanityNames.Piros2.name: 0xA409E0,
+        TradesanityNames.Piros3.name: 0xA409E4,
+        TradesanityNames.Wiseman1.name: 0xA40A10,
+        TradesanityNames.Wiseman2.name: 0xA40A14,
+        TradesanityNames.Wiseman3.name: 0xA40A18,
+        TradesanityNames.Elk1.name: 0xA40A5C,
+        TradesanityNames.Elk2.name: 0xA40A60,
+        TradesanityNames.Elk3.name: 0xA40A64,
+        TradesanityNames.Natsume1.name: 0xA40A94,
+        TradesanityNames.Natsume2.name: 0xA40A98,
+        TradesanityNames.Natsume3.name: 0xA40A9C,
+        TradesanityNames.Rachel1.name: 0xA40AD0,
+        TradesanityNames.Rachel2.name: 0xA40AD4,
+        TradesanityNames.Rachel3.name: 0xA40AD8,
+        TradesanityNames.Gardenia1.name: 0xA40B1C,
+        TradesanityNames.Gardenia2.name: 0xA40B20,
+        TradesanityNames.Gardenia3.name: 0xA40B24,
+        TradesanityNames.TerajimaRyoko1.name: 0xA40B50,
+        TradesanityNames.TerajimaRyoko2.name: 0xA40B54,
+        TradesanityNames.TerajimaRyoko3.name: 0xA40B58,
+        TradesanityNames.BlackRose1.name: 0xA40B90,
+        TradesanityNames.BlackRose2.name: 0xA40B94,
+        TradesanityNames.BlackRose3.name: 0xA40B98,
+        TradesanityNames.Mistral1.name: 0xA40BDC,
+        TradesanityNames.Mistral2.name: 0xA40BE0,
+        TradesanityNames.Mistral3.name: 0xA40BE4,
+        TradesanityNames.Helba1.name: 0xA40C10,
+        TradesanityNames.Helba2.name: 0xA40C14,
+        TradesanityNames.Helba3.name: 0xA40C18,
+        TradesanityNames.Wing.name: 0xA40C64,
+        TradesanityNames.Macky.name: 0xA40CA4,
+        TradesanityNames.NOVA.name: 0xA40CE4,
+        TradesanityNames.Sachiko.name: 0xA40D24,
+        TradesanityNames.Neja.name: 0xA40D64,
+        TradesanityNames.Heavy.name: 0xA40DA4,
+        TradesanityNames.Benkei.name: 0xA40DE0,
+        TradesanityNames.Hayate.name: 0xA40E24,
+        TradesanityNames.Task.name: 0xA40E64,
+        TradesanityNames.Hinata.name: 0xA40EA4,
+        TradesanityNames.AKichi.name: 0xA40EE4,
+        TradesanityNames.Cleama.name: 0xA40F24,
+        TradesanityNames.Grid.name: 0xA40F64,
+        TradesanityNames.Quess.name: 0xA40FA4,
+        TradesanityNames.Nekoshi.name: 0xA40FE4,
+        TradesanityNames.Gyokuro.name: 0xA41024,
+        TradesanityNames.Osugi.name: 0xA41064,
+        TradesanityNames.Acerola.name: 0xA410A4,
+        TradesanityNames.Borscht.name: 0xA410E4,
+        TradesanityNames.M_78.name: 0xA41124,
+        TradesanityNames.Yuckey.name: 0xA41164,
+        TradesanityNames.Nijukata.name: 0xA411A4,
+        TradesanityNames.Hirami.name: 0xA411E4,
+        TradesanityNames.Henako.name: 0xA41224,
+        TradesanityNames.BIG.name: 0xA41264,
+        TradesanityNames.Yuji.name: 0xA412A4,
+        TradesanityNames.Cima.name: 0xA412E8,
+        TradesanityNames.Koji.name: 0xA41328,
+        TradesanityNames.Crest.name: 0xA41364,
+        TradesanityNames.Mayonusuke.name: 0xA413A4,
+        TradesanityNames.Mutsuki.name: 0xA413E8,
+        TradesanityNames.Oborozukiyo.name: 0xA41424,
+        TradesanityNames.Bell.name: 0xA41464,
+        TradesanityNames.Cossack_Leader.name: 0xA414A8,
+        TradesanityNames.Alue.name: 0xA414E4,
+        TradesanityNames.AlphaIchigiro.name: 0xA41524,
+        TradesanityNames.NobleGrunty.name: 0xA41564,
+        TradesanityNames.IronGrunty.name: 0xA415A4,
+        TradesanityNames.PoisonGrunty.name: 0xA415E4,
+    }
 
 class MutationAddresses(VolumeAddresses):
     """"""

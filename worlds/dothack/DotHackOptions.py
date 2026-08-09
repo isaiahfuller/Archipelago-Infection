@@ -179,6 +179,15 @@ class Shopsanity(Toggle):
     option_yes = 1
     default = 0
 
+class Tradesanity(Toggle):
+    """
+    If enabled, each party member will have 3 AP Items for Trade, and each NPC/Grunty will have 1 AP Item. This adds 90 checks.
+    """
+    display_name = "Tradesanity"
+    option_no = 0
+    option_yes = 1
+    default = 0
+
 class APItemPrice(Range):
     """
     If Shopsanity or Tradesanity is enabled, these options will randomize the prices between these ranges.
@@ -200,6 +209,7 @@ infection_option_groups: dict[str, list] = {
 
     "Sanity Options": [
         Shopsanity,
+        Tradesanity,
         APItemPrice
 
     ],
@@ -243,6 +253,7 @@ class DotHackOptions(PerGameCommonOptions):
     golden_goblins: GoldenGoblins
     optional_party_members: OptionalPartyMembers
     shopsanity: Shopsanity
+    tradesanity: Tradesanity
     apitemprice: APItemPrice
 
 
@@ -273,5 +284,6 @@ def slot_data_options() -> list[str]:
         APHelper.golden_goblins.value,
         APHelper.optional_party_members.value,
         APHelper.shopsanity.value,
+        APHelper.tradesanity.value,
         APHelper.apitemprice.value,
     ]
