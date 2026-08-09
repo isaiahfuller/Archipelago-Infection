@@ -293,20 +293,6 @@ class DotHackInterface:
         # Get Mia and Elk out of your way
         self.pine.write_int8(0xa44f58, self.pine.read_int8(0xa44f58) | 0xff)
 
-        #     # Kite's Class from Options
-        # if ctx.kite_class == 0:
-        #     self.pine.write_int8(0xA46F30, 0)
-        # if ctx.kite_class == 1:
-        #     self.pine.write_int8(0xA46F30, 1)
-        # if ctx.kite_class == 2:
-        #     self.pine.write_int8(0xA46F30, 2)
-        # if ctx.kite_class == 3:
-        #     self.pine.write_int8(0xA46F30, 3)
-        # if ctx.kite_class == 4:
-        #     self.pine.write_int8(0xA46F30, 4)
-        # if ctx.kite_class == 5:
-        #     self.pine.write_int8(0xA46F30, 5)
-
     async def check_locations(self, ctx) -> None:
         checked: Set[int] = set()
 
