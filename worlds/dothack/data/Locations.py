@@ -240,6 +240,7 @@ def generate_volume_locations(volume: int):
     v_data.sanity_locations = [
         *shopsanity_gen(volume),
         *tradesanity_gen(volume)
+    ]
     v_data.monster_locations = [
         *hunt_gen(InfectionMonsters, volume)
     ]
@@ -321,7 +322,7 @@ def generate_location_groups() -> dict[str, set[str]]:
         "Area Words": {el.name for el in AreaWordLocations},
         "Word Lists": {el.name for el in WordListLocations},
         "Shopsanity": {el.name for el in ShopsanityLocations},
-        "Tradesanity": {el.name for el in TradesanityLocations}
+        "Tradesanity": {el.name for el in TradesanityLocations},
         "Monsters": {el.name for el in Monsters}
     })
     return groups

@@ -216,6 +216,7 @@ class InfectionAddresses(VolumeAddresses):
         TradesanityNames.NobleGrunty.name: 0xA41564,
         TradesanityNames.IronGrunty.name: 0xA415A4,
         TradesanityNames.PoisonGrunty.name: 0xA415E4,
+    }
     Monsters = {
         MonsterNames.Razine1.name: 0xa46287,
         MonsterNames.Swordmanoid2.name: 0xa46288,
