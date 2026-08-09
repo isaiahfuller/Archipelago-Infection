@@ -1,3 +1,4 @@
+from worlds.dothack.data.Items import PartyMemberItems
 from worlds.dothack.data.Strings import CharacterNames
 from BaseClasses import ItemClassification
 from typing import ClassVar, List, cast
@@ -7,9 +8,9 @@ from BaseClasses import MultiWorld, Tutorial, Region
 from worlds.AutoWorld import World, WebWorld
 from worlds.LauncherComponents import Component, components, launch_subprocess, Type
 
-from .data.Strings import APConsole, APHelper, Meta, PlayStatNames, ServerNames, ShopsanityNames, TradesanityNames
+from .data.Strings import APConsole, APHelper, Meta, PlayStatNames, ServerNames
 from .data import Locations, Items
-from .data.Items import InfectionItem, InfectionItemMeta, ITEMS_MASTER
+from .data.Items import InfectionItem, InfectionItemMeta, ITEMS_MASTER, PartyMemberItem
 from .data.locations.WordList import InfectionDeltaWordList as DeltaWordList, InfectionThetaWordList as ThetaWordList, WordListBase, get_wordlist_name
 from .data.locations.Events import InfectionEventBase, InfectionGoldenGoblins, InfectionOptionalPartyMembers
 from .DotHackOptions import DotHackOptions, slot_data_options, create_option_groups
@@ -173,6 +174,16 @@ class DotHackWorld(World):
                 DeltaWordList.HideousDestroyersFarThunder,
                 ThetaWordList.BeautifulSomeonesTreasureGem
             ])
+        if not self.options.shopsanity.value:
+            self.excluded_locations.update([
+                loc.location_id
+                for loc in Locations.shopsanity_gen(self.options.volume.value)
+            ])
+        if not self.options.tradesanity.value:  
+            self.excluded_locations.update([
+                loc.location_id
+                for loc in Locations.tradesanity_gen(self.options.volume.value)
+            ])
         if self.options.completion_condition == 0:
             excluded_wordlist_locs.add(DeltaWordList.HideousSomeonesGiant)
             excluded_events.add(Locations.CompletionConditions.ParasiteDragonDefeated)
@@ -202,7 +213,7 @@ class DotHackWorld(World):
             loc = loc_meta.to_location(self.player, main_region)
             main_region.locations.append(loc)
         for loc_meta in v_data.sanity_locations:
-            if loc_meta.event in excluded_events:
+            if loc_meta.location_id in self.excluded_locations:
                 self.logger.debug(f"Excluding Sanity Location: {loc_meta.name}")
                 continue
             loc = loc_meta.to_location(self.player, main_region)
@@ -259,133 +270,6 @@ class DotHackWorld(World):
                 CharacterNames.Gardenia.value,
                 CharacterNames.Natsume.value,
             ])
-        if not self.options.shopsanity.value:
-            self.excluded_locations.update([
-               ShopsanityNames.MAWS1.value,
-               ShopsanityNames.MAWS2.value,
-               ShopsanityNames.MAWS3.value,
-               ShopsanityNames.MAWS4.value,
-               ShopsanityNames.MAWS5.value,
-               ShopsanityNames.MAIS1.value,
-               ShopsanityNames.MAIS2.value,
-               ShopsanityNames.MAIS3.value,
-               ShopsanityNames.MAIS4.value,
-               ShopsanityNames.MAIS5.value,
-               ShopsanityNames.MAMS1.value,
-               ShopsanityNames.MAMS2.value,
-               ShopsanityNames.MAMS3.value,
-               ShopsanityNames.MAMS4.value,
-               ShopsanityNames.MAMS5.value,
-               ShopsanityNames.DLWS1.value,
-               ShopsanityNames.DLWS2.value,
-               ShopsanityNames.DLWS3.value,
-               ShopsanityNames.DLWS4.value,
-               ShopsanityNames.DLWS5.value,
-               ShopsanityNames.DLIS1.value,
-               ShopsanityNames.DLIS2.value,
-               ShopsanityNames.DLIS3.value,
-               ShopsanityNames.DLIS4.value,
-               ShopsanityNames.DLIS5.value,
-               ShopsanityNames.DLMS1.value,
-               ShopsanityNames.DLMS2.value,
-               ShopsanityNames.DLMS3.value,
-               ShopsanityNames.DLMS4.value,
-               ShopsanityNames.DLMS5.value ])
-
-        if not self.options.tradesanity.value:
-            self.excluded_locations.update([
-                TradesanityNames.Mia1.value,
-                TradesanityNames.Mia2.value,
-                TradesanityNames.Mia3.value,
-                TradesanityNames.Orca1.value,
-                TradesanityNames.Orca2.value,
-                TradesanityNames.Orca3.value,
-                TradesanityNames.Marlo1.value,
-                TradesanityNames.Marlo2.value,
-                TradesanityNames.Marlo3.value,
-                TradesanityNames.Sanjuro1.value,
-                TradesanityNames.Sanjuro2.value,
-                TradesanityNames.Sanjuro3.value,
-                TradesanityNames.NukeUsagimaru1.value,
-                TradesanityNames.NukeUsagimaru2.value,
-                TradesanityNames.NukeUsagimaru3.value,
-                TradesanityNames.Balmung1.value,
-                TradesanityNames.Balmung2.value,
-                TradesanityNames.Balmung3.value,
-                TradesanityNames.Moonstone1.value,
-                TradesanityNames.Moonstone2.value,
-                TradesanityNames.Moonstone3.value,
-                TradesanityNames.Piros1.value,
-                TradesanityNames.Piros2.value,
-                TradesanityNames.Piros3.value,
-                TradesanityNames.Wiseman1.value,
-                TradesanityNames.Wiseman2.value,
-                TradesanityNames.Wiseman3.value,
-                TradesanityNames.Elk1.value,
-                TradesanityNames.Elk2.value,
-                TradesanityNames.Elk3.value,
-                TradesanityNames.Natsume1.value,
-                TradesanityNames.Natsume2.value,
-                TradesanityNames.Natsume3.value,
-                TradesanityNames.Rachel1.value,
-                TradesanityNames.Rachel2.value,
-                TradesanityNames.Rachel3.value,
-                TradesanityNames.Gardenia1.value,
-                TradesanityNames.Gardenia2.value,
-                TradesanityNames.Gardenia3.value,
-                TradesanityNames.TerajimaRyoko1.value,
-                TradesanityNames.TerajimaRyoko2.value,
-                TradesanityNames.TerajimaRyoko3.value,
-                TradesanityNames.BlackRose1.value,
-                TradesanityNames.BlackRose2.value,
-                TradesanityNames.BlackRose3.value,
-                TradesanityNames.Mistral1.value,
-                TradesanityNames.Mistral2.value,
-                TradesanityNames.Mistral3.value,
-                TradesanityNames.Helba1.value,
-                TradesanityNames.Helba2.value,
-                TradesanityNames.Helba3.value,
-                TradesanityNames.Wing.value,
-                TradesanityNames.Macky.value,
-                TradesanityNames.NOVA.value,
-                TradesanityNames.Sachiko.value,
-                TradesanityNames.Neja.value,
-                TradesanityNames.Heavy.value,
-                TradesanityNames.Benkei.value,
-                TradesanityNames.Hayate.value,
-                TradesanityNames.Task.value,
-                TradesanityNames.Hinata.value,
-                TradesanityNames.AKichi.value,
-                TradesanityNames.Cleama.value,
-                TradesanityNames.Grid.value,
-                TradesanityNames.Quess.value,
-                TradesanityNames.Nekoshi.value,
-                TradesanityNames.Gyokuro.value,
-                TradesanityNames.Osugi.value,
-                TradesanityNames.Acerola.value,
-                TradesanityNames.Borscht.value,
-                TradesanityNames.M_78.value,
-                TradesanityNames.Yuckey.value,
-                TradesanityNames.Nijukata.value,
-                TradesanityNames.Hirami.value,
-                TradesanityNames.Henako.value,
-                TradesanityNames.BIG.value,
-                TradesanityNames.Yuji.value,
-                TradesanityNames.Cima.value,
-                TradesanityNames.Koji.value,
-                TradesanityNames.Crest.value,
-                TradesanityNames.Mayonusuke.value,
-                TradesanityNames.Mutsuki.value,
-                TradesanityNames.Oborozukiyo.value,
-                TradesanityNames.Bell.value,
-                TradesanityNames.Cossack_Leader.value,
-                TradesanityNames.Alue.value,
-                TradesanityNames.AlphaIchigiro.value,
-                TradesanityNames.NobleGrunty.value,
-                TradesanityNames.IronGrunty.value,
-                TradesanityNames.PoisonGrunty.value,
-            ])
-
         for item_name in starting_items:
             item = self.create_item(item_name)
             self.multiworld.push_precollected(item)
@@ -396,7 +280,9 @@ class DotHackWorld(World):
             if item.name in excluded_items:
                 self.logger.debug(f"Excluding Item: {item.name}")
                 continue
-
+            if self.options.tradesanity.value and isinstance(item, PartyMemberItem):
+                item.classification = ItemClassification.progression
+                items.append(item.to_item(self.player))
             elif item.classification == ItemClassification.filler:
                 self.filler_items.append(item.to_item(self.player))
             else:
