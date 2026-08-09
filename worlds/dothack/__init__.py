@@ -120,7 +120,8 @@ class DotHackWorld(World):
     item_name_to_id = Items.generate_name_to_id()
     event_location_name_to_id: dict[str, int] = Locations.generate_event_name_to_id()
     playstat_location_name_to_id: dict[str, int] = Locations.generate_playstat_name_to_id()
-    location_name_to_id: ClassVar[dict[str, int]] = {**event_location_name_to_id, **playstat_location_name_to_id}
+    sanity_location_name_to_id: dict[str, int] = Locations.generate_sanity_name_to_id()
+    location_name_to_id: ClassVar[dict[str, int]] = {**event_location_name_to_id, **playstat_location_name_to_id, **sanity_location_name_to_id}
     playstat_locations: list = []
     item_name_groups = Items.generate_item_groups()
     location_name_groups = Locations.generate_location_groups()

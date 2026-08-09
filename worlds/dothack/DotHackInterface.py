@@ -293,152 +293,19 @@ class DotHackInterface:
         # Get Mia and Elk out of your way
         self.pine.write_int8(0xa44f58, self.pine.read_int8(0xa44f58) | 0xff)
 
-
-        # Creation of Archipelago Item Labels and Prices - Rerun at every resync.
-        self.pine.write_bytes(0x6BB358, bytes([0x41, 0x50, 0x20, 0x49, 0x74, 0x65, 0x6D, 0x00])) #Replace The Twilight with AP Item
-        self.pine.write_bytes(0x6BEC08, bytes([0x41, 0x50, 0x20, 0x49, 0x74, 0x65, 0x6D, 0x00])) #Replace M:Wavemaster with AP Item
-        self.pine.write_bytes(0x6BEC38, bytes([0x41, 0x50, 0x20, 0x49, 0x74, 0x65, 0x6D, 0x00])) #Replace M:Twin Blade with AP Item
-        self.pine.write_bytes(0x6BEC48, bytes([0x41, 0x50, 0x20, 0x49, 0x74, 0x65, 0x6D, 0x00])) #Replace M:Heavy Axeman with AP Item
-        self.pine.write_bytes(0x6BEC58, bytes([0x41, 0x50, 0x20, 0x49, 0x74, 0x65, 0x6D, 0x00])) #Replace M:Long Arm with AP Item
-
-        #Prices will be set for each of the five items, then saved to 20 bytes in total. Using 20 bytes of the free space starting at 0xA47E10
-        #Each of the AP Items Prices randomly determined from the range of Start and End
-        if not (self.pine.read_int8(0xA47E04) & 0x01): #Unused data
-            price1 = self.random.randint(APItemPrice.range_start, ctx.apitemprice)
-            self.pine.write_int32(0xA47E10, price1)
-            price2 = self.random.randint(APItemPrice.range_start, ctx.apitemprice)
-            self.pine.write_int32(0xA47E14, price2)
-            price3 = self.random.randint(APItemPrice.range_start, ctx.apitemprice)
-            self.pine.write_int32(0xA47E18, price3)
-            price4 = self.random.randint(APItemPrice.range_start, ctx.apitemprice)
-            self.pine.write_int32(0xA47E1C, price4)
-            price5 = self.random.randint(APItemPrice.range_start, ctx.apitemprice)
-            self.pine.write_int32(0xA47E20, price5)
-            self.pine.write_int8(0xA47E04, self.pine.read_int8(0xa47E04) | 0x01)
-
-        #Take the prices saved to memory and write them to the 5 Key Items
-        apprice1 = self.pine.read_int32(0xA47E10)
-        self.pine.write_int32(0x6247F8, apprice1)
-        apprice2 = self.pine.read_int32(0xA47E14)
-        self.pine.write_int32(0x6259C8, apprice2)
-        apprice3 = self.pine.read_int32(0xA47E18)
-        self.pine.write_int32(0x6259DC, apprice3)
-        apprice4 = self.pine.read_int32(0xA47E1C)
-        self.pine.write_int32(0x6259F0, apprice4)
-        apprice5 = self.pine.read_int32(0xA47E20)
-        self.pine.write_int32(0x625A04, apprice5)
-
-        #Set the item description of the AP Items to The Twilight's and change it to "I wonder what's inside?"
-        description = 0x006BB370
-        self.pine.write_int32(0x6259CC, description)
-        self.pine.write_int32(0x6259E0, description)
-        self.pine.write_int32(0x6259F4, description)
-        self.pine.write_int32(0x625A08, description)
-        self.pine.write_bytes(0x6BB370, bytes([0x49, 0x20, 0x77, 0x6F, 0x6E, 0x64, 0x65, 0x72, 0x20, 0x77, 0x68, 0x61, 0x74, 0x27, 0x73, 0x20, 0x69, 0x6E, 0x73, 0x69, 0x64, 0x65, 0x3F, 0x00, 0x00, 0x00, 0x00]))
-
-        #Always set the AP Items slot in Key Items to 0.
-
-        self.pine.write_int8(0xA40707, 0x00)
-        self.pine.write_int8(0xA407EB, 0x00)
-        self.pine.write_int8(0xA407EC, 0x00)
-        self.pine.write_int8(0xA407ED, 0x00)
-        self.pine.write_int8(0xA407EE, 0x00)
-
-        if ctx.shopsanity:
-            if self.pine.read_int8(0x648664) == 0:
-                self.pine.write_bytes(0x648088, bytes([0x3B, 0x00, 0x0F, 0x00, 0x1F, 0x01, 0x0F, 0x00, 0x20, 0x01, 0x0F, 0x00, 0x21, 0x01, 0x0F, 0x00, 0x22, 0x01, 0x0F, 0x00,]))  # Add the 5 AP Items to Mac Anu Item Shop
-                self.pine.write_bytes(0x6480E8, bytes([0x3B, 0x00, 0x0F, 0x00, 0x1F, 0x01, 0x0F, 0x00, 0x20, 0x01, 0x0F, 0x00, 0x21, 0x01, 0x0F, 0x00, 0x22, 0x01, 0x0F, 0x00,]))  # Add the 5 AP Items to Dun Loireag Item Shop
-                self.pine.write_bytes(0x648270, bytes([0x3B, 0x00, 0x0F, 0x00, 0x1F, 0x01, 0x0F, 0x00, 0x20, 0x01, 0x0F, 0x00, 0x21, 0x01, 0x0F, 0x00, 0x22, 0x01, 0x0F, 0x00,]))  # Add the 5 AP Items to Mac Anu Weapon Shop
-                self.pine.write_bytes(0x6482FC, bytes([0x3B, 0x00, 0x0F, 0x00, 0x1F, 0x01, 0x0F, 0x00, 0x20, 0x01, 0x0F, 0x00, 0x21, 0x01, 0x0F, 0x00, 0x22, 0x01, 0x0F, 0x00,]))  # Add the 5 AP Items to Dun Loireag Weapon Shop
-                self.pine.write_bytes(0x648488, bytes([0x3B, 0x00, 0x0F, 0x00, 0x1F, 0x01, 0x0F, 0x00, 0x20, 0x01, 0x0F, 0x00, 0x21, 0x01, 0x0F, 0x00, 0x22, 0x01, 0x0F, 0x00,]))  # Add the 5 AP Items to Mac Anu Magic Shop
-                self.pine.write_bytes(0x6484F8, bytes([0x3B, 0x00, 0x0F, 0x00, 0x1F, 0x01, 0x0F, 0x00, 0x20, 0x01, 0x0F, 0x00, 0x21, 0x01, 0x0F, 0x00, 0x22, 0x01, 0x0F, 0x00,]))  # Add the 5 AP Items to Dun Loireag Magic Shop
-                self.pine.write_int8(0x648664, 1)
-            if self.pine.read_int8(0xA47E05) & 0b00000001:  # If an AP Item in Mac Anu Weapon Shop has been purchased
-                self.pine.write_int32(0x648270, 0x000D0000)  # Set it to Fortune Wire
-            if self.pine.read_int8(0xA47E05) & 0b00000010:
-                self.pine.write_int32(0x648274, 0x000D0000)
-            if self.pine.read_int8(0xA47E05) & 0b00000100:
-                self.pine.write_int32(0x648278, 0x000D0000)
-            if self.pine.read_int8(0xA47E05) & 0b00001000:
-                self.pine.write_int32(0x64827C, 0x000D0000)
-            if self.pine.read_int8(0xA47E05) & 0b00010000:
-                self.pine.write_int32(0x648280, 0x000D0000)
-            if self.pine.read_int8(0xA47E05) & 0b00100000:  # If an AP Item in Mac Anu Item Shop has been purchased
-                self.pine.write_int32(0x648088, 0x000D0000)  # Set it to Fortune Wire
-            if self.pine.read_int8(0xA47E05) & 0b01000000:
-                self.pine.write_int32(0x64808C, 0x000D0000)
-            if self.pine.read_int8(0xA47E05) & 0b10000000:
-                self.pine.write_int32(0x648090, 0x000D0000)
-            if self.pine.read_int8(0xA47E06) & 0b00000001:
-                self.pine.write_int32(0x648094, 0x000D0000)
-            if self.pine.read_int8(0xA47E06) & 0b00000010:
-                self.pine.write_int32(0x648098, 0x000D0000)
-            if self.pine.read_int8(0xA47E06) & 0b00000100:  # If an AP Item in Mac Anu Magic Shop has been purchased
-                self.pine.write_int32(0x648488, 0x000D0000)  # Set it to Fortune Wire
-            if self.pine.read_int8(0xA47E06) & 0b00001000:
-                self.pine.write_int32(0x64848C, 0x000D0000)
-            if self.pine.read_int8(0xA47E06) & 0b00010000:
-                self.pine.write_int32(0x648490, 0x000D0000)
-            if self.pine.read_int8(0xA47E06) & 0b00100000:
-                self.pine.write_int32(0x648494, 0x000D0000)
-            if self.pine.read_int8(0xA47E06) & 0b01000000:
-                self.pine.write_int32(0x648498, 0x000D0000)
-            if self.pine.read_int8(0xA47E07) & 0b00000001:  # If an AP Item in Dun Loireag Weapon Shop has been purchased
-                self.pine.write_int32(0x6482FC, 0x0009002A)  # Set it to Mountain Guard
-            if self.pine.read_int8(0xA47E07) & 0b00000010:
-                self.pine.write_int32(0x648300, 0x000D0000) #Set it to Fortune Wire
-            if self.pine.read_int8(0xA47E07) & 0b00000100:
-                self.pine.write_int32(0x648304, 0x000D0000)
-            if self.pine.read_int8(0xA47E07) & 0b00001000:
-                self.pine.write_int32(0x648308, 0x000D0000)
-            if self.pine.read_int8(0xA47E07) & 0b00010000:
-                self.pine.write_int32(0x64830C, 0x000D0000)
-            if self.pine.read_int8(0xA47E07) & 0b00100000:  # If an AP Item in Dun Loireag Item Shop has been purchased
-                self.pine.write_int32(0x6480E8, 0x000D0000)  # Set it to Fortune Wire
-            if self.pine.read_int8(0xA47E07) & 0b01000000:
-                self.pine.write_int32(0x6480EC, 0x000D0000)
-            if self.pine.read_int8(0xA47E07) & 0b10000000:
-                self.pine.write_int32(0x6480F0, 0x000D0000)
-            if self.pine.read_int8(0xA47E08) & 0b00000001:
-                self.pine.write_int32(0x6480F4, 0x000D0000)
-            if self.pine.read_int8(0xA47E08) & 0b00000010:
-                self.pine.write_int32(0x6480F8, 0x000D0000)
-            if self.pine.read_int8(0xA47E08) & 0b00000100:  # If an AP Item in Mac Anu Magic Shop has been purchased
-                self.pine.write_int32(0x6484F8, 0x000D0000)  # Set it to Fortune Wire
-            if self.pine.read_int8(0xA47E08) & 0b00001000:
-                self.pine.write_int32(0x6484FC, 0x000D0000)
-            if self.pine.read_int8(0xA47E08) & 0b00010000:
-                self.pine.write_int32(0x648500, 0x000D0000)
-            if self.pine.read_int8(0xA47E08) & 0b00100000:
-                self.pine.write_int32(0x648504, 0x000D0000)
-            if self.pine.read_int8(0xA47E08) & 0b01000000:
-                self.pine.write_int32(0x648508, 0x000D0000)
-
-        if ctx.tradesanity:
-            current_val = self.pine.read_int8(0xA47E04)
-            if not (current_val & 0x02):
-                self.logger.info("Tradesanity enabled: Injecting AP items into trade tables...")
-                try:
-                    self.inject_ap_items(ctx)
-                    self.logger.info("AP items successfully injected.")
-                    self.pine.write_int8(0xA47E04, current_val | 0x02)
-
-                except Exception as e:
-                    self.logger.error(f"Injection failed: {e}")
-
-            # Kite's Class from Options
-        if ctx.kite_class == 0:
-            self.pine.write_int8(0xA46F30, 0)
-        if ctx.kite_class == 1:
-            self.pine.write_int8(0xA46F30, 1)
-        if ctx.kite_class == 2:
-            self.pine.write_int8(0xA46F30, 2)
-        if ctx.kite_class == 3:
-            self.pine.write_int8(0xA46F30, 3)
-        if ctx.kite_class == 4:
-            self.pine.write_int8(0xA46F30, 4)
-        if ctx.kite_class == 5:
-            self.pine.write_int8(0xA46F30, 5)
+        #     # Kite's Class from Options
+        # if ctx.kite_class == 0:
+        #     self.pine.write_int8(0xA46F30, 0)
+        # if ctx.kite_class == 1:
+        #     self.pine.write_int8(0xA46F30, 1)
+        # if ctx.kite_class == 2:
+        #     self.pine.write_int8(0xA46F30, 2)
+        # if ctx.kite_class == 3:
+        #     self.pine.write_int8(0xA46F30, 3)
+        # if ctx.kite_class == 4:
+        #     self.pine.write_int8(0xA46F30, 4)
+        # if ctx.kite_class == 5:
+        #     self.pine.write_int8(0xA46F30, 5)
 
     async def check_locations(self, ctx) -> None:
         checked: Set[int] = set()
@@ -831,6 +698,140 @@ class DotHackInterface:
                 self.pine.write_int8(self.addresses.KiteClass, ctx.kite_class)
         except (RuntimeError, ConnectionError):
             return None
+
+    async def setup_sanity(self, ctx) -> None:
+        # Creation of Archipelago Item Labels and Prices - Rerun at every resync.
+        self.pine.write_bytes(0x6BB358, bytes([0x41, 0x50, 0x20, 0x49, 0x74, 0x65, 0x6D, 0x00])) #Replace The Twilight with AP Item
+        self.pine.write_bytes(0x6BEC08, bytes([0x41, 0x50, 0x20, 0x49, 0x74, 0x65, 0x6D, 0x00])) #Replace M:Wavemaster with AP Item
+        self.pine.write_bytes(0x6BEC38, bytes([0x41, 0x50, 0x20, 0x49, 0x74, 0x65, 0x6D, 0x00])) #Replace M:Twin Blade with AP Item
+        self.pine.write_bytes(0x6BEC48, bytes([0x41, 0x50, 0x20, 0x49, 0x74, 0x65, 0x6D, 0x00])) #Replace M:Heavy Axeman with AP Item
+        self.pine.write_bytes(0x6BEC58, bytes([0x41, 0x50, 0x20, 0x49, 0x74, 0x65, 0x6D, 0x00])) #Replace M:Long Arm with AP Item
+
+
+        #Prices will be set for each of the five items, then saved to 20 bytes in total. Using 20 bytes of the free space starting at 0xA47E10
+        #Each of the AP Items Prices randomly determined from the range of Start and End
+        if not (self.pine.read_int8(0xA47E04) & 0x01): #Unused data
+            price1 = self.random.randint(APItemPrice.range_start, ctx.apitemprice)
+            self.pine.write_int32(0xA47E10, price1)
+            price2 = self.random.randint(APItemPrice.range_start, ctx.apitemprice)
+            self.pine.write_int32(0xA47E14, price2)
+            price3 = self.random.randint(APItemPrice.range_start, ctx.apitemprice)
+            self.pine.write_int32(0xA47E18, price3)
+            price4 = self.random.randint(APItemPrice.range_start, ctx.apitemprice)
+            self.pine.write_int32(0xA47E1C, price4)
+            price5 = self.random.randint(APItemPrice.range_start, ctx.apitemprice)
+            self.pine.write_int32(0xA47E20, price5)
+            self.pine.write_int8(0xA47E04, self.pine.read_int8(0xa47E04) | 0x01)
+
+        #Take the prices saved to memory and write them to the 5 Key Items
+        apprice1 = self.pine.read_int32(0xA47E10)
+        self.pine.write_int32(0x6247F8, apprice1)
+        apprice2 = self.pine.read_int32(0xA47E14)
+        self.pine.write_int32(0x6259C8, apprice2)
+        apprice3 = self.pine.read_int32(0xA47E18)
+        self.pine.write_int32(0x6259DC, apprice3)
+        apprice4 = self.pine.read_int32(0xA47E1C)
+        self.pine.write_int32(0x6259F0, apprice4)
+        apprice5 = self.pine.read_int32(0xA47E20)
+        self.pine.write_int32(0x625A04, apprice5)
+
+        #Set the item description of the AP Items to The Twilight's and change it to "I wonder what's inside?"
+        description = 0x006BB370
+        self.pine.write_int32(0x6259CC, description)
+        self.pine.write_int32(0x6259E0, description)
+        self.pine.write_int32(0x6259F4, description)
+        self.pine.write_int32(0x625A08, description)
+        self.pine.write_bytes(0x6BB370, bytes([0x49, 0x20, 0x77, 0x6F, 0x6E, 0x64, 0x65, 0x72, 0x20, 0x77, 0x68, 0x61, 0x74, 0x27, 0x73, 0x20, 0x69, 0x6E, 0x73, 0x69, 0x64, 0x65, 0x3F, 0x00, 0x00, 0x00, 0x00]))
+
+        #Always set the AP Items slot in Key Items to 0.
+
+        self.pine.write_int8(0xA40707, 0x00)
+        self.pine.write_int8(0xA407EB, 0x00)
+        self.pine.write_int8(0xA407EC, 0x00)
+        self.pine.write_int8(0xA407ED, 0x00)
+        self.pine.write_int8(0xA407EE, 0x00)
+
+        if ctx.shopsanity:
+            if self.pine.read_int8(0x648664) == 0:
+                self.pine.write_bytes(0x648088, bytes([0x3B, 0x00, 0x0F, 0x00, 0x1F, 0x01, 0x0F, 0x00, 0x20, 0x01, 0x0F, 0x00, 0x21, 0x01, 0x0F, 0x00, 0x22, 0x01, 0x0F, 0x00,]))  # Add the 5 AP Items to Mac Anu Item Shop
+                self.pine.write_bytes(0x6480E8, bytes([0x3B, 0x00, 0x0F, 0x00, 0x1F, 0x01, 0x0F, 0x00, 0x20, 0x01, 0x0F, 0x00, 0x21, 0x01, 0x0F, 0x00, 0x22, 0x01, 0x0F, 0x00,]))  # Add the 5 AP Items to Dun Loireag Item Shop
+                self.pine.write_bytes(0x648270, bytes([0x3B, 0x00, 0x0F, 0x00, 0x1F, 0x01, 0x0F, 0x00, 0x20, 0x01, 0x0F, 0x00, 0x21, 0x01, 0x0F, 0x00, 0x22, 0x01, 0x0F, 0x00,]))  # Add the 5 AP Items to Mac Anu Weapon Shop
+                self.pine.write_bytes(0x6482FC, bytes([0x3B, 0x00, 0x0F, 0x00, 0x1F, 0x01, 0x0F, 0x00, 0x20, 0x01, 0x0F, 0x00, 0x21, 0x01, 0x0F, 0x00, 0x22, 0x01, 0x0F, 0x00,]))  # Add the 5 AP Items to Dun Loireag Weapon Shop
+                self.pine.write_bytes(0x648488, bytes([0x3B, 0x00, 0x0F, 0x00, 0x1F, 0x01, 0x0F, 0x00, 0x20, 0x01, 0x0F, 0x00, 0x21, 0x01, 0x0F, 0x00, 0x22, 0x01, 0x0F, 0x00,]))  # Add the 5 AP Items to Mac Anu Magic Shop
+                self.pine.write_bytes(0x6484F8, bytes([0x3B, 0x00, 0x0F, 0x00, 0x1F, 0x01, 0x0F, 0x00, 0x20, 0x01, 0x0F, 0x00, 0x21, 0x01, 0x0F, 0x00, 0x22, 0x01, 0x0F, 0x00,]))  # Add the 5 AP Items to Dun Loireag Magic Shop
+                self.pine.write_int8(0x648664, 1)
+            if self.pine.read_int8(0xA47E05) & 0b00000001:  # If an AP Item in Mac Anu Weapon Shop has been purchased
+                self.pine.write_int32(0x648270, 0x000D0000)  # Set it to Fortune Wire
+            if self.pine.read_int8(0xA47E05) & 0b00000010:
+                self.pine.write_int32(0x648274, 0x000D0000)
+            if self.pine.read_int8(0xA47E05) & 0b00000100:
+                self.pine.write_int32(0x648278, 0x000D0000)
+            if self.pine.read_int8(0xA47E05) & 0b00001000:
+                self.pine.write_int32(0x64827C, 0x000D0000)
+            if self.pine.read_int8(0xA47E05) & 0b00010000:
+                self.pine.write_int32(0x648280, 0x000D0000)
+            if self.pine.read_int8(0xA47E05) & 0b00100000:  # If an AP Item in Mac Anu Item Shop has been purchased
+                self.pine.write_int32(0x648088, 0x000D0000)  # Set it to Fortune Wire
+            if self.pine.read_int8(0xA47E05) & 0b01000000:
+                self.pine.write_int32(0x64808C, 0x000D0000)
+            if self.pine.read_int8(0xA47E05) & 0b10000000:
+                self.pine.write_int32(0x648090, 0x000D0000)
+            if self.pine.read_int8(0xA47E06) & 0b00000001:
+                self.pine.write_int32(0x648094, 0x000D0000)
+            if self.pine.read_int8(0xA47E06) & 0b00000010:
+                self.pine.write_int32(0x648098, 0x000D0000)
+            if self.pine.read_int8(0xA47E06) & 0b00000100:  # If an AP Item in Mac Anu Magic Shop has been purchased
+                self.pine.write_int32(0x648488, 0x000D0000)  # Set it to Fortune Wire
+            if self.pine.read_int8(0xA47E06) & 0b00001000:
+                self.pine.write_int32(0x64848C, 0x000D0000)
+            if self.pine.read_int8(0xA47E06) & 0b00010000:
+                self.pine.write_int32(0x648490, 0x000D0000)
+            if self.pine.read_int8(0xA47E06) & 0b00100000:
+                self.pine.write_int32(0x648494, 0x000D0000)
+            if self.pine.read_int8(0xA47E06) & 0b01000000:
+                self.pine.write_int32(0x648498, 0x000D0000)
+            if self.pine.read_int8(0xA47E07) & 0b00000001:  # If an AP Item in Dun Loireag Weapon Shop has been purchased
+                self.pine.write_int32(0x6482FC, 0x0009002A)  # Set it to Mountain Guard
+            if self.pine.read_int8(0xA47E07) & 0b00000010:
+                self.pine.write_int32(0x648300, 0x000D0000) #Set it to Fortune Wire
+            if self.pine.read_int8(0xA47E07) & 0b00000100:
+                self.pine.write_int32(0x648304, 0x000D0000)
+            if self.pine.read_int8(0xA47E07) & 0b00001000:
+                self.pine.write_int32(0x648308, 0x000D0000)
+            if self.pine.read_int8(0xA47E07) & 0b00010000:
+                self.pine.write_int32(0x64830C, 0x000D0000)
+            if self.pine.read_int8(0xA47E07) & 0b00100000:  # If an AP Item in Dun Loireag Item Shop has been purchased
+                self.pine.write_int32(0x6480E8, 0x000D0000)  # Set it to Fortune Wire
+            if self.pine.read_int8(0xA47E07) & 0b01000000:
+                self.pine.write_int32(0x6480EC, 0x000D0000)
+            if self.pine.read_int8(0xA47E07) & 0b10000000:
+                self.pine.write_int32(0x6480F0, 0x000D0000)
+            if self.pine.read_int8(0xA47E08) & 0b00000001:
+                self.pine.write_int32(0x6480F4, 0x000D0000)
+            if self.pine.read_int8(0xA47E08) & 0b00000010:
+                self.pine.write_int32(0x6480F8, 0x000D0000)
+            if self.pine.read_int8(0xA47E08) & 0b00000100:  # If an AP Item in Mac Anu Magic Shop has been purchased
+                self.pine.write_int32(0x6484F8, 0x000D0000)  # Set it to Fortune Wire
+            if self.pine.read_int8(0xA47E08) & 0b00001000:
+                self.pine.write_int32(0x6484FC, 0x000D0000)
+            if self.pine.read_int8(0xA47E08) & 0b00010000:
+                self.pine.write_int32(0x648500, 0x000D0000)
+            if self.pine.read_int8(0xA47E08) & 0b00100000:
+                self.pine.write_int32(0x648504, 0x000D0000)
+            if self.pine.read_int8(0xA47E08) & 0b01000000:
+                self.pine.write_int32(0x648508, 0x000D0000)
+        if ctx.tradesanity:
+            current_val = self.pine.read_int8(0xA47E04)
+            if not (current_val & 0x02):
+                self.logger.info("Tradesanity enabled: Injecting AP items into trade tables...")
+                try:
+                    self.inject_ap_items(ctx)
+                    self.logger.info("AP items successfully injected.")
+                    self.pine.write_int8(0xA47E04, current_val | 0x02)
+
+                except Exception as e:
+                    self.logger.error(f"Injection failed: {e}")
+
 
     async def monitor_decrease(self) -> None:
         try:
