@@ -123,6 +123,8 @@ class InfectionContext(SuperContext):  # pyrefly: ignore
     volume: int = 1
     settings: InfectionSettings
     kite_class: int = 0
+    monster_hunt: bool = False
+    equal_start: bool = False
     automatically_read_emails: bool = False
     completion_condition: int = 0
     opened_portals: int = 100
@@ -145,6 +147,8 @@ class InfectionContext(SuperContext):  # pyrefly: ignore
         Utils.init_logging(APConsole.Info.client_name_clean.value + self.client_version)
         self.settings = get_settings().get("dothack_options", {})
         self.kite_class = self.settings.get("kite_class", 0)
+        self.monster_hunt = self.settings.get("monster_hunt", False)
+        self.equal_start = self.settings.get("equal start", False)
         self.automatically_read_emails = self.settings.get("automatically_read_emails", False)
         self.completion_condition = self.settings.get("completion_condition", 0)
         self.opened_portals = self.settings.get("opened_portals", 100)
@@ -201,6 +205,8 @@ class InfectionContext(SuperContext):  # pyrefly: ignore
                 self.excluded_locations = set(data[APHelper.excluded_locations.value])
             else:
                 self.excluded_locations = set()
+            self.monster_hunt = data.get(APHelper.monster_hunt.value, self.monster_hunt)
+            self.equal_start = data.get(APHelper.equal_start.value, self.monster_hunt)
 
             if APHelper.version.value in data:
                 world_ver: str = data[APHelper.version.value]
@@ -305,6 +311,13 @@ async def check_game(ctx: InfectionContext):
             return
         if ctx.last_item_processed_index < 0:
             ctx.last_item_processed_index = ctx.ipc.get_last_item_index()
+            
+        if ctx.has_just_connected or ctx.pending_resync:
+            await ctx.ipc.resync_items(ctx)
+            ctx.has_just_connected = False
+            if ctx.pending_resync:
+                logger.info("Resyncing complete")
+                ctx.pending_resync = False
 
         if ctx.volume == 1:
             ctx.ipc.infection_initial_state(ctx)
@@ -331,12 +344,6 @@ async def check_game(ctx: InfectionContext):
         if ctx.automatically_read_emails:
             await ctx.ipc.scan_emails()
 
-        if ctx.has_just_connected or ctx.pending_resync:
-            await ctx.ipc.resync_items(ctx)
-            ctx.has_just_connected = False
-            if ctx.pending_resync:
-                logger.info("Resyncing complete")
-                ctx.pending_resync = False
     else:
         message: str = APConsole.Info.p_init_g_sre.value
         if ctx.last_message is not message:

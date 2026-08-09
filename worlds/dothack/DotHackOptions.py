@@ -45,6 +45,11 @@ class MonsterHunt(Toggle):
     """
     display_name = "Monster Hunt"
 
+class EqualStart(Toggle):
+    """
+    All PCs start at base level with base equipment. Adds a Progressive version to all PCs that will reward them their unique weapon.  NONFUNCTIONAL
+    """
+    display_name = "Equal Start"
 
 class AutomaticallyReadEmails(Toggle):
     """
@@ -205,6 +210,7 @@ infection_option_groups: dict[str, list] = {
         GoldenGoblins,
         OptionalPartyMembers,
         MonsterHunt,
+        EqualStart
     ],
 
     "Sanity Options": [
@@ -255,6 +261,7 @@ class DotHackOptions(PerGameCommonOptions):
     shopsanity: Shopsanity
     tradesanity: Tradesanity
     apitemprice: APItemPrice
+    equal_start:EqualStart
 
 
 def create_option_groups() -> list[OptionGroup]:
@@ -286,4 +293,5 @@ def slot_data_options() -> list[str]:
         APHelper.shopsanity.value,
         APHelper.tradesanity.value,
         APHelper.apitemprice.value,
+        APHelper.equal_start.value
     ]

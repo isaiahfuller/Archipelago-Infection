@@ -14,6 +14,7 @@ class VolumeData:
     server_items: List[Any] = field(default_factory=list)
     items: List[Any] = field(default_factory=list)
     sanity_locations: List[Any] = field(default_factory=list)
+    monster_locations: List[Any] = field(default_factory=list)
 
 
 VOLUME_DATA: Dict[int, VolumeData] = {

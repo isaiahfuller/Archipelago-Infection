@@ -5,10 +5,11 @@ from BaseClasses import Location
 
 from .items.AreaWords import AreaWords
 from .locations.Events import InfectionStoryEvents, InfectionGoldenGoblins, InfectionOptionalPartyMembers, CompletionConditions
+from .locations.Monsters import InfectionMonsters
 from .locations.WordList import InfectionDeltaWordList as DeltaWordList, InfectionThetaWordList as ThetaWordList, WordListBase, get_wordlist_name
 from .locations.PlayStats import PlayStats
 from .locations.Sanity import InfectionShopsanity, InfectionTradesanity
-from .Strings import Meta, AreaWordNames, EventNames, PlayStatNames, ShopsanityNames, TradesanityNames
+from .Strings import Meta, AreaWordNames, EventNames, PlayStatNames, ShopsanityNames, TradesanityNames, MonsterNames
 from .Addresses import InfectionAddresses as Addresses
 from .DataManager import VOLUME_DATA
 
@@ -93,6 +94,13 @@ class InfectionTradesanityLocation(InfectionLocationMeta):
         self.name = name
         self.location_id = location_id
         self.event = event
+class InfectionMonsterLocation(InfectionLocationMeta):
+    monster: InfectionMonsters
+
+    def __init__(self, name: str, monster: InfectionMonsters):
+        self.name = name
+        self.location_id = (monster.value["address"] + monster.value["bits"]) * 400
+        self.monster = monster
         self.progress_type = LocationProgressType.DEFAULT
 
 
@@ -130,6 +138,17 @@ def event_gen(enum, volume: int) -> list[InfectionEventLocation]:
             ))
     return res
 
+def hunt_gen(enum, volume: int) -> list[InfectionMonsterLocation]:
+    res = []
+    for monster in enum:
+        volumes = monster.value.get("volumes", [])
+        if isinstance(volumes, list) and volume in volumes:
+            name = MonsterNames[monster.name].value
+            res.append(InfectionMonsterLocation(
+                name=name,
+                monster=monster
+            ))
+    return res
 
 def shopsanity_gen(volume: int):
     res = []
@@ -221,6 +240,8 @@ def generate_volume_locations(volume: int):
     v_data.sanity_locations = [
         *shopsanity_gen(volume),
         *tradesanity_gen(volume)
+    v_data.monster_locations = [
+        *hunt_gen(InfectionMonsters, volume)
     ]
 
 
@@ -232,6 +253,7 @@ EventLocations: list[InfectionEventLocation] = []
 StoryEvents: list[InfectionEventLocation] = []
 GoldenGoblins: list[InfectionEventLocation] = []
 OptionalPartyMembers: list[InfectionEventLocation] = []
+Monsters: list[InfectionEventLocation] = []
 CompletionEvents: list[InfectionEventLocation] = []
 ShopsanityLocations: list[InfectionShopsanityLocation] = []
 TradesanityLocations: list[InfectionTradesanityLocation] = []
@@ -256,6 +278,9 @@ for v_data in VOLUME_DATA.values():
             ShopsanityLocations.append(loc)
         elif isinstance(loc, InfectionTradesanityLocation):
             TradesanityLocations.append(loc)
+    for loc in v_data.monster_locations:
+        if loc.name not in [l.name for l in Monsters]:
+            Monsters.append(loc)
 
 PlayStatLocations: list[InfectionPlayStatLocation] = [
     *PlayStatLocsList
@@ -265,6 +290,7 @@ PlayStatLocations: list[InfectionPlayStatLocation] = [
 def generate_event_name_to_id() -> dict[str, int]:
     name_to_id: dict[str, int] = {el.name: el.location_id for el in EventLocations}
     name_to_id.update({el.name: el.location_id for el in WordListLocations})
+    name_to_id.update({el.name: el.location_id for el in Monsters})
     return name_to_id
 
 def generate_sanity_name_to_id() -> dict[str, int]:
@@ -296,5 +322,6 @@ def generate_location_groups() -> dict[str, set[str]]:
         "Word Lists": {el.name for el in WordListLocations},
         "Shopsanity": {el.name for el in ShopsanityLocations},
         "Tradesanity": {el.name for el in TradesanityLocations}
+        "Monsters": {el.name for el in Monsters}
     })
     return groups

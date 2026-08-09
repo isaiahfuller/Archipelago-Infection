@@ -2,7 +2,7 @@ from abc import ABC
 from typing import Dict
 
 
-from .Strings import ItemNames, EventNames, PlayStatNames, ShopsanityNames, TradesanityNames
+from .Strings import ItemNames, EventNames, PlayStatNames, ShopsanityNames, TradesanityNames, MonsterNames
 
 
 class VolumeAddresses(ABC):
@@ -11,6 +11,7 @@ class VolumeAddresses(ABC):
     PlayStats: Dict[str, int]
     Shopsanity: Dict[str, int]
     Tradesanity: Dict[str, int]
+    Monsters: Dict[str, int]
     AreaWords: int
     WordLists: int
     Storage: int
@@ -28,6 +29,7 @@ class InfectionAddresses(VolumeAddresses):
     WordLists = 0xa44c47
     Storage = 0xa40540
     Party = 0xa41bf0
+    BGMandImages = 0xa410C8
     Servers = 0xa41c04
     CurrentlyEntered = 0xADA71C
     IngameStatus = 0xa3f5f0
@@ -214,6 +216,122 @@ class InfectionAddresses(VolumeAddresses):
         TradesanityNames.NobleGrunty.name: 0xA41564,
         TradesanityNames.IronGrunty.name: 0xA415A4,
         TradesanityNames.PoisonGrunty.name: 0xA415E4,
+    Monsters = {
+        MonsterNames.Razine1.name: 0xa46287,
+        MonsterNames.Swordmanoid2.name: 0xa46288,
+        MonsterNames.Gladiator3.name: 0xa46289,
+        MonsterNames.Ochimusha4.name: 0xa4628a,
+        MonsterNames.HeavyMetal6.name: 0xa4628c,
+        MonsterNames.DarkRider8.name: 0xa4628E,
+        MonsterNames.TetraArmor11.name: 0xa46291,
+        MonsterNames.GeneralArmor13.name: 0xa46293,
+        MonsterNames.Porolin14.name: 0xa46294,
+        MonsterNames.MummyRipper15.name: 0xa46295,
+        MonsterNames.CadetValkyrie20.name: 0xa4629A,
+        MonsterNames.FreshValkyrie21.name: 0xa4629B,
+        MonsterNames.LongLived23.name: 0xa4629D,
+        MonsterNames.GrandMage24.name: 0xa4629E,
+        MonsterNames.Flamer36.name: 0xa462AA,
+        MonsterNames.FireWitch37.name: 0xa462AB,
+        MonsterNames.WaterWitch38.name: 0xa462AC,
+        MonsterNames.DarkWitch39.name: 0xa462AD,
+        MonsterNames.Kakasinger49.name: 0xa462B7,
+        MonsterNames.Guardian50.name: 0xa462B8,
+        MonsterNames.MetalEmperor52.name: 0xa462BA,
+        MonsterNames.MuGuardian57.name: 0xa462BF,
+        MonsterNames.Pippy67.name: 0xa462C9,
+        MonsterNames.ChickenHand68.name: 0xa462CA,
+        MonsterNames.WoodHarpy69.name: 0xa462CB,
+        MonsterNames.PhoenixQueen72.name: 0xa462CE,
+        MonsterNames.MonkeyCrab80.name: 0xa462D6,
+        MonsterNames.SnipSnap81.name: 0xa462D7,
+        MonsterNames.CrabTurtle82.name: 0xa462D8,
+        MonsterNames.RedScissors83.name: 0xa462D9,
+        MonsterNames.SquillaDemon84.name: 0xa462DA,
+        MonsterNames.Mantis86.name: 0xa462DC,
+        MonsterNames.Bat90.name: 0xa462E0,
+        MonsterNames.ShieldMan91.name: 0xa462E1,
+        MonsterNames.Moai105.name: 0xa462EF,
+        MonsterNames.RockHead106.name: 0xa462F0,
+        MonsterNames.MysteryRock107.name: 0xa462F1,
+        MonsterNames.StoneTuttle114.name: 0xa462F8,
+        MonsterNames.StoneTuttleDataBug116.name: 0xa462FA,
+        MonsterNames.Minnow117.name: 0xa462FB,
+        MonsterNames.SkyFish118.name: 0xa462FC,
+        MonsterNames.ArrowFish119.name: 0xa462FD,
+        MonsterNames.CycloShark123.name: 0xa46301,
+        MonsterNames.HammerShark124.name: 0xa46302,
+        MonsterNames.Gremlin130.name: 0xa46308,
+        MonsterNames.Goblin131.name: 0xa46309,
+        MonsterNames.Stehoney132.name: 0xa4630A,
+        MonsterNames.Jonue133.name: 0xa4630B,
+        MonsterNames.HobGoblin140.name: 0xa46312,
+        MonsterNames.Zyan141.name: 0xa46313,
+        MonsterNames.GoblinNight145.name: 0xa46317,
+        MonsterNames.MetalGoblin146.name: 0xa46318,
+        MonsterNames.Albert148.name: 0xa4631A,
+        MonsterNames.MagicalGoblin152.name: 0xa4631E,
+        MonsterNames.GoblinWiz153.name: 0xa4631F,
+        MonsterNames.Martina155.name: 0xa46321,
+        MonsterNames.Cannibal159.name: 0xa46325,
+        MonsterNames.Ogre161.name: 0xa46327,
+        MonsterNames.IronBallFreak163.name: 0xa46329,
+        MonsterNames.LittleDoggie168.name: 0xa4632E,
+        MonsterNames.SledDog169.name: 0xa4632F,
+        MonsterNames.HellDoberman172.name: 0xa46332,
+        MonsterNames.HellHound173.name: 0xa46333,
+        MonsterNames.FlameHeads176.name: 0xa46336,
+        MonsterNames.WiggleSnake179.name: 0xa46339,
+        MonsterNames.Menhir180.name: 0xa4633A,
+        MonsterNames.GoilMenhir181.name: 0xa4633B,
+        MonsterNames.FiendMenhir184.name: 0xa4633E,
+        MonsterNames.LimpKnife185.name: 0xa4633F,
+        MonsterNames.DiscoKnife186.name: 0xa46340,
+        MonsterNames.LambadaKnife187.name: 0xa46341,
+        MonsterNames.DustCurse188.name: 0xa46342,
+        MonsterNames.CursedBlades189.name: 0xa46343,
+        MonsterNames.SwordofChaos190.name: 0xa46344,
+        MonsterNames.ArmorShogun191.name: 0xa46345,
+        MonsterNames.DragonPuppy194.name: 0xa46348,
+        MonsterNames.Snakoid195.name: 0xa46349,
+        MonsterNames.LeadSnakoid196.name: 0xa4634A,
+        MonsterNames.RedWyrm200.name: 0xa4634E,
+        MonsterNames.RedWyrmDataBug202.name: 0xa46350,
+        MonsterNames.ParasiteDragon215.name: 0xa4635D,
+        MonsterNames.TwinkleGrass219.name: 0xa46361,
+        MonsterNames.MadGrass220.name: 0xa46362,
+        MonsterNames.HungryGrass221.name: 0xa46363,
+        MonsterNames.SnappyGrass222.name: 0xa46364,
+        MonsterNames.WoodStock223.name: 0xa46365,
+        MonsterNames.ThousandTrees224.name: 0xa46366,
+        MonsterNames.WoodStockDataBug225.name: 0xa46367,
+        MonsterNames.ScarletKing227.name: 0xa46369,
+        MonsterNames.MushroomKing229.name: 0xa4636B,
+        MonsterNames.Charmer230.name: 0xa4636C,
+        MonsterNames.LamiaFighter231.name: 0xa4636D,
+        MonsterNames.LamiaHunter232.name: 0xa4636E,
+        MonsterNames.KillerSnaker234.name: 0xa46370,
+        MonsterNames.KillerSnakerDataBug236.name: 0xa46372,
+        MonsterNames.FakeMoney240.name: 0xa46376,
+        MonsterNames.Mimic241.name: 0xa46377,
+        MonsterNames.HellBox242.name: 0xa46378,
+        MonsterNames.DeathHead246.name: 0xa4637C,
+        MonsterNames.NomadicBones247.name: 0xa4637D,
+        MonsterNames.LivingDead250.name: 0xa46380,
+        MonsterNames.Headhunter253.name: 0xa46383,
+        MonsterNames.HeadhunterDataBug256.name: 0xa46386,
+        MonsterNames.Wiggly268.name: 0xa46392,
+        MonsterNames.DeadlyMoth269.name: 0xa46393,
+        MonsterNames.PhantomWing270.name: 0xa46394,
+        MonsterNames.BeeArmy272.name: 0xa46396,
+        MonsterNames.BeeAssault273.name: 0xa46397,
+        MonsterNames.BabyWorm275.name: 0xa46399,
+        MonsterNames.Odoro280.name: 0xa4639E,
+        MonsterNames.Ectoplasm281.name: 0xa46398,
+        MonsterNames.NoisyWisp282.name: 0xa463A0,
+        MonsterNames.Halloween283.name: 0xa463A1,
+        MonsterNames.ShiningEyes288.name: 0xa463A6,
+
     }
 
 class MutationAddresses(VolumeAddresses):
