@@ -324,11 +324,11 @@ def infection_rules(world):
 
         #Grunties
         set_list_rules(location_rules, TradesanityNames.NobleGrunty.value, DeltaWordList.ExpansiveHauntedSeaOfSand)
-        location_rules[TradesanityNames.Mia1.value] &= Has(ServerNames.Theta.value)
+        location_rules[TradesanityNames.NobleGrunty.value] &= Has(ServerNames.Theta.value)
         set_list_rules(location_rules, TradesanityNames.IronGrunty.value, DeltaWordList.ExpansiveHauntedSeaOfSand)
-        location_rules[TradesanityNames.Mia1.value] &= Has(ServerNames.Theta.value)
+        location_rules[TradesanityNames.IronGrunty.value] &= Has(ServerNames.Theta.value)
         set_list_rules(location_rules, TradesanityNames.PoisonGrunty.value, DeltaWordList.ExpansiveHauntedSeaOfSand)
-        location_rules[TradesanityNames.Mia1.value] &= Has(ServerNames.Theta.value)
+        location_rules[TradesanityNames.PoisonGrunty.value] &= Has(ServerNames.Theta.value)
 
 
     for name, rule in location_rules.items():
