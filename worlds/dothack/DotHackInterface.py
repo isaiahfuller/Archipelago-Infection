@@ -256,21 +256,6 @@ class DotHackInterface:
         self.pine.write_int8(0xA46141, 1)  # Unlock Data Drain skill category
         self.pine.write_int8(0xA41894, 2)  # Unlock Data Drain, use red dye
 
-        # Ryu Books have been changed to items
-        # # Give Ryu Books
-        # self.pine.write_int8(0xA407DD, 1)
-        # self.pine.write_int8(0xA407DE, 1)
-        # self.pine.write_int8(0xA407DF, 1)
-        # self.pine.write_int8(0xA407E0, 1)
-        # self.pine.write_int8(0xA407E1, 1)
-        # self.pine.write_int8(0xA407E2, 1)
-        # self.pine.write_int8(0xA407E3, 1)
-        # self.pine.write_int8(0xA407E4, 1)
-
-        # Add starting lists
-        self.pine.write_int8(0xA44CC6, 0x0e)
-        self.pine.write_int8(0xA44CC4, 0x0f)
-
         # Skip meeting Orca
         # self.pine.write_int8(0xa44ed7, self.pine.read_int8(0xa44ed7) | 0b11000000)
         self.pine.write_int8(0xa44ed8, self.pine.read_int8(0xa44ed8) | 0b00000111)
