@@ -326,6 +326,8 @@ async def check_game(ctx: InfectionContext):
         if ctx.shopsanity or ctx.tradesanity:
             await ctx.ipc.setup_sanity(ctx)
 
+        if ctx.equal_start:
+            await ctx.ipc.setup_equal_start(ctx)
 
         if ctx.queued_messages and ctx.ipc.infection_show_message(*ctx.queued_messages[0]) in [0, 2]:
             ctx.queued_messages.pop(0)
