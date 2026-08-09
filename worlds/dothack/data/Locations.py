@@ -217,6 +217,8 @@ def generate_volume_locations(volume: int):
         *event_gen(InfectionGoldenGoblins, volume),
         *event_gen(InfectionOptionalPartyMembers, volume),
         *event_gen(CompletionConditions, volume),
+    ]
+    v_data.sanity_locations = [
         *shopsanity_gen(volume),
         *tradesanity_gen(volume)
     ]
@@ -249,10 +251,11 @@ for v_data in VOLUME_DATA.values():
                 OptionalPartyMembers.append(loc)
             elif isinstance(loc.event, CompletionConditions):
                 CompletionEvents.append(loc)
-            elif isinstance(loc, InfectionShopsanityLocation):
-                ShopsanityLocations.append(loc)
-            elif isinstance(loc, InfectionTradesanityLocation):
-                TradesanityLocations.append(loc)
+    for loc in v_data.sanity_locations:
+        if isinstance(loc, InfectionShopsanityLocation):
+            ShopsanityLocations.append(loc)
+        elif isinstance(loc, InfectionTradesanityLocation):
+            TradesanityLocations.append(loc)
 
 PlayStatLocations: list[InfectionPlayStatLocation] = [
     *PlayStatLocsList
@@ -264,15 +267,20 @@ def generate_event_name_to_id() -> dict[str, int]:
     name_to_id.update({el.name: el.location_id for el in WordListLocations})
     return name_to_id
 
+def generate_sanity_name_to_id() -> dict[str, int]:
+    name_to_id: dict[str, int] = {el.name: el.location_id for el in ShopsanityLocations}
+    name_to_id.update({el.name: el.location_id for el in TradesanityLocations})
+    return name_to_id
+
 
 def generate_playstat_name_to_id(locs: list[InfectionPlayStatLocation] = PlayStatLocations) -> dict[str, int]:
     name_to_id: dict[str, int] = {el.name: el.location_id for el in locs}
     return name_to_id
 
-
 def generate_name_to_id() -> dict[str, int]:
     name_to_id = generate_event_name_to_id()
     name_to_id.update(generate_playstat_name_to_id())
+    name_to_id.update(generate_sanity_name_to_id())
     return name_to_id
 
 

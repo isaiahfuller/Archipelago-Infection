@@ -201,6 +201,12 @@ class DotHackWorld(World):
                 continue
             loc = loc_meta.to_location(self.player, main_region)
             main_region.locations.append(loc)
+        for loc_meta in v_data.sanity_locations:
+            if loc_meta.event in excluded_events:
+                self.logger.debug(f"Excluding Sanity Location: {loc_meta.name}")
+                continue
+            loc = loc_meta.to_location(self.player, main_region)
+            main_region.locations.append(loc)
 
         main_region.add_event("Victory")
 
