@@ -1189,6 +1189,7 @@ class MonsterNames(Enum):
     RedScissors83 = "Red Scissors"
     SquillaDemon84 = "Squilla Demon"
     Mantis86 = "Mantis"
+    ScorpionTank88 = "Scorpion Tank"
     Bat90 = "Bat"
     ShieldMan91 = "Shield Man"
     Moai105 = "Moai"

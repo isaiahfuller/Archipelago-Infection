@@ -125,7 +125,7 @@ class InfectionTradesanity(InfectionTradesanityBase):
     Sachiko = {"address": 0xA40D24, "volumes": [1]}
     Neja = {"address": 0xA40D64, "volumes": [1]}
     Heavy = {"address": 0xA40DA4, "volumes": [1]}
-    Benkei = {"address": 0xA40DE0, "volumes": [1]}
+    Benkei = {"address": 0xA40DE4, "volumes": [1]}
     Hayate = {"address": 0xA40E24, "volumes": [1]}
     Task = {"address": 0xA40E64, "volumes": [1]}
     Hinata = {"address": 0xA40EA4, "volumes": [1]}

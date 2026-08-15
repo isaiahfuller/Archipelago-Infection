@@ -278,6 +278,7 @@ class DotHackInterface:
 
         # Get Mia and Elk out of your way
         self.pine.write_int8(0xa44f58, self.pine.read_int8(0xa44f58) | 0xff)
+        self.pine.write_int8(0xa44f59, self.pine.read_int8(0xa44f59) | 0x83)
 
     async def check_locations(self, ctx) -> None:
         checked: Set[int] = set()
@@ -1124,8 +1125,8 @@ class DotHackInterface:
         self.pine.write_int8(0xA476DC, 0) #Wiseman's Headgear
         self.pine.write_int8(0xA476DE, 0) #Wiseman's Body Armor
         self.pine.write_int8(0xA476E0, 0) #Wiseman's Armguards
-        self.pine.write_int8(0xA475E2, 0) #Wiseman's Leg Armor
-        self.pine.write_int8(0xA475E4, 9) #Wiseman's Weapon
+        self.pine.write_int8(0xA476E2, 0) #Wiseman's Leg Armor
+        self.pine.write_int8(0xA476E4, 8) #Wiseman's Weapon
         self.pine.write_int8(0xA478B6, 1) # Rachel's Level
         self.pine.write_int8(0xA478CC, 70) #Rachel's HP
         self.pine.write_int8(0xA478CD, 0)
