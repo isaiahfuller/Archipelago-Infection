@@ -310,6 +310,10 @@ async def check_game(ctx: InfectionContext):
 
         if ctx.volume == 1:
             ctx.ipc.infection_initial_state(ctx)
+            ctx.ipc.infection_apply_patch()
+
+        if ctx.queued_messages and ctx.ipc.infection_show_message(*ctx.queued_messages[0]) in [0, 2]:
+            ctx.queued_messages.pop(0)
 
         await ctx.ipc.check_locations(ctx)
         await ctx.ipc.receive_items(ctx)

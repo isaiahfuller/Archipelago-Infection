@@ -20,6 +20,7 @@ from .data.Items import PartyMemberItems
 from .data.Items import ServerItems
 from .data.Items import WordListItems, RyuBookItems
 from .data.Strings import APConsole, Meta, GameStateNames, EventNames, MonsterNames
+from .data.data_structures.APMessage import APMessage
 from .data.items.AreaWords import AreaWords
 from .data.items.PartyMembers import PartyMembers
 from .data.items.RyuBooks import RyuBooks
@@ -170,29 +171,27 @@ class DotHackInterface:
 
     def infection_show_message(self, message_type: int, color: int, message: str) -> int:
         address = 0x6FA660
-        size = 0x46
+        #size = 0x46
         current_overlay = self.pine.read_int8(0x00400804)
 
         if current_overlay != 1 or self.pine.read_int8(address) == 0x83:
-            return 1
+            return 1 # Game isn't ready
 
-        message_bytes = bytes([*message.encode("shift-jis"), 0])
-        if len(message_bytes) > 64:
-            print(f"Message too long ({len(message_bytes)} bytes)")
-            return 2
+
+        base_ap_message = APMessage(self.pine, address)
 
         for i in range(4):
-            status = self.pine.read_int8(address + i*size)
-            if status == 0:
-                self.pine.write_int8(address + i*size + 1, 0) # Queue position
-                self.pine.write_int8(address + i*size + 2, color) # Color
-                self.pine.write_int8(address + i*size + 3, message_type) # Type
-                self.pine.write_int16(address + i*size + 4, 120) # Frames
-                self.pine.write_bytes(address + i*size + 6, message_bytes) # Text
-                self.pine.write_int8(address + i*size + 0, 1) # Status
+            ap_message = base_ap_message[i]
+            if ap_message.status == 0:
+                ap_message.queue_pos = 0
+                ap_message.color = color
+                ap_message.type = message_type
+                ap_message.time = 120 # Frames
+                ap_message.text = message
+                ap_message.status = 1 # Always set status last
                 return 0
 
-        return 3
+        return 3 # No open slots
 
     def infection_initial_state(self, ctx) -> None:
         self.pine.write_int8(0xa44ed7, self.pine.read_int8(0xa44ed7) |
@@ -259,27 +258,33 @@ class DotHackInterface:
                 return
 
             # Headgear, Body Armor, Armguards, Leg Armor, Weapon
-            starting_equipment = {
-                "Mia": (0, 40, 40, 40, 0),
-                "Orca": (0, 40, 40, 40, 2),
-                "Marlo": (0, 40, 40, 40, 7),
-                "Sanjuro": (40, 40, 40, 40, 84),
-                "Nuke Usagimaru": (20, 20, 20, 20, 0),
-                "Balmung": (0, 40, 20, 20, 3),
-                "Moonstone": (20, 20, 20, 20, 3),
-                "Wiseman": (0, 0, 0, 0, 9),
-                "Rachel": (40, 40, 40, 40, 5),
-                "Gardenia": (20, 20, 20, 20, 5),
-                "Helba": (0, 0, 0, 0, 0),
-            }
+            starting_equipment = [
+              None, #Kite
+              (0, 40, 40, 40, 0),   #Mia
+              (0, 40, 40, 40, 2),   #Orca
+              (0, 40, 40, 40, 7),   #Marlo
+              (40, 40, 40, 40, 84), #Sanjuro
+              (20, 20, 20, 20, 0),  #Nuke Usagimaru
+              (0, 40, 20, 20, 3),   #Balmung
+              (20, 20, 20, 20, 3),  #Moonstone
+              None,                 #Piros
+              (0, 0, 0, 0, 9),      #Wiseman
+              None,                 #Elk
+              None,                 #Natsume
+              (40, 40, 40, 40, 5),  #Rachel
+              (20, 20, 20, 20, 5),  #Gardenia
+              None,                 #Terajima Ryoko
+              None,                 #BlackRose
+              None,                 #Mistral
+              (0, 0, 0, 0, 0),      #Helba
+            ]
 
             kite = SpcParam(self.pine, 0xA46E58)
             for i in range(1, 18):
                 party_member = kite[i]
                 party_member.set_level(1)
-                name = party_member.name
-                if name in starting_equipment:
-                    equipment = starting_equipment[name]
+                equipment = starting_equipment[i]
+                if equipment is not None:
                     party_member.equipment.head   = equipment[0]
                     party_member.equipment.body   = equipment[1]
                     party_member.equipment.arms   = equipment[2]

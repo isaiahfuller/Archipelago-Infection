@@ -58,14 +58,14 @@ class Equipment(StructInterface):
 class SpcParam(StructInterface):
     _length = 0xdc
 
-    name = StructField(0x0, DataType.INT)
-    model = StructField(0x4, DataType.INT)
+    name = StructField(0x0, DataType.POINTER, size=32, pointer_type=DataType.STRING)
+    model = StructField(0x4, DataType.POINTER, size=32, pointer_type=DataType.STRING)
     flags = StructField(0x8, DataType.INT)
     char_id = StructField(0xc, DataType.SHORT)
     level = StructField(0xe, DataType.SHORT)
     GP = StructField(0x14, DataType.INT)
-    height = StructField(0x18, DataType.INT)
-    width = StructField(0x1c, DataType.INT)
+    height = StructField(0x18, DataType.FLOAT)
+    width = StructField(0x1c, DataType.FLOAT)
     base_msg = StructField(0x20, DataType.INT)
     max_hp = StructField(0x24, DataType.SHORT)
     max_sp = StructField(0x26, DataType.SHORT)
