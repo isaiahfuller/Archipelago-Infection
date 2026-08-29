@@ -1,3 +1,5 @@
+from worlds.dothack.data.Items import PartyMemberItems
+from worlds.dothack.data.Strings import CharacterNames
 from worlds.dothack.data.items.Servers import Servers
 from worlds.dothack.data.items.RyuBooks import RyuBooks
 from rule_builder.rules import Has
@@ -5,19 +7,19 @@ from BaseClasses import ItemClassification
 from typing import ClassVar, List, cast
 import logging
 import settings
-
 from BaseClasses import MultiWorld, Tutorial, Region
 from worlds.AutoWorld import World, WebWorld
 from worlds.LauncherComponents import Component, components, launch_subprocess, Type
 
 from .data.Strings import APConsole, APHelper, Meta, PlayStatNames, ServerNames, ItemNames, CharacterNames
 from .data import Locations, Items
-from .data.Items import InfectionItem, InfectionItemMeta, ITEMS_MASTER
+from .data.Items import InfectionItem, InfectionItemMeta, ITEMS_MASTER, PartyMemberItem
 from .data.locations.WordList import InfectionDeltaWordList as DeltaWordList, InfectionThetaWordList as ThetaWordList, WordListBase, get_wordlist_name
 from .data.locations.Events import InfectionEventBase, InfectionGoldenGoblins, InfectionOptionalPartyMembers
 from .data.locations.Monsters import InfectionMonsters, MonsterBase
 from .DotHackOptions import DotHackOptions, slot_data_options, create_option_groups
 from .data.DataManager import VOLUME_DATA
+from .data.locations.Sanity import InfectionShopsanity
 
 # Identifier for Archipelago to recognize and run the client
 
@@ -122,7 +124,8 @@ class DotHackWorld(World):
     item_name_to_id = Items.generate_name_to_id()
     event_location_name_to_id: dict[str, int] = Locations.generate_event_name_to_id()
     playstat_location_name_to_id: dict[str, int] = Locations.generate_playstat_name_to_id()
-    location_name_to_id: ClassVar[dict[str, int]] = {**event_location_name_to_id, **playstat_location_name_to_id}
+    sanity_location_name_to_id: dict[str, int] = Locations.generate_sanity_name_to_id()
+    location_name_to_id: ClassVar[dict[str, int]] = {**event_location_name_to_id, **playstat_location_name_to_id, **sanity_location_name_to_id}
     playstat_locations: list = []
     item_name_groups = Items.generate_item_groups()
     location_name_groups = Locations.generate_location_groups()
@@ -201,6 +204,16 @@ class DotHackWorld(World):
                 DeltaWordList.HideousDestroyersFarThunder,
                 ThetaWordList.BeautifulSomeonesTreasureGem
             ])
+        if not self.options.shopsanity.value:
+            self.excluded_locations.update([
+                loc.location_id
+                for loc in Locations.shopsanity_gen(self.options.volume.value)
+            ])
+        if not self.options.tradesanity.value:  
+            self.excluded_locations.update([
+                loc.location_id
+                for loc in Locations.tradesanity_gen(self.options.volume.value)
+            ])
 
         if not self.options.monster_hunt.value:
             excluded_events.update(InfectionMonsters)
@@ -250,6 +263,7 @@ class DotHackWorld(World):
                 self.logger.debug(f"Excluding Wordlist Location: {loc_meta.name}")
                 self.excluded_locations.add(loc_meta.location_id)
                 continue
+            loc = loc_meta.to_location(self.player, main_region)
             if loc_meta.wordlist in DeltaWordList:
                 self.logger.debug(f"Adding Wordlist Location: {loc_meta.name} to region {loc_meta.wordlist} (DELTA)")
                 delta_region.locations.append(loc_meta.to_location(self.player, delta_region))
@@ -275,6 +289,12 @@ class DotHackWorld(World):
                 self.logger.debug(f"Adding Monster Location: {loc_meta.name} to region {loc_meta.monster} (MAIN)")
                 main_region.locations.append(loc_meta.to_location(self.player, main_region))
 
+        for loc_meta in v_data.sanity_locations:
+            if loc_meta.location_id in self.excluded_locations:
+                self.logger.debug(f"Excluding Sanity Location: {loc_meta.name}")
+                continue
+            loc = loc_meta.to_location(self.player, main_region)
+            main_region.locations.append(loc)
         main_region.add_event("Victory")
 
     def create_item(self, item: str) -> InfectionItem:
@@ -327,7 +347,6 @@ class DotHackWorld(World):
                 CharacterNames.Gardenia.value,
                 CharacterNames.Natsume.value,
             ])
-
         for item_name in starting_items:
             item = self.create_item(item_name)
             self.multiworld.push_precollected(item)
@@ -338,6 +357,9 @@ class DotHackWorld(World):
             if item.name in excluded_items:
                 self.logger.debug(f"Excluding Item: {item.name}")
                 continue
+            if self.options.tradesanity.value and isinstance(item, PartyMemberItem):
+                item.classification = ItemClassification.progression
+                items.append(item.to_item(self.player))
             elif item.classification == ItemClassification.filler:
                 self.filler_items.append(item.to_item(self.player))
             else:

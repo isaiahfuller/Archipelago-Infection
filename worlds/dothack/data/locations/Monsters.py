@@ -52,6 +52,7 @@ class InfectionMonsters(MonsterBase):
     CrabTurtle82 = {"address": 0xa462D8, "bits": 0b00000001, "volumes": [1], "server": Servers.Delta}
 
     SquillaDemon84 = {"address": 0xa462DA, "bits": 0b00000001, "volumes": [1], "server": Servers.Delta}
+    ScorpionTank88 = {"address": 0xa462DE, "bits": 0b00000001, "volumes": [1], "server": Servers.Delta}
     Bat90 = {"address": 0xa462E0, "bits": 0b00000001, "volumes": [1], "server": Servers.Delta}
     ShieldMan91 = {"address": 0xa462E1, "bits": 0b00000001, "volumes": [1], "server": Servers.Delta}
     Moai105 = {"address": 0xa462EF, "bits": 0b00000001, "volumes": [1], "server": Servers.Delta}
@@ -126,7 +127,7 @@ class InfectionMonsters(MonsterBase):
     BeeArmy272 = {"address": 0xa46396, "bits": 0b00000001, "volumes": [1], "server": Servers.Delta}
 
     Odoro280 = {"address": 0xa4639E, "bits": 0b00000001, "volumes": [1], "server": Servers.Delta}
-    Ectoplasm281 = {"address": 0xa46398, "bits": 0b00000001, "volumes": [1], "server": Servers.Delta}
+    Ectoplasm281 = {"address": 0xa4639F, "bits": 0b00000001, "volumes": [1], "server": Servers.Delta}
     NoisyWisp282 = {"address": 0xa463A0, "bits": 0b00000001, "volumes": [1], "server": Servers.Delta}
 
     ShiningEyes288 = {"address": 0xa463A6, "bits": 0b00000001, "volumes": [1], "server": Servers.Delta}
