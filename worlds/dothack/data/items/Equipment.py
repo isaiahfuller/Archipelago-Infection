@@ -37,7 +37,7 @@ class Weapons(Enum):
     RustyNails = {"id": 0x00000041, "volumes": [1], "weight": 92}
     SoulBlades = {"id": 0x00000042, "volumes": [1], "weight": 94}
     BomBaYe = {"id": 0x00000048, "volumes": [1], "weight": 96}
-    Hyakkidouran = {"id": 0x00000049, "volumes": [1], "weight": 97}
+    Hyakkidouran = {"id": 0x00000046, "volumes": [1], "weight": 97}
 
     # Blades - Infection
     BasicSword = {"id": 0x00010000, "volumes": [1], "weight": 57}
@@ -161,11 +161,11 @@ class Weapons(Enum):
     WandOfStorms = {"id": 0x0005000F, "volumes": [1], "weight": 85}
     AdiansRod = {"id": 0x00050010, "volumes": [1], "weight": 87}
     AlmightyWand = {"id": 0x00050011, "volumes": [1], "weight": 90}
-    GroovyStick = {"id": 0x000500012, "volumes": [1], "weight": 93}
-    StarStormWand = {"id": 0x000500013, "volumes": [1], "weight": 95}
+    GroovyStick = {"id": 0x00050012, "volumes": [1], "weight": 93}
+    StarStormWand = {"id": 0x00050013, "volumes": [1], "weight": 95}
     # Rare Wands - Infection
-    JestersWand = {"id": 0x000500040, "volumes": [1], "weight": 96}
-    DarkHistory = {"id": 0x000500042, "volumes": [1], "weight": 96}
+    JestersWand = {"id": 0x00050040, "volumes": [1], "weight": 96}
+    DarkHistory = {"id": 0x00050042, "volumes": [1], "weight": 96}
 class Armors(Enum):
     _value_: EquipmentAttributes
     # Light Headgear - Infection
