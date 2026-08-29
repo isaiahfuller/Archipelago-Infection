@@ -19,6 +19,7 @@ from .data.Items import PartyMemberItems
 from .data.Items import ServerItems
 from .data.Items import WordListItems, RyuBookItems
 from .data.Strings import APConsole, Meta, GameStateNames, EventNames, ShopsanityNames, TradesanityNames, MonsterNames
+from .data.data_structures.APMessage import APMessage
 from .data.items.AreaWords import AreaWords
 from .data.items.PartyMembers import PartyMembers
 from .data.items.RyuBooks import RyuBooks
@@ -33,6 +34,7 @@ from .pcsx2_interface.pine import Pine
 import random
 from .DotHackOptions import APItemPrice, APHelper
 
+from .data.data_structures import SpcParam
 
 # Notes:
 # latest item idx can seemingly be written to 0xA44EC8 safely.
@@ -188,29 +190,27 @@ class DotHackInterface:
 
     def infection_show_message(self, message_type: int, color: int, message: str) -> int:
         address = 0x6FA660
-        size = 0x46
+        #size = 0x46
         current_overlay = self.pine.read_int8(0x00400804)
 
         if current_overlay != 1 or self.pine.read_int8(address) == 0x83:
-            return 1
+            return 1 # Game isn't ready
 
-        message_bytes = bytes([*message.encode("shift-jis"), 0])
-        if len(message_bytes) > 64:
-            print(f"Message too long ({len(message_bytes)} bytes)")
-            return 2
+
+        base_ap_message = APMessage(self.pine, address)
 
         for i in range(4):
-            status = self.pine.read_int8(address + i*size)
-            if status == 0:
-                self.pine.write_int8(address + i*size + 1, 0) # Queue position
-                self.pine.write_int8(address + i*size + 2, color) # Color
-                self.pine.write_int8(address + i*size + 3, message_type) # Type
-                self.pine.write_int16(address + i*size + 4, 120) # Frames
-                self.pine.write_bytes(address + i*size + 6, message_bytes) # Text
-                self.pine.write_int8(address + i*size + 0, 1) # Status
+            ap_message = base_ap_message[i]
+            if ap_message.status == 0:
+                ap_message.queue_pos = 0
+                ap_message.color = color
+                ap_message.type = message_type
+                ap_message.time = 120 # Frames
+                ap_message.text = message
+                ap_message.status = 1 # Always set status last
                 return 0
 
-        return 3
+        return 3 # No open slots
 
     def inject_ap_items(self, ctx=None) -> None:
         """
@@ -287,6 +287,62 @@ class DotHackInterface:
         # Get Mia and Elk out of your way
         self.pine.write_int8(0xa44f58, self.pine.read_int8(0xa44f58) | 0xff)
         self.pine.write_int8(0xa44f59, self.pine.read_int8(0xa44f59) | 0x83)
+
+        # Kite's Class from Options
+        if ctx.kite_class == 0:
+            self.pine.write_int8(0xA46F30, 0)
+        if ctx.kite_class == 1:
+            self.pine.write_int8(0xA46F30, 1)
+        if ctx.kite_class == 2:
+            self.pine.write_int8(0xA46F30, 2)
+        if ctx.kite_class == 3:
+            self.pine.write_int8(0xA46F30, 3)
+        if ctx.kite_class == 4:
+            self.pine.write_int8(0xA46F30, 4)
+        if ctx.kite_class == 5:
+            self.pine.write_int8(0xA46F30, 5)
+
+        # Equal Start - Setting most PCs to base stats, early equipment and Level 1
+        if ctx.equal_start:
+            if self.pine.read_int8(0xA43C35) == 0:  # Check if return value is 0
+                return
+
+            # Headgear, Body Armor, Armguards, Leg Armor, Weapon
+            starting_equipment = [
+              None, #Kite
+              (0, 40, 40, 40, 0),   #Mia
+              (0, 40, 40, 40, 2),   #Orca
+              (0, 40, 40, 40, 7),   #Marlo
+              (40, 40, 40, 40, 84), #Sanjuro
+              (20, 20, 20, 20, 0),  #Nuke Usagimaru
+              (0, 40, 20, 20, 3),   #Balmung
+              (20, 20, 20, 20, 3),  #Moonstone
+              None,                 #Piros
+              (0, 0, 0, 0, 9),      #Wiseman
+              None,                 #Elk
+              None,                 #Natsume
+              (40, 40, 40, 40, 5),  #Rachel
+              (20, 20, 20, 20, 5),  #Gardenia
+              None,                 #Terajima Ryoko
+              None,                 #BlackRose
+              None,                 #Mistral
+              (0, 0, 0, 0, 0),      #Helba
+            ]
+
+            kite = SpcParam(self.pine, 0xA46E58)
+            for i in range(1, 18):
+                party_member = kite[i]
+                party_member.set_level(1)
+                equipment = starting_equipment[i]
+                if equipment is not None:
+                    party_member.equipment.head   = equipment[0]
+                    party_member.equipment.body   = equipment[1]
+                    party_member.equipment.arms   = equipment[2]
+                    party_member.equipment.legs   = equipment[3]
+                    party_member.equipment.weapon = equipment[4]
+
+            self.pine.write_int8(0xA43C35, 0) #Set this value to 0 to not run the initializing again.
+
 
     async def check_locations(self, ctx) -> None:
         checked: Set[int] = set()
