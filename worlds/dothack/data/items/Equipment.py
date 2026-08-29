@@ -207,7 +207,7 @@ class Armors(Enum):
     LincolnGreen = {"id": 0x00070005, "volumes": [1], "weight": 85}
     ThunderCloak = {"id": 0x00070006, "volumes": [1], "weight": 92}
     # Rare Light Body Armor - Infection
-    Kagayuzen = {"id": 0x00070007, "volumes": [1], "weight": 97}
+    Kagayuzen = {"id": 0x00070040, "volumes": [1], "weight": 97}
     TimeSash = {"id": 0x00070042, "volumes": [1], "weight": 95}
     # Medium Body Armor - Infection
     LeatherArmor = {"id": 0x00070014, "volumes": [1], "weight": 65}

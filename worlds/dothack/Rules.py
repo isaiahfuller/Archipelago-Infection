@@ -1,7 +1,9 @@
+from rule_builder.rules import HasAny
+from rule_builder.rules import CanReachRegion
 from worlds.dothack.data.Strings import MonsterNames
-from .data.locations.Events import InfectionMonsters
+from .data.locations.Monsters import InfectionMonsters
 from collections import defaultdict
-from rule_builder.rules import Has, HasAll, CanReachLocation, CanReachRegion, Rule, True_
+from rule_builder.rules import Has, HasAll, CanReachLocation, Rule, True_
 from .data.Strings import EventNames as Ev, PlayStatNames, ServerNames, CharacterNames, ItemNames
 from .data.locations.WordList import InfectionDeltaWordList as DeltaWordList, InfectionThetaWordList as ThetaWordList, get_wordlist_name
 from .data.items.RyuBooks import RyuBooks
@@ -10,16 +12,21 @@ from .data.items.RyuBooks import RyuBooks
 def set_list_rules(location_rules, event_location, wordlist):
     location_rules[event_location] &= Has(get_wordlist_name(wordlist))
 
+    if wordlist in DeltaWordList:
+        location_rules[event_location] &= CanReachRegion(ServerNames.Delta.value)
+        location_rules[get_wordlist_name(wordlist)] &= CanReachRegion(ServerNames.Delta.value)
+
     if wordlist in ThetaWordList:
-        location_rules[event_location] &= Has(ServerNames.Theta.value)
-        location_rules[get_wordlist_name(wordlist)] &= Has(ServerNames.Theta.value)
+        location_rules[event_location] &= CanReachRegion(ServerNames.Theta.value)
+        location_rules[get_wordlist_name(wordlist)] &= CanReachRegion(ServerNames.Theta.value)
 
 
 def set_stats_rules(location_rules, stats):
     for i in range(len(stats)):
+        location_rules[stats[i].name] &= HasAny(ServerNames.Delta.value,ServerNames.Theta.value)
         book = RyuBooks.get_by_stat(stats[i].stat)
         if book:
-            location_rules[stats[i].name] &= Has(ItemNames[book.name].value)
+            location_rules[stats[i].name] &= CanReachRegion(ItemNames[book.name].value)
 
         if i < len(stats) - 1:
             if stats[i].name.split('-')[0] != stats[i+1].name.split('-')[0]:
@@ -73,6 +80,7 @@ def infection_rules(world):
     set_list_rules(location_rules, Ev.BlackRoseDungeon.value, ThetaWordList.QuietEternalWhiteDevil)
     location_rules[get_wordlist_name(ThetaWordList.QuietEternalWhiteDevil)] &= CanReachLocation(Ev.BoardProtected.value)
     location_rules[Ev.BlackRoseDungeon.value] &= HasAll(CharacterNames.BlackRose.value, ServerNames.Theta.value)
+    location_rules[Ev.BlackRoseDungeon.value] &= CanReachRegion(ServerNames.Theta.value)
     location_rules[Ev.BlackRoseDungeon.value] &= CanReachLocation(Ev.BoardProtected.value)
     location_rules[Ev.BlackRoseDungeon.value] &= CanReachLocation(PlayStatNames.KiteLevel.value + "15")
 
@@ -89,7 +97,8 @@ def infection_rules(world):
     set_list_rules(location_rules, Ev.MistralMeetUp.value, ThetaWordList.CollapsedMomentarySpiral)
     set_list_rules(location_rules, Ev.MistralMeetUp.value, DeltaWordList.BurstingPassedOverAquaField)
     location_rules[get_wordlist_name(ThetaWordList.CollapsedMomentarySpiral)] &= CanReachLocation(Ev.PirosDiary.value)
-    location_rules[Ev.MistralMeetUp.value] &= HasAll(CharacterNames.Mistral.value, ServerNames.Theta.value)
+    location_rules[Ev.MistralMeetUp.value] &= Has(CharacterNames.Mistral.value)
+    location_rules[Ev.MistralMeetUp.value] &= CanReachRegion(ServerNames.Theta.value)
     location_rules[Ev.MistralMeetUp.value] &= CanReachLocation(Ev.PirosDiary.value)
 
     set_list_rules(location_rules, Ev.Epitaph00.value, ThetaWordList.CursedDespairedParadise)
@@ -143,21 +152,25 @@ def infection_rules(world):
         location_rules[get_wordlist_name(DeltaWordList.DetestableGoldenMessenger)] &= CanReachLocation(Ev.Stehony.value)
         location_rules[Ev.Jonue.value] &= CanReachLocation(Ev.Stehony.value)
         location_rules[Ev.Jonue.value] &= CanReachLocation(Ev.BoardProtected.value)
+        location_rules[MonsterNames.Jonue133.value] &= CanReachLocation(Ev.Jonue.value)
 
         set_list_rules(location_rules, Ev.Zyan.value, DeltaWordList.DetestableGoldenScent)
         location_rules[get_wordlist_name(DeltaWordList.DetestableGoldenScent)] &= CanReachLocation(Ev.Jonue.value)
         location_rules[Ev.Zyan.value] &= CanReachLocation(Ev.Jonue.value)
         location_rules[Ev.Zyan.value] &= CanReachLocation(Ev.ElkMiaFavorite.value)
+        location_rules[MonsterNames.Zyan141.value] &= CanReachLocation(Ev.Zyan.value)
 
         set_list_rules(location_rules, Ev.Albert.value, DeltaWordList.DetestableGoldenNewTruth)
         location_rules[get_wordlist_name(DeltaWordList.DetestableGoldenNewTruth)] &= CanReachLocation(Ev.Zyan.value)
         location_rules[Ev.Albert.value] &= CanReachLocation(Ev.Zyan.value)
         location_rules[Ev.Albert.value] &= CanReachLocation(Ev.MistralMeetUp.value)
+        location_rules[MonsterNames.Albert148.value] &= CanReachLocation(Ev.Albert.value)
 
         set_list_rules(location_rules, Ev.Martina.value, DeltaWordList.DetestableGoldenGate)
         location_rules[get_wordlist_name(DeltaWordList.DetestableGoldenGate)] &= CanReachLocation(Ev.Albert.value)
         location_rules[Ev.Martina.value] &= CanReachLocation(Ev.Albert.value)
         location_rules[Ev.Martina.value] &= CanReachLocation(Ev.SkeithDefeated.value)
+        location_rules[MonsterNames.Martina155.value] &= CanReachLocation(Ev.Martina.value)
 
     for name, rule in location_rules.items():
         try:
