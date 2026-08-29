@@ -14,6 +14,7 @@ class VolumeAddresses(ABC):
     Monsters: Dict[str, int]
     AreaWords: int
     WordLists: int
+    FieldInfo: int
     Storage: int
     Party: int
     Servers: int
@@ -27,6 +28,7 @@ class VolumeAddresses(ABC):
 class InfectionAddresses(VolumeAddresses):
     AreaWords = 0xa44c0c
     WordLists = 0xa44c47
+    FieldInfo = 0x315564
     Storage = 0xa40540
     Party = 0xa41bf0
     BGMandImages = 0xa410C8

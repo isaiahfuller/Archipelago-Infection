@@ -31,6 +31,7 @@ from .data.locations.WordList import InfectionDeltaWordList as DeltaWordList, In
     WordListBase, get_wordlist_name
 from .data.locations.Sanity import InfectionShopsanity, APItems
 from .pcsx2_interface.pine import Pine
+from .data.FieldInfo import FieldInfo, FieldRegistry
 import random
 from .DotHackOptions import APItemPrice, APHelper
 
@@ -288,6 +289,7 @@ class DotHackInterface:
         self.pine.write_int8(0xa44f58, self.pine.read_int8(0xa44f58) | 0xff)
         self.pine.write_int8(0xa44f59, self.pine.read_int8(0xa44f59) | 0x83)
 
+
         # Kite's Class from Options
         if ctx.kite_class == 0:
             self.pine.write_int8(0xA46F30, 0)
@@ -302,6 +304,27 @@ class DotHackInterface:
         if ctx.kite_class == 5:
             self.pine.write_int8(0xA46F30, 5)
 
+        if self.pine.read_int8(0xA43C36) == 0xFF:
+            try:
+                # 1. Get the list of all fields that need to be processed
+                fields_to_lock = FieldRegistry.get_all_fields()
+
+                for field in fields_to_lock:
+                    # 2. Calculate the address for THIS specific field
+                    entry_base = field.entry_base_address
+                    final_address = entry_base + 0x4C
+
+                    # 3. Execute the write IMMEDIATELY for this field
+                    # We do this inside the loop so every field gets updated
+                    self.pine.write_int8(final_address, 25)  # Lock with Virus Core Z
+                    self.pine.write_int8(final_address + 0x4, 5)  # Require 5 of them
+
+                # 4. Finalize: Mark the initial state as 'done' (set 0xFF to 1)
+                # This happens AFTER the loop is completely finished
+                self.pine.write_int8(0xA43C36, 1)
+
+            except Exception as e:
+                self.logger.error(f"Lock sequence failed: {e}")
         # Equal Start - Setting most PCs to base stats, early equipment and Level 1
         if ctx.equal_start:
             if self.pine.read_int8(0xA43C35) == 0:  # Check if return value is 0
@@ -713,6 +736,40 @@ class DotHackInterface:
                         if old_status != new_status:
                             data[status_byte_idx] = new_status
                             self.pine.write_int8(starting_addr + status_byte_idx, new_status)
+
+                            # --- New Addition to Scanwordlist
+                            if current_list_val and current_list_val in ctx.unlocked_word_lists:
+                                found_registry_match = False
+
+                                # We iterate through the keys (f_id) and use the getter method
+                                # to retrieve the FieldInfo object. This avoids tuple unpacking errors.
+                                for f_id in FieldRegistry.DATA.keys():
+                                    target_field = FieldRegistry.get_field(f_id)
+
+                                    # We compare the memory value (current_addr) to the 'offset' attribute
+                                    # of the FieldInfo object, which you identified as the actual Field ID.
+                                    if target_field.offset == current_addr:
+                                        found_registry_match = True
+                                        lock_address = target_field.absolute_address
+                                        req_address = lock_address + 4
+
+                                        # DIAGNOSTIC LOG: Verifying match via .offset attribute
+                                        print(
+                                            f"[DEBUG] Match Found via Offset: {f_id} | Memory ID: {hex(current_addr)} | Target Addr: {hex(lock_address)}")
+
+                                        pre_val = self.pine.read_int8(lock_address)
+
+                                        self.pine.write_int8(lock_address, 0x00)
+                                        self.pine.write_int8(req_address, 0x00)
+
+                                        post_val = self.pine.read_int8(lock_address)
+                                        print(
+                                            f"[DEBUG] Write Result: {hex(pre_val)} -> 0x00 (Verified: {post_val == 0x00})")
+                                        break
+
+                                if not found_registry_match:
+                                    print(f"[DEBUG] No Registry match for Field ID: {hex(current_addr)}")
+                            # --- End of Addition ---
         except (RuntimeError, ConnectionError):
             return
 
