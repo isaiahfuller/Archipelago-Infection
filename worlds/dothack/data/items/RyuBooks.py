@@ -29,4 +29,4 @@ class RyuBooks(Enum):
     RyuBookV = []
     RyuBookVI = [PlayStats.GottOpened, PlayStats.ChestsOpened, PlayStats.BreakablesBroken]
     RyuBookVII = [PlayStats.SymbolsActivated]
-    RyuBookVIII = []
+    RyuBookVIII = [PlayStats.GoldenEgg, PlayStats.BloodyEgg, PlayStats.ImmatureEgg, PlayStats.InvisibleEgg, PlayStats.BearCatEgg, PlayStats.OhNoMelon, PlayStats.Cordyceps, PlayStats.LaPumpkin, PlayStats.WhiteCherry, PlayStats.TwilightOnion, PlayStats.SnakyCactus, PlayStats.PineyApple, PlayStats.Mushroom, PlayStats.Mandragora, PlayStats.GruntMints, PlayStats.RootVegetable]

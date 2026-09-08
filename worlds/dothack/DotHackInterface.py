@@ -674,7 +674,7 @@ class DotHackInterface:
 
             self.pine.write_int8(0xA43C35, 0) #Set this value to 0 to not run the initializing again.
 
-
+            
     async def check_locations(self, ctx) -> None:
         checked: Set[int] = set()
 
