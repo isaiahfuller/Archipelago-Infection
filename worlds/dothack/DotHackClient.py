@@ -123,6 +123,8 @@ class InfectionContext(SuperContext):  # pyrefly: ignore
     volume: int = 1
     settings: InfectionSettings
     kite_class: int = 0
+    monster_hunt: bool = False
+    equal_start: bool = False
     automatically_read_emails: bool = False
     completion_condition: int = 0
     opened_portals: int = 100
@@ -136,12 +138,17 @@ class InfectionContext(SuperContext):  # pyrefly: ignore
     kite_levels: int = 25
     golden_goblins: bool = True
     optional_party_members: bool = True
+    shopsanity: bool = False
+    tradesanity: bool = False
+    apitemprice: int = 5000
 
     def __init__(self, address: str, password: str | None = None,):
         super().__init__(address, password)
         Utils.init_logging(APConsole.Info.client_name_clean.value + self.client_version)
         self.settings = get_settings().get("dothack_options", {})
         self.kite_class = self.settings.get("kite_class", 0)
+        self.monster_hunt = self.settings.get("monster_hunt", False)
+        self.equal_start = self.settings.get("equal start", False)
         self.automatically_read_emails = self.settings.get("automatically_read_emails", False)
         self.completion_condition = self.settings.get("completion_condition", 0)
         self.opened_portals = self.settings.get("opened_portals", 100)
@@ -155,8 +162,12 @@ class InfectionContext(SuperContext):  # pyrefly: ignore
         self.kite_levels = self.settings.get("kite_levels", 25)
         self.golden_goblins = self.settings.get("golden_goblins", True)
         self.optional_party_members = self.settings.get("optional_party_members", True)
-
+        self.shopsanity = self.settings.get("shopsanity", False)
+        self.tradesanity = self.settings.get("tradesanity", False)
+        self.apitemprice = self.settings.get("apitemprice", 5000)
         self.ipc = DotHackInterface(logger, self.volume)
+        self.trade_locations = []  # Stores the TradeSanity location objects
+        self.completed_trades = set()  # Tracks items already sent to the server
 
     # Archipelago Server Authentication
     async def server_auth(self, password_requested: bool = False) -> None:
@@ -185,11 +196,17 @@ class InfectionContext(SuperContext):  # pyrefly: ignore
             self.kite_class = data.get(APHelper.kite_class.value, self.kite_class)
             self.golden_goblins = data.get(APHelper.golden_goblins.value, self.golden_goblins)
             self.optional_party_members = data.get(APHelper.optional_party_members.value, self.optional_party_members)
+            self.shopsanity = data.get(APHelper.shopsanity.value, self.shopsanity)
+            self.tradesanity = data.get(APHelper.tradesanity.value, self.tradesanity)
+            self.apitemprice = data.get(APHelper.apitemprice.value, self.apitemprice)
+
 
             if APHelper.excluded_locations.value in data:
                 self.excluded_locations = set(data[APHelper.excluded_locations.value])
             else:
                 self.excluded_locations = set()
+            self.monster_hunt = data.get(APHelper.monster_hunt.value, self.monster_hunt)
+            self.equal_start = data.get(APHelper.equal_start.value, self.monster_hunt)
 
             if APHelper.version.value in data:
                 world_ver: str = data[APHelper.version.value]
@@ -294,11 +311,23 @@ async def check_game(ctx: InfectionContext):
             return
         if ctx.last_item_processed_index < 0:
             ctx.last_item_processed_index = ctx.ipc.get_last_item_index()
+            
+        if ctx.has_just_connected or ctx.pending_resync:
+            await ctx.ipc.resync_items(ctx)
+            ctx.has_just_connected = False
+            if ctx.pending_resync:
+                logger.info("Resyncing complete")
+                ctx.pending_resync = False
 
         if ctx.volume == 1:
             ctx.ipc.infection_initial_state(ctx)
             ctx.ipc.infection_apply_patch()
 
+        if ctx.shopsanity or ctx.tradesanity:
+            await ctx.ipc.setup_sanity(ctx)
+
+        if ctx.equal_start:
+            await ctx.ipc.setup_equal_start(ctx)
 
         if ctx.queued_messages and ctx.ipc.infection_show_message(*ctx.queued_messages[0]) in [0, 2]:
             ctx.queued_messages.pop(0)
@@ -311,16 +340,12 @@ async def check_game(ctx: InfectionContext):
         await ctx.ipc.scan_word_list(ctx)
         await ctx.ipc.scan_ryu_books(ctx)
         await ctx.ipc.scan_kite_class(ctx)
+        await ctx.ipc.monitor_decrease()
+
 
         if ctx.automatically_read_emails:
             await ctx.ipc.scan_emails()
 
-        if ctx.has_just_connected or ctx.pending_resync:
-            await ctx.ipc.resync_items(ctx)
-            ctx.has_just_connected = False
-            if ctx.pending_resync:
-                logger.info("Resyncing complete")
-                ctx.pending_resync = False
     else:
         message: str = APConsole.Info.p_init_g_sre.value
         if ctx.last_message is not message:
