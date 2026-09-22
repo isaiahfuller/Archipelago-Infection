@@ -1,5 +1,6 @@
 
 import math
+from collections import Counter
 from enum import IntEnum
 from logging import Logger
 from typing import Optional, List, Set
@@ -15,7 +16,7 @@ from .data.Addresses import VolumeAddresses, InfectionAddresses, MutationAddress
 from .data.GameState import InfectionGameState as GameState
 from .data.Items import InfectionWordListItem as WordListItem, PartyMemberItem, ServerItem, ConsumableItem, \
     VirusCoreItem, RyuBookItem, GruntyFoodItem, InfectionLevelItem, WeaponItem, ArmorItem
-from .data.Items import PartyMemberItems
+from .data.Items import PartyMemberItems, ConsumableItems, WeaponItems, ArmorItems, VirusCoreItems, GruntyFoodItems
 from .data.Items import ServerItems
 from .data.Items import WordListItems, RyuBookItems
 from .data.Strings import APConsole, Meta, GameStateNames, EventNames, ShopsanityNames, TradesanityNames, MonsterNames
@@ -558,81 +559,91 @@ class DotHackInterface:
             self.set_last_item_index(ctx.next_item_slot)
 
     async def resync_items(self, ctx) -> None:
-        """
-        Syncs items that were received before the client was fully initialized.
-        Issue: Virus Cores and Consumables are currently only given once.
-        """
-        # if ctx.last_item_processed_index < 0:
-        #     return
-        self.logger.debug(f"items_received: {[item[0] for item in ctx.items_received]}")
-        received_id = [item[0] for item in ctx.items_received]
-        self.logger.debug(f"received_id: {received_id}")
+        """Sync items received before the client was fully initialized."""
+        start_index = max(0, self.get_last_item_index())
+        received_counts = Counter(item.item for item in ctx.items_received[start_index:])
+        self.logger.debug(f"received item counts: {received_counts}")
+
         for member in PartyMemberItems:
-            if member.item_id in received_id:
+            if member.item_id in received_counts:
                 ctx.unlocked_party_members.add(member.party_member)
         for server in ServerItems:
-            if server.item_id in received_id:
+            if server.item_id in received_counts:
                 ctx.unlocked_servers.add(server.server)
         for wordlist in WordListItems:
-            if wordlist.item_id in received_id:
+            if wordlist.item_id in received_counts:
                 ctx.unlocked_word_lists.add(wordlist.wordlist.value["address"])
         for ryu_book in RyuBookItems:
-            if ryu_book.item_id in received_id:
+            if ryu_book.item_id in received_counts:
                 ctx.obtained_ryu_books.add(ryu_book.ryu_book)
-                # self.add_key(self.addresses.Items[ryu_book.name])
-        # for item in ConsumableItems:
-        #     if item.item_id in received_id:
-        #         self.add_consumable(item)
-        # for item in VirusCoreItems:
-        #     if item.item_id in received_id:
-        #         self.add_key(item.item.value["id"])
+                self.add_key(self.addresses.Items[ryu_book.ryu_book.name])
+        for item in ConsumableItems:
+            count = received_counts.get(item.item_id, 0)
+            if count:
+                self.add_consumable(item, count)
+        for item in WeaponItems:
+            count = received_counts.get(item.item_id, 0)
+            if count:
+                self.add_weapon(item, count)
+        for item in ArmorItems:
+            count = received_counts.get(item.item_id, 0)
+            if count:
+                self.add_armor(item, count)
+        for item in VirusCoreItems:
+            count = received_counts.get(item.item_id, 0)
+            if count:
+                self.add_key(self.addresses.Items[item.virus_core.name], count)
+        for item in GruntyFoodItems:
+            count = received_counts.get(item.item_id, 0)
+            if count:
+                self.add_key(self.addresses.Items[item.grunty_food.name], count)
         self.set_last_item_index(len(ctx.items_received))
 
-    def add_consumable(self, item_obj: ConsumableItem) -> None:
+    def add_consumable(self, item_obj: ConsumableItem, count: int = 1) -> None:
         addr: int = self.addresses.Storage
         item: int = item_obj.consumable.value["id"]
         for i in range(addr, addr + 396, 4):
             curr: int = self.pine.read_int32(i)
             amt: int = self.pine.read_int8(i+3)
             if curr | 0xff000000 == item | 0xff000000:
-                self.pine.write_int8(i+3, amt + 1)
+                self.pine.write_int8(i+3, amt + count)
                 return
             if curr == 0x00ffffff:
                 self.pine.write_int32(i, item)
-                self.pine.write_int8(i+3, 1)
+                self.pine.write_int8(i+3, count)
                 break
 
-    def add_weapon(self, item_obj: WeaponItem) -> None:
+    def add_weapon(self, item_obj: WeaponItem, count: int = 1) -> None:
         addr: int = self.addresses.Storage
         item: int = item_obj.weapon.value["id"]
         for i in range(addr, addr + 396, 4):
             curr: int = self.pine.read_int32(i)
             amt: int = self.pine.read_int8(i+3)
             if curr | 0xff000000 == item | 0xff000000:
-                self.pine.write_int8(i+3, amt + 1)
+                self.pine.write_int8(i+3, amt + count)
                 return
             if curr == 0x00ffffff:
                 self.pine.write_int32(i, item)
-                self.pine.write_int8(i+3, 1)
+                self.pine.write_int8(i+3, count)
                 break
 
-    def add_armor(self, item_obj: ArmorItem) -> None:
+    def add_armor(self, item_obj: ArmorItem, count: int = 1) -> None:
         addr: int = self.addresses.Storage
         item: int = item_obj.armor.value["id"]
         for i in range(addr, addr + 396, 4):
             curr: int = self.pine.read_int32(i)
             amt: int = self.pine.read_int8(i+3)
             if curr | 0xff000000 == item | 0xff000000:
-                self.pine.write_int8(i+3, amt + 1)
+                self.pine.write_int8(i+3, amt + count)
                 return
             if curr == 0x00ffffff:
                 self.pine.write_int32(i, item)
-                self.pine.write_int8(i+3, 1)
+                self.pine.write_int8(i+3, count)
                 break
 
-    def add_key(self, addr) -> None:
+    def add_key(self, addr, count: int = 1) -> None:
         curr_amt = self.pine.read_int8(addr)
-        self.pine.write_int8(addr, curr_amt + 1)
+        self.pine.write_int8(addr, curr_amt + count)
 
     def add_reset_rate(self, addr) -> None:
         amt = self.pine.read_int8(addr)
