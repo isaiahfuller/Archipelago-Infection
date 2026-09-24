@@ -38,13 +38,6 @@ class InfectionItemMeta(ABC):
             classification=ItemClassification.filler
         )
 
-    def to_item(self, player: int) -> InfectionItem:
-        return InfectionItem(
-            name=self.name,
-            code=self.item_id,
-            player=player,
-            classification=ItemClassification.filler
-        )
 
 class InfectionWordListItem(InfectionItemMeta):
     def __init__(self, name, wordlist: WordListBase, volume: int):
@@ -166,6 +159,7 @@ class VirusCoreItem(InfectionItemMeta):
             weight=self.weight
         )
 
+
 class GruntyFoodItem(InfectionItemMeta):
     grunty_food: GruntyFood
 
@@ -184,6 +178,8 @@ class GruntyFoodItem(InfectionItemMeta):
             classification=self.classification,
             weight=self.weight
         )
+
+
 class RyuBookItem(InfectionItemMeta):
     ryu_book: RyuBooks
 
@@ -270,6 +266,8 @@ for infection_level in InfectionLevel:
         item=infection_level,
         address=Addresses.Items[infection_level.name]
     ))
+
+
 def generate_volume_items(volume: int):
     v_data = VOLUME_DATA[volume]
     v_data.wordlist_items = []

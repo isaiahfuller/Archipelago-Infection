@@ -217,6 +217,37 @@ class ShopsanityNames(Enum):
     DLMS4 = "Dun Loireag Magic Shop - AP Item 4"
     DLMS5 = "Dun Loireag Magic Shop - AP Item 5"
 
+class InfectionAreaWordNames(Enum):
+     BPOAF1 = "Bursting Passed Over Aqua Field"
+     HFHG2 = "Hidden Forbidden Holy Ground"
+     EHSS3 = "Expansive Haunted Sea of Sand"
+     BCFW4 = "Boundless Corrupted Fort Walls"
+     COTH5 = "Closed Oblivious Twin Hills"
+     QEWD6 = "Quiet Eternal White Devil"
+     PSH7 = "Plenteous Smiling Hypha"
+     CMS8 = "Collapsed Momentary Spiral"
+     CDP9 = "Cursed Despaired Paradise"
+     BPFS10 = "Buried Pagan Fiery Sands"
+     LSGS11 = "Lonely Silent Great Seal"
+     GDFL12 = "Great Distant Fertile Land"
+     CHN13 = "Chosen Hopeless Nothingness"
+     HSG14 = "Hideous Someone's Giant"
+     DGSD15 = "Detestable Golden Sunny Demon"
+     DPT16 = "Discovered Primitive Touchstone"
+     IGP17 = "Indiscreet Gluttonous Pilgrimage"
+     PHBS18 = "Putrid Hot-Blooded Scaffold"
+     HDFT19 = "Hideous Destroyer's Far Thunder"
+     SSTP20 = "Soft Solitary Tri-Pansy"
+     BSTG21 = "Beautiful Someone's Treasure Gem"
+     RPM22 = "Raging Passionate Melody"
+     VHR23 = "Voluptuous Her Remnant"
+     HOMS24 = "Hideous Organ Market Scaffold"
+     DDPTP25 = "Dog Dancing Passionate Tri-Pansy"
+     DGM26 = "Detestable Golden Messenger"
+     DGS27 = "Detestable Golden Scent"
+     DGNT28 = "Detestable Golden New Truth"
+     DGG29 = "Detestable Golden Gate"
+
 class TradesanityNames(Enum):
     _value_: str
     
