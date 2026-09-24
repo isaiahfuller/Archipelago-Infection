@@ -82,7 +82,7 @@ class InfectionContext(SuperContext):  # pyrefly: ignore
     items_handling: int = 0b111
 
     # Client Properties
-    command_processor: InfectionCommandProcessor
+    command_processor: InfectionCommandProcessor = InfectionCommandProcessor
     tags: set[str] = {"AP"}
 
     # Interface Properties
