@@ -19,14 +19,14 @@ from .data.Items import InfectionWordListItem as WordListItem, PartyMemberItem, 
 from .data.Items import PartyMemberItems, ConsumableItems, WeaponItems, ArmorItems, VirusCoreItems, GruntyFoodItems
 from .data.Items import ServerItems
 from .data.Items import WordListItems, RyuBookItems
-from .data.Strings import APConsole, Meta, GameStateNames, EventNames, ShopsanityNames, TradesanityNames, MonsterNames
+from .data.Strings import APConsole, Meta, GameStateNames, EventNames, ShopsanityNames, TradesanityNames, MonsterNames, SetTreasureNames
 from .data.data_structures.APMessage import APMessage
 from .data.items.AreaWords import AreaWords
 from .data.items.PartyMembers import PartyMembers
 from .data.items.RyuBooks import RyuBooks
 from .data.items.Servers import Servers
 from .data.locations.Events import InfectionStoryEvents as StoryEvents, InfectionGoldenGoblins as GoldenGoblins, \
-    InfectionOptionalPartyMembers as OptionalPartyMembers
+    InfectionOptionalPartyMembers as OptionalPartyMembers, InfectionSetTreasures
 from .data.locations.Monsters import InfectionMonsters
 from .data.locations.WordList import InfectionDeltaWordList as DeltaWordList, InfectionThetaWordList as ThetaWordList, \
     WordListBase, get_wordlist_name
@@ -366,6 +366,20 @@ class DotHackInterface:
             except ConnectionError:
                 return
 
+        def addr_check_inverted(addr, bitflags, loc_id):
+            try:
+                # We use the same memory read method the maintainer uses
+                # Assuming self.pine is the object used for memory reading
+                current_value = self.pine.read_int8(addr)
+
+                # Subset Check: (mask | value == mask)
+                # This is the only way to reliably detect the '0' bit in 0b11111110
+                if (bitflags | current_value) == bitflags:
+                    checked.add(loc_id)
+
+            except (RuntimeError, ConnectionError):
+                pass
+
         def stat_check(stat: PlayStats):
             addr = self.addresses.PlayStats[stat.name]
             try:
@@ -429,6 +443,15 @@ class DotHackInterface:
                     continue
                 addr_check(addr, bitflags, loc_id)
 
+        # Set Treasures
+        for treasure in InfectionSetTreasures:
+            name: str = SetTreasureNames[treasure.name].value
+            addr: int = treasure.value["address"]
+            bitflags: int = treasure.value["bits"]
+            loc_id = get_location_id(name)
+            if loc_id is None:
+                continue
+            addr_check_inverted(addr, bitflags, loc_id)
         #Shopsanity
         if ctx.shopsanity:
             for shopsanity in InfectionShopsanity:

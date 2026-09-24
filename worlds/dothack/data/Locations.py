@@ -2,14 +2,13 @@ from BaseClasses import LocationProgressType
 from abc import ABC
 from dataclasses import dataclass
 from BaseClasses import Location
-
 from .items.AreaWords import AreaWords
 from .locations.Events import InfectionStoryEvents, InfectionGoldenGoblins, InfectionOptionalPartyMembers, CompletionConditions
 from .locations.Monsters import InfectionMonsters
 from .locations.WordList import InfectionDeltaWordList as DeltaWordList, InfectionThetaWordList as ThetaWordList, WordListBase, get_wordlist_name
 from .locations.PlayStats import PlayStats
 from .locations.Sanity import InfectionShopsanity, InfectionTradesanity
-from .Strings import Meta, AreaWordNames, EventNames, PlayStatNames, ShopsanityNames, TradesanityNames, MonsterNames
+from .Strings import Meta, AreaWordNames, EventNames, PlayStatNames, ShopsanityNames, TradesanityNames, MonsterNames, SetTreasureNames
 from .Addresses import InfectionAddresses as Addresses
 from .DataManager import VOLUME_DATA
 
@@ -150,6 +149,26 @@ def hunt_gen(enum, volume: int) -> list[InfectionMonsterLocation]:
             ))
     return res
 
+def treasure_gen(enum, volume: int) -> list[InfectionEventLocation]:
+    res = []
+    for treasure in enum:
+        volumes = treasure.value.get("volumes", [])
+        if isinstance(volumes, list) and volume in volumes:
+            name = SetTreasureNames[treasure.name].value
+
+            # The generator handles the uniqueness, the class handles the data.
+            unique_location_id = (treasure.value["address"] << 8) | treasure.value["bits"]
+
+            res.append(InfectionEventLocation(
+                name=name,
+                location_id=unique_location_id,
+                event=treasure,
+                bitflags=treasure.value["bits"]
+            ))
+    return res
+
+
+
 def shopsanity_gen(volume: int):
     res = []
     # enumerate() provides a tuple of (index, member)
@@ -235,7 +254,9 @@ def generate_volume_locations(volume: int):
         *event_gen(InfectionStoryEvents, volume),
         *event_gen(InfectionGoldenGoblins, volume),
         *event_gen(InfectionOptionalPartyMembers, volume),
+        *treasure_gen(InfectionSetTreasures, volume),
         *event_gen(CompletionConditions, volume),
+        *event_gen(CompletionConditions, volume)
     ]
     v_data.sanity_locations = [
         *shopsanity_gen(volume),
@@ -254,6 +275,7 @@ EventLocations: list[InfectionEventLocation] = []
 StoryEvents: list[InfectionEventLocation] = []
 GoldenGoblins: list[InfectionEventLocation] = []
 OptionalPartyMembers: list[InfectionEventLocation] = []
+SetTreasures: list[InfectionEventLocation] = []
 Monsters: list[InfectionEventLocation] = []
 CompletionEvents: list[InfectionEventLocation] = []
 ShopsanityLocations: list[InfectionShopsanityLocation] = []
@@ -274,6 +296,8 @@ for v_data in VOLUME_DATA.values():
                 OptionalPartyMembers.append(loc)
             elif isinstance(loc.event, CompletionConditions):
                 CompletionEvents.append(loc)
+            elif isinstance(loc.event, InfectionSetTreasures):
+                SetTreasures.append(loc)
     for loc in v_data.sanity_locations:
         if isinstance(loc, InfectionShopsanityLocation):
             ShopsanityLocations.append(loc)
@@ -318,6 +342,7 @@ def generate_location_groups() -> dict[str, set[str]]:
         "Story Events": {el.name for el in StoryEvents},
         "Golden Goblins": {el.name for el in GoldenGoblins},
         "Optional Party Members": {el.name for el in OptionalPartyMembers},
+        "Set Treasures" : {el.name for el in SetTreasures},
         "Play Stats": {el.name for el in PlayStatLocations},
         "Area Words": {el.name for el in AreaWordLocations},
         "Word Lists": {el.name for el in WordListLocations},
