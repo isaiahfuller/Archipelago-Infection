@@ -561,7 +561,8 @@ class DotHackInterface:
     async def resync_items(self, ctx) -> None:
         """Sync items received before the client was fully initialized."""
         start_index = max(0, self.get_last_item_index())
-        received_counts = Counter(item.item for item in ctx.items_received[start_index:])
+        received_counts = Counter(item.item for item in ctx.items_received)
+        limited_counts = Counter(item.item for item in ctx.items_received[start_index:])
         self.logger.debug(f"received item counts: {received_counts}")
 
         for member in PartyMemberItems:
@@ -578,23 +579,23 @@ class DotHackInterface:
                 ctx.obtained_ryu_books.add(ryu_book.ryu_book)
                 self.add_key(self.addresses.Items[ryu_book.ryu_book.name])
         for item in ConsumableItems:
-            count = received_counts.get(item.item_id, 0)
+            count = limited_counts.get(item.item_id, 0)
             if count:
                 self.add_consumable(item, count)
         for item in WeaponItems:
-            count = received_counts.get(item.item_id, 0)
+            count = limited_counts.get(item.item_id, 0)
             if count:
                 self.add_weapon(item, count)
         for item in ArmorItems:
-            count = received_counts.get(item.item_id, 0)
+            count = limited_counts.get(item.item_id, 0)
             if count:
                 self.add_armor(item, count)
         for item in VirusCoreItems:
-            count = received_counts.get(item.item_id, 0)
+            count = limited_counts.get(item.item_id, 0)
             if count:
                 self.add_key(self.addresses.Items[item.virus_core.name], count)
         for item in GruntyFoodItems:
-            count = received_counts.get(item.item_id, 0)
+            count = limited_counts.get(item.item_id, 0)
             if count:
                 self.add_key(self.addresses.Items[item.grunty_food.name], count)
         self.set_last_item_index(len(ctx.items_received))
