@@ -113,13 +113,17 @@ async def initial_state():
     # pine.write_int8(0xB215F1, 0x20)
     pine.disconnect()
 
+seen_events = set()
+
 async def track_mutation_events():
     for event in MutationStoryEvents:
         address = event.value["address"]
         bits = event.value["bits"]
         current_value = pine.read_int8(address)
         if current_value & bits == 0:
-            pine.write_int8(address, current_value | bits)
+            if event not in seen_events:
+                print(f"Event {event.name} triggered at address {hex(address)} with bits {bin(bits)}")
+                seen_events.add(event)
 
 async def pcsx2_sync_task(ctx):
     game_state = 0x01
